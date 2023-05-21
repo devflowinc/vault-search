@@ -11,13 +11,13 @@ const AutoGrowInput = () => {
 	}
 
 	return (
-		<form class="relative flex h-full max-h-[calc(100vh-32rem)] w-full flex-col items-center overflow-y-auto rounded-xl bg-neutral-50 px-4 py-1 text-neutral-800 dark:bg-neutral-700 dark:text-white">
-			<div class="flex w-full space-x-2">
-				<BiRegularSearch class="h-6 w-6 mt-1" />
+		<form class="flex h-full max-h-[calc(100vh-32rem)] w-full flex-col space-y-4 text-neutral-800 dark:text-white">
+			<div class="flex w-full justify-center space-x-2 rounded-xl bg-neutral-50 px-4 py-1 dark:bg-neutral-700">
+				<BiRegularSearch class="mt-1 h-6 w-6" />
 				<textarea
 					id="new-message-content-textarea"
 					class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md h-fit w-full resize-none whitespace-pre-wrap bg-transparent py-1 scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 focus:outline-none dark:bg-neutral-700 dark:text-white dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600"
-					placeholder="Search for evidence..."
+					placeholder="Search for evidence cards..."
 					value={textareaInput()}
 					onInput={(e) => resizeTextarea(e.target)}
 					onKeyDown={(e) => {
@@ -39,9 +39,20 @@ const AutoGrowInput = () => {
 							setTextareaInput('')
 						}}
 					>
-						<BiRegularX class="h-6 w-6 mt-1" />
+						<BiRegularX class="mt-1 h-6 w-6" />
 					</button>
 				</Show>
+			</div>
+			<div class="flex flex-row space-x-2 px-40">
+				<button
+					class="w-fit rounded bg-neutral-50 p-2 hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+					type="submit"
+				>
+					Search Evidence Vault
+				</button>
+				<button class="w-fit rounded bg-neutral-50 p-2 hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800">
+					Create Evidence Card
+				</button>
 			</div>
 		</form>
 	)
