@@ -1,73 +1,41 @@
 ---
-import AutoGrowInput from "../components/AutoGrowInput.tsx";
+import {
+	BiLogosGithub,
+	BiLogosTwitch,
+	BiLogosTwitter,
+	BiLogosYoutube,
+	BiRegularUser
+} from 'solid-icons/bi'
+import ThemeModeController from '../components/ThemeModeController'
+import SearchLayout from '../layouts/SearchLayout.astro'
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body class="bg-gray-900 h-screen py-5 text-neutral-50">
-		<div class="flex items-center justify-between rounded-lg px-4 py-3 shadow-md bg-gray-800 lg:m-auto lg:max-w-5xl">
-			<div class="flex items-center">
-				<img
-					class="w-10"
-					src="/logo_transparent.svg"
-					alt="Logo"
-				/>
-				<p class="text-lg">
-				<span>Arguflow</span><span class="text-acid">Vault</span>
-				</p>
-			</div>
-			<div class="flex items-center gap-4">
-				<div class="hidden items-center gap-4 md:flex">
-					<a href="https://arguflow.com/blog">Blog</a>
-				</div>
-				<a
-					class="rounded-lg bg-acid px-4 py-2 text-neutral-900"
-					>
-					Create Vault
-				</a>
-			</div>
+<SearchLayout>
+	<div class="flex w-full items-center justify-end space-x-4 py-4 px-4">
+		<ThemeModeController client:only="solid-js" />
+		<BiRegularUser class="h-6 w-6 cursor-pointer" />
+	</div>
+	<div class="mt-12 flex w-full flex-col items-center">
+		<div class="flex w-full items-center justify-center">
+			<img class="w-12" src="/logo_transparent.png" alt="Logo" />
+			<h1 class="text-4xl">
+				Arguflow<span class="text-magenta">Vault</span>
+			</h1>
 		</div>
-		<div class="flex w-full h-full items-center justify-around flex-col">
-			<div class="flex flex-col items-center space-y-4 w-full">
-				<h1 class="text-white text-4xl">Arguflow<span class="text-acid">Vault</span></h1>
-				<AutoGrowInput/>
-			</div>
-			<footer class="flex justify-between px-6 py-2 bg-gray-800 w-full text-neutral-300">
-				<div class="space-x-3">
-					<a class="hover:border-b">
-						About
-					</a>
-					<a class="hover:border-b">
-						AI Debater
-					</a>
-					<a class="hover:border-b">
-						Decentralized Arguing 
-					</a>
-				</div>
-				<div class="space-x-3">
-					<a class="hover:border-b">
-						Github
-					</a>
-					<a class="hover:border-b">
-						Youtube
-					</a>
-					<a class="hover:border-b">
-						Twitch
-					</a>
-					<a class="hover:border-b">
-						Twitter
-					</a>
-				</div>
-			</footer>
-		</div>
-	</body>
-</html>
-
-
-
+	</div>
+	<div class="flex-1"></div>
+	<div class="flex w-full justify-center space-x-3 py-4">
+		<a href="https://twitter.com/arguflowai" target="_blank">
+			<BiLogosTwitter size={30} />
+		</a>
+		<a href="https://twitch.tv/arguflow" target="_blank">
+			<BiLogosTwitch size={30} />
+		</a>
+		<a href="https://www.youtube.com/@arguflow">
+			<BiLogosYoutube size={30} />
+		</a>
+		<a href="https://github.com/orgs/arguflow/repositories" target="_blank">
+			<BiLogosGithub size={30} />
+		</a>
+	</div>
+</SearchLayout>

@@ -19,6 +19,7 @@
     "prettier": "^2.8.8",
     "prettier-plugin-astro": "^0.9.0",
     "prettier-plugin-tailwindcss": "^0.3.0",
+    "solid-headless": "^0.13.1",
     "solid-icons": "^1.0.4",
     "solid-js": "^1.4.3",
     "svelte": "^3.59.1",
