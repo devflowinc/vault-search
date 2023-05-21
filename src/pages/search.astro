@@ -1,0 +1,82 @@
+---
+import {
+	BiLogosGithub,
+	BiLogosTwitch,
+	BiLogosTwitter,
+	BiLogosYoutube,
+	BiRegularUser
+} from 'solid-icons/bi'
+import { CardDTO, isCardDTO } from '../../utils/api_types'
+import ThemeModeController from '../components/ThemeModeController'
+import SearchLayout from '../layouts/SearchLayout.astro'
+const api_host = import.meta.env.PUBLIC_API_HOST
+const requestParams = Astro.request.url.split('?')[1]
+const params = new URLSearchParams(requestParams)
+const query = params.get('q')
+const page = params.get('page') || 1
+
+let cards: CardDTO[] = []
+
+try {
+	const queryResult = await fetch(`${api_host}/card/search/${page}`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			content: query ?? ''
+		})
+	})
+
+	if (queryResult.status !== 200) {
+    console.error('Error fetching cards', queryResult)
+		return Astro.redirect('/404')
+	}
+
+	const cardsData: object[] = await queryResult.json()
+	if (!cardsData.every((card) => isCardDTO(card))) {
+		console.error('Error typechecking cards', cardsData)
+		return Astro.redirect('/404')
+	}
+	cards = cardsData as CardDTO[]
+} catch (e) {
+	console.error('Error fetching cards', e)
+	return Astro.redirect('/404')
+}
+---
+
+<SearchLayout>
+	<div class="flex w-full items-center justify-end space-x-4 px-4 py-4">
+		<ThemeModeController client:only="solid-js" />
+		<BiRegularUser class="h-6 w-6 cursor-pointer" />
+	</div>
+	<div class="mt-12 flex w-full flex-col items-center space-y-4">
+		<div class="flex w-full items-center justify-center">
+			<img class="w-12" src="/logo_transparent.png" alt="Logo" />
+			<h1 class="text-4xl">
+				Arguflow<span class="text-magenta">Vault</span>
+			</h1>
+		</div>
+		<div class="w-full max-w-4xl px-4 sm:px-8 md:px-20">
+			{cards.length}
+		</div>
+	</div>
+	<div class="flex-1"></div>
+	<div class="flex w-full flex-col items-center space-y-4 py-4">
+		<div class="flex w-full justify-center space-x-3">
+			<a href="https://twitter.com/arguflowai" target="_blank">
+				<BiLogosTwitter size={30} />
+			</a>
+			<a href="https://twitch.tv/arguflow" target="_blank">
+				<BiLogosTwitch size={30} />
+			</a>
+			<a href="https://www.youtube.com/@arguflow">
+				<BiLogosYoutube size={30} />
+			</a>
+			<a href="https://github.com/orgs/arguflow/repositories" target="_blank">
+				<BiLogosGithub size={30} />
+			</a>
+		</div>
+		<div class="text-neutral-600 dark:text-neutral-200">contact@arguflow.gg</div>
+	</div>
+</SearchLayout>
