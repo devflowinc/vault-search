@@ -1,0 +1,48 @@
+---
+import {
+	BiLogosGithub,
+	BiLogosTwitch,
+	BiLogosTwitter,
+	BiLogosYoutube,
+	BiRegularUser
+} from 'solid-icons/bi'
+import ThemeModeController from '../components/ThemeModeController'
+import SearchLayout from '../layouts/SearchLayout.astro'
+import CreateNewEvidenceForm from '../components/CreateNewEvidenceForm'
+---
+
+<SearchLayout>
+	<div class="flex w-full items-center justify-end space-x-4 px-4 py-4">
+		<ThemeModeController client:only="solid-js" />
+		<BiRegularUser class="h-6 w-6 cursor-pointer" />
+	</div>
+	<div class="mt-12 flex w-full flex-col items-center space-y-4">
+		<div class="flex w-full items-center justify-center">
+			<img class="w-12" src="/logo_transparent.png" alt="Logo" />
+			<h1 class="text-4xl">
+				Create New Evidence Card
+			</h1>
+		</div>
+		<div class="w-full max-w-4xl px-4 sm:px-8 md:px-20">
+			<CreateNewEvidenceForm client:load />
+		</div>
+	</div>
+	<div class="flex-1"></div>
+	<div class="flex w-full flex-col items-center space-y-4 py-4">
+		<div class="flex w-full justify-center space-x-3">
+			<a href="https://twitter.com/arguflowai" target="_blank">
+				<BiLogosTwitter size={30} />
+			</a>
+			<a href="https://twitch.tv/arguflow" target="_blank">
+				<BiLogosTwitch size={30} />
+			</a>
+			<a href="https://www.youtube.com/@arguflow">
+				<BiLogosYoutube size={30} />
+			</a>
+			<a href="https://github.com/orgs/arguflow/repositories" target="_blank">
+				<BiLogosGithub size={30} />
+			</a>
+		</div>
+		<div class="text-neutral-600 dark:text-neutral-200">contact@arguflow.gg</div>
+	</div>
+</SearchLayout>
