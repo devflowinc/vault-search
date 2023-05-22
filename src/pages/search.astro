@@ -44,9 +44,20 @@ try {
 ---
 
 <SearchLayout>
-	<div class="flex w-full items-center justify-end space-x-4 px-4 py-4">
-		<ThemeModeController client:only="solid-js" />
-		<RegisterOrUserProfile client:only="solid-js" />
+	<div class="flex w-full items-center justify-end space-x-4 px-4 h-[60px]">
+		<a
+			href="/create"
+			target="_blank"
+			class="text-xl text-neutral-600 dark:text-neutral-200"
+		>
+			Create Evidence
+		</a>
+		<div>
+			<ThemeModeController client:only="solid-js" />
+		</div>
+		<div>
+			<RegisterOrUserProfile client:only="solid-js" />
+		</div>
 	</div>
 	<div class="mt-12 flex w-full flex-col items-center space-y-4">
 		<a class="flex w-full items-center justify-center" href="/">

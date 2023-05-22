@@ -12,9 +12,20 @@ import RegisterOrUserProfile from '../../components/RegisterOrUserProfile';
 ---
 
 <SearchLayout>
-	<div class="flex w-full items-center justify-end space-x-4 px-4 py-4">
-		<ThemeModeController client:only="solid-js" />
-		<RegisterOrUserProfile client:only="solid-js" />
+	<div class="flex w-full items-center justify-end space-x-4 px-4 h-[60px]">
+		<a
+			href="https://blog.arguflow.com"
+			target="_blank"
+			class="text-xl text-neutral-600 dark:text-neutral-200"
+		>
+			Blog
+		</a>
+		<div>
+			<ThemeModeController client:only="solid-js" />
+		</div>
+		<div>
+			<RegisterOrUserProfile client:only="solid-js" />
+		</div>
 	</div>
 	<a class="mt-12 flex w-full flex-col items-center space-y-4" href="/">
 		<div class="flex w-full items-center justify-center">
