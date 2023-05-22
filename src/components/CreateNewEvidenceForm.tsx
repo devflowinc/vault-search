@@ -124,7 +124,7 @@ const SearchForm = () => {
 						>
 							<textarea
 								id="search-query-textarea"
-								class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md h-fit min-h-[150px] w-full resize-none whitespace-pre-wrap bg-transparent py-1 scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 focus:outline-none dark:bg-neutral-700 dark:text-white dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600"
+								class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md h-fit max-h-[50vh] min-h-[150px] w-full resize-none whitespace-pre-wrap bg-transparent py-1 scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 focus:outline-none dark:bg-neutral-700 dark:text-white dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600"
 								placeholder="Enter the content for your card..."
 								value={cardContent()}
 								onInput={(e) => resizeTextarea(e.target)}
