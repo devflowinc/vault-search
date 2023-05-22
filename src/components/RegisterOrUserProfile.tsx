@@ -47,7 +47,7 @@ const RegisterOrUserProfile = () => {
 	})
 
 	return (
-		<div class="ml-2">
+		<div>
 			<Transition
 				show={!isLoadingUser()}
 				enter="transition duration-500"
