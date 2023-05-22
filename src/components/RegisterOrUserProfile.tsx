@@ -48,17 +48,41 @@ const RegisterOrUserProfile = () => {
 
 	return (
 		<div class="ml-2">
-			<Show when={!isLoadingUser()}>
-				<Show when={!signedInUser()}>
+			<Transition
+				show={!isLoadingUser()}
+				enter="transition duration-500"
+				enterFrom="opacity-0 -translate-y-1 scale-50"
+				enterTo="opacity-100 translate-y-0 scale-100"
+				leave="transition duration-300"
+				leaveFrom="opacity-100 translate-y-0 scale-100"
+				leaveTo="opacity-0 -translate-y-1 scale-50"
+			>
+				<Transition
+					show={!signedInUser()}
+					enter="transition duration-400"
+					enterFrom="opacity-0 -translate-y-1 scale-50"
+					enterTo="opacity-100 translate-y-0 scale-100"
+					leave="transition duration-300"
+					leaveFrom="opacity-100 translate-y-0 scale-100"
+					leaveTo="opacity-0 -translate-y-1 scale-50"
+				>
 					<a
-						class="ml-4 sm:ml-6 flex space-x-2 rounded-md bg-turquoise-500 p-2 text-neutral-900"
+						class="ml-4 flex space-x-2 rounded-md bg-turquoise-500 p-2 text-neutral-900 sm:ml-6"
 						href="/auth/register"
 					>
 						Register
 						<BiRegularLogIn class="h-6 w-6" />
 					</a>
-				</Show>
-				<Show when={signedInUser()}>
+				</Transition>
+				<Transition
+					show={signedInUser()}
+					enter="transition duration-400"
+					enterFrom="opacity-0 -translate-y-1 scale-50"
+					enterTo="opacity-100 translate-y-0 scale-100"
+					leave="transition duration-300"
+					leaveFrom="opacity-100 translate-y-0 scale-100"
+					leaveTo="opacity-0 -translate-y-1 scale-50"
+				>
 					<Popover defaultOpen={false} class="relative flex items-center">
 						{({ isOpen }) => (
 							<>
@@ -94,8 +118,8 @@ const RegisterOrUserProfile = () => {
 							</>
 						)}
 					</Popover>
-				</Show>
-			</Show>
+				</Transition>
+			</Transition>
 		</div>
 	)
 }

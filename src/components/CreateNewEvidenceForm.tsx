@@ -1,3 +1,4 @@
+import { Transition } from 'solid-headless'
 import { BiRegularSearch, BiRegularX } from 'solid-icons/bi'
 import { Show, createEffect, createSignal } from 'solid-js'
 
@@ -37,21 +38,22 @@ const SearchForm = () => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
-				},
-				credentials: 'include',
-				body: JSON.stringify({
-					content: cardContentValue,
-					link: evidenceLinkValue
-				})
-			}).then((response) => {
-				if (response.ok) {
-					const searchQuery = encodeURIComponent(cardContentValue.length > 100 ? cardContentValue.slice(0, 100) : cardContentValue)
-					window.location.href = `/search?q=${searchQuery}`
-					return
-				}
-				setIsSubmitting(false)
+			},
+			credentials: 'include',
+			body: JSON.stringify({
+				content: cardContentValue,
+				link: evidenceLinkValue
+			})
+		}).then((response) => {
+			if (response.ok) {
+				const searchQuery = encodeURIComponent(
+					cardContentValue.length > 100 ? cardContentValue.slice(0, 100) : cardContentValue
+				)
+				window.location.href = `/search?q=${searchQuery}`
+				return
 			}
-		)
+			setIsSubmitting(false)
+		})
 	}
 
 	createEffect(() => {
@@ -72,10 +74,26 @@ const SearchForm = () => {
 
 	return (
 		<>
-			<Show when={isLoadingUser()}>
-				<div class="h-32 w-32 animate-spin rounded-full border-b-2 border-t-2 border-neutral-900 dark:border-white mx-auto mt-16"></div>
-			</Show>
-			<Show when={!isLoadingUser()}>
+			<Transition
+				show={isLoadingUser()}
+				enter="transition duration-400"
+				enterFrom="opacity-0 -translate-y-1 scale-50"
+				enterTo="opacity-100 translate-y-0 scale-100"
+				leave="transition duration-300"
+				leaveFrom="opacity-100 translate-y-0 scale-100"
+				leaveTo="opacity-0 -translate-y-1 scale-50"
+			>
+				<div class="mx-auto mt-16 h-32 w-32 animate-spin rounded-full border-b-2 border-t-2 border-neutral-900 dark:border-white"></div>
+			</Transition>
+			<Transition
+				show={!isLoadingUser()}
+				enter="transition duration-400"
+				enterFrom="opacity-0 -translate-y-1 scale-50"
+				enterTo="opacity-100 translate-y-0 scale-100"
+				leave="transition duration-200"
+				leaveFrom="opacity-100 translate-y-0 scale-100"
+				leaveTo="opacity-0 -translate-y-1 scale-50"
+			>
 				<form
 					class="flex h-full max-h-[calc(100vh-32rem)] w-full flex-col space-y-4 text-neutral-800 dark:text-white"
 					onSubmit={(e) => {
@@ -147,7 +165,7 @@ const SearchForm = () => {
 						</button>
 					</div>
 				</form>
-			</Show>
+			</Transition>
 		</>
 	)
 }
