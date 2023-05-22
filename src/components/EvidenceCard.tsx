@@ -7,7 +7,7 @@ const EvidenceCard = (props: { card: CardDTO }) => {
 
 	return (
 		<div class="flex w-full items-start justify-between rounded-md bg-neutral-200 p-2 dark:bg-neutral-700">
-			<div class="flex flex-col">
+			<div class="flex flex-col break-all">
 				<Show when={props.card.link}>
 					<a class="text-turquoise-500 underline" href={props.card.link ?? ''}>
 						{props.card.link}
