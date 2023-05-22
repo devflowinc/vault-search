@@ -59,7 +59,7 @@ const RegisterOrUserProfile = () => {
 			>
 				<Transition
 					show={!signedInUser()}
-					enter="transition duration-400"
+					enter="transition duration-700"
 					enterFrom="opacity-0 -translate-y-1 scale-50"
 					enterTo="opacity-100 translate-y-0 scale-100"
 					leave="transition duration-300"
@@ -76,7 +76,7 @@ const RegisterOrUserProfile = () => {
 				</Transition>
 				<Transition
 					show={signedInUser()}
-					enter="transition duration-400"
+					enter="transition duration-700"
 					enterFrom="opacity-0 -translate-y-1 scale-50"
 					enterTo="opacity-100 translate-y-0 scale-100"
 					leave="transition duration-300"
