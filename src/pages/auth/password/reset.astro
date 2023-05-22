@@ -6,8 +6,9 @@ import {
 	BiLogosYoutube,
 	BiRegularUser
 } from 'solid-icons/bi'
-import ThemeModeController from '../components/ThemeModeController'
-import SearchLayout from '../layouts/SearchLayout.astro'
+import ThemeModeController from '../../../components/ThemeModeController'
+import SearchLayout from '../../../layouts/SearchLayout.astro'
+import PasswordResetForm from '../../../components/PasswordResetForm';
 ---
 
 <SearchLayout>
@@ -15,20 +16,19 @@ import SearchLayout from '../layouts/SearchLayout.astro'
 		<ThemeModeController client:only="solid-js" />
 		<BiRegularUser class="h-6 w-6 cursor-pointer" />
 	</div>
-	<div class="mt-12 flex w-full flex-col items-center space-y-4">
+	<a class="mt-12 flex w-full flex-col items-center space-y-4" href="/">
 		<div class="flex w-full items-center justify-center">
 			<img class="w-12" src="/logo_transparent.png" alt="Logo" />
 			<div class="text-4xl">
 				Arguflow<span class="text-magenta">Vault</span>
 			</div>
 		</div>
+	</a>
+	<div class="flex-1"></div>
+	<div class="flex justify-center">
+		<PasswordResetForm client:load />
 	</div>
 	<div class="flex-1"></div>
-  <div class="flex w-full flex-col items-center">
-    <p class="text-3xl">404 Not Found</p>
-    <a class="text-xl text-turquoise-500 underline" href="/"> Head Back Home</a>
-  </div>
-  <div class="flex-1"></div>
 	<div class="flex w-full flex-col items-center space-y-4 py-4">
 		<div class="flex w-full justify-center space-x-3">
 			<a href="https://twitter.com/arguflowai" target="_blank">
