@@ -5,19 +5,19 @@
 	<head>
 		<script is:inline>
 			const theme = (() => {
-				if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
-					return localStorage.getItem("theme");
+				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+					return localStorage.getItem('theme')
 				}
-				if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-					return "dark";
+				if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+					return 'dark'
 				}
-				return "light";
-			})();
-		
-			if (theme === "light") {
-				document.documentElement.classList.remove("dark");
+				return 'light'
+			})()
+
+			if (theme === 'light') {
+				document.documentElement.classList.remove('dark')
 			} else {
-				document.documentElement.classList.add("dark");
+				document.documentElement.classList.add('dark')
 			}
 		</script>
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -28,7 +28,7 @@
 		<title>Arguflow Vault</title>
 	</head>
 	<body>
-		<div class="flex h-screen flex-col bg-white dark:bg-shark-500 dark:text-white">
+		<div class="flex min-h-screen flex-col bg-white dark:bg-shark-500 dark:text-white">
 			<slot />
 		</div>
 	</body>

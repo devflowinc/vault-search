@@ -1,13 +1,8 @@
 ---
-import {
-	BiLogosGithub,
-	BiLogosTwitch,
-	BiLogosTwitter,
-	BiLogosYoutube,
-} from 'solid-icons/bi'
+import { BiLogosGithub, BiLogosTwitch, BiLogosTwitter, BiLogosYoutube } from 'solid-icons/bi'
 import ThemeModeController from '../components/ThemeModeController'
 import SearchLayout from '../layouts/SearchLayout.astro'
-import RegisterOrUserProfile from '../components/RegisterOrUserProfile';
+import RegisterOrUserProfile from '../components/RegisterOrUserProfile'
 ---
 
 <SearchLayout>
@@ -16,19 +11,19 @@ import RegisterOrUserProfile from '../components/RegisterOrUserProfile';
 		<RegisterOrUserProfile client:only="solid-js" />
 	</div>
 	<div class="mt-12 flex w-full flex-col items-center space-y-4">
-		<div class="flex w-full items-center justify-center">
+		<a class="flex w-full items-center justify-center" href="/">
 			<img class="w-12" src="/logo_transparent.png" alt="Logo" />
 			<div class="text-4xl">
 				Arguflow<span class="text-magenta">Vault</span>
 			</div>
-		</div>
+		</a>
 	</div>
 	<div class="flex-1"></div>
-  <div class="flex w-full flex-col items-center">
-    <p class="text-3xl">404 Not Found</p>
-    <a class="text-xl text-turquoise-500 underline" href="/"> Head Back Home</a>
-  </div>
-  <div class="flex-1"></div>
+	<div class="flex w-full flex-col items-center">
+		<p class="text-3xl">404 Not Found</p>
+		<a class="text-xl text-turquoise-500 underline" href="/"> Head Back Home</a>
+	</div>
+	<div class="flex-1"></div>
 	<div class="flex w-full flex-col items-center space-y-4 py-4">
 		<div class="flex w-full justify-center space-x-3">
 			<a href="https://twitter.com/arguflowai" target="_blank">

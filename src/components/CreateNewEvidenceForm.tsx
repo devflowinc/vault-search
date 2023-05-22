@@ -33,6 +33,25 @@ const SearchForm = () => {
 		}
 		setErrorFields([])
 		setIsSubmitting(true)
+		fetch(`${apiHost}/card`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+				},
+				credentials: 'include',
+				body: JSON.stringify({
+					content: cardContentValue,
+					link: evidenceLinkValue
+				})
+			}).then((response) => {
+				if (response.ok) {
+					const searchQuery = encodeURIComponent(cardContentValue.length > 100 ? cardContentValue.slice(0, 100) : cardContentValue)
+					window.location.href = `/search?q=${searchQuery}`
+					return
+				}
+				setIsSubmitting(false)
+			}
+		)
 	}
 
 	createEffect(() => {

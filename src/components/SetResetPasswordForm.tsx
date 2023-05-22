@@ -12,7 +12,7 @@ const FinishPasswordReset = (params: { id: string }) => {
 		<>
 			<div class="flex w-full max-w-sm flex-col space-y-2">
 				<div class="text-center text-2xl font-bold">
-					<span class="py-2">Finish Resetting Your Password for Arguflow AI Coach</span>
+					<span class="py-2">Finish Resetting Your Password</span>
 				</div>
 				<div class="text-center text-red-500">{getErrorMessage()}</div>
 				<form class="flex flex-col space-y-4">

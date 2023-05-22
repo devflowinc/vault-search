@@ -2,7 +2,6 @@ import { BiRegularSearch, BiRegularX } from 'solid-icons/bi'
 import { Show, createSignal } from 'solid-js'
 
 const SearchForm = () => {
-	const applicationUrl = import.meta.env.PUBLIC_HOST
 	const [textareaInput, setTextareaInput] = createSignal('')
 
 	const resizeTextarea = (textarea: HTMLTextAreaElement) => {
@@ -17,7 +16,7 @@ const SearchForm = () => {
 			onSubmit={(e) => {
 				e.preventDefault()
 				const searchQuery = encodeURIComponent(textareaInput())
-				window.location.href = `${applicationUrl}/search?q=${searchQuery}`
+				window.location.href = `/search?q=${searchQuery}`
 			}}
 		>
 			<div class="flex w-full justify-center space-x-2 rounded-xl bg-neutral-50 px-4 py-1 dark:bg-neutral-700 ">
@@ -32,7 +31,7 @@ const SearchForm = () => {
 						if (e.ctrlKey && e.key === 'Enter') {
 							e.preventDefault()
 							const searchQuery = encodeURIComponent(textareaInput())
-							window.location.href = `${applicationUrl}/search?q=${searchQuery}`
+							window.location.href = `/search?q=${searchQuery}`
 						}
 					}}
 					rows="1"
@@ -52,7 +51,7 @@ const SearchForm = () => {
 					</button>
 				</Show>
 			</div>
-			<div class="flex flex-row space-x-2 px-6 md:px-40">
+			<div class="flex flex-row justify-center space-x-2 px-6 md:px-40">
 				<button
 					class="w-fit rounded bg-neutral-50 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
 					type="submit"

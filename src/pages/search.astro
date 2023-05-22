@@ -4,16 +4,19 @@ import {
 	BiLogosTwitch,
 	BiLogosTwitter,
 	BiLogosYoutube,
+	BiRegularChevronLeft,
+	BiRegularChevronRight
 } from 'solid-icons/bi'
-import { CardDTO, isCardDTO } from '../../utils/apiTypes'
+import type { CardDTO } from '../../utils/apiTypes'
 import ThemeModeController from '../components/ThemeModeController'
 import SearchLayout from '../layouts/SearchLayout.astro'
 import RegisterOrUserProfile from '../components/RegisterOrUserProfile'
+import EvidenceCard from '../components/EvidenceCard'
 const apiHost = import.meta.env.API_HOST
 const requestParams = Astro.request.url.split('?')[1]
 const params = new URLSearchParams(requestParams)
 const query = params.get('q')
-const page = params.get('page') || 1
+const page = Number(params.get('page')) || 1
 
 let cards: CardDTO[] = []
 
@@ -29,16 +32,11 @@ try {
 	})
 
 	if (queryResult.status !== 200) {
-    console.error('Error fetching cards', queryResult)
+		console.error('Error fetching cards', queryResult)
 		return Astro.redirect('/404')
 	}
 
-	const cardsData: object[] = await queryResult.json()
-	if (!cardsData.every((card) => isCardDTO(card))) {
-		console.error('Error typechecking cards', cardsData)
-		return Astro.redirect('/404')
-	}
-	cards = cardsData as CardDTO[]
+	cards = await queryResult.json()
 } catch (e) {
 	console.error('Error fetching cards', e)
 	return Astro.redirect('/404')
@@ -57,9 +55,35 @@ try {
 				Search Arguflow<span class="text-magenta">Vault</span>
 			</h1>
 		</a>
-		<div class="w-full max-w-4xl px-4 sm:px-8 md:px-20">
-			{cards.length}
+		<div class="flex w-full max-w-4xl flex-col space-y-4 px-4 sm:px-8 md:px-20">
+			{
+				cards.map((card) => (
+					<div>
+						<EvidenceCard card={card} client:load />
+					</div>
+				))
+			}
 		</div>
+	</div>
+	<div
+		class=`mt-12 flex w-full ${page === 1 ? 'justify-end' : 'justify-between'} px-4 sm:px-8 md:px-20`
+	>
+		{
+			page != 1 && (
+				<a
+					class="flex w-fit rounded bg-neutral-50 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+					href={`/search?q=${query}&page=${page - 1}`}
+				>
+					Previous <BiRegularChevronLeft class="h-6 w-6" />
+				</a>
+			)
+		}
+		<a
+			class="flex w-fit rounded bg-neutral-50 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+			href=`/search?q=${query}&page=${page + 1}`
+		>
+			Next <BiRegularChevronRight class="h-6 w-6" />
+		</a>
 	</div>
 	<div class="flex-1"></div>
 	<div class="flex w-full flex-col items-center space-y-4 py-4">

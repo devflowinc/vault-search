@@ -13,7 +13,7 @@ const LoginForm = () => {
 		<>
 			<div class="flex w-full max-w-sm flex-col space-y-2">
 				<div class="text-center text-2xl font-bold">
-					<span class="py-2">Login to Arguflow AI Coach</span>
+					<span class="py-2">Login to Arguflow</span>
 				</div>
 				<div class="text-center text-red-500">{getErrorMessage()}</div>
 				<Show when={getErrorMessage().toLowerCase().includes('incorrect')}>
