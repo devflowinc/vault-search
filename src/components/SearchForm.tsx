@@ -17,7 +17,7 @@ const SearchForm = () => {
 			onSubmit={(e) => {
 				e.preventDefault()
 				const searchQuery = encodeURIComponent(textareaInput())
-				window.location.href = `${applicationUrl}/search?q=${searchQuery}`;
+				window.location.href = `${applicationUrl}/search?q=${searchQuery}`
 			}}
 		>
 			<div class="flex w-full justify-center space-x-2 rounded-xl bg-neutral-50 px-4 py-1 dark:bg-neutral-700 ">
@@ -31,7 +31,8 @@ const SearchForm = () => {
 					onKeyDown={(e) => {
 						if (e.ctrlKey && e.key === 'Enter') {
 							e.preventDefault()
-							return
+							const searchQuery = encodeURIComponent(textareaInput())
+							window.location.href = `${applicationUrl}/search?q=${searchQuery}`
 						}
 					}}
 					rows="1"
@@ -51,16 +52,19 @@ const SearchForm = () => {
 					</button>
 				</Show>
 			</div>
-			<div class="flex flex-row space-x-2 px-40">
+			<div class="flex flex-row space-x-2 px-6 md:px-40">
 				<button
-					class="w-fit rounded bg-neutral-50 p-2 hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+					class="w-fit rounded bg-neutral-50 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
 					type="submit"
 				>
 					Search Evidence Vault
 				</button>
-				<button class="w-fit rounded bg-neutral-50 p-2 hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800">
+				<a
+					class="w-fit rounded bg-neutral-50 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+					href="/create"
+				>
 					Create Evidence Card
-				</button>
+				</a>
 			</div>
 		</form>
 	)

@@ -4,17 +4,17 @@ import {
 	BiLogosTwitch,
 	BiLogosTwitter,
 	BiLogosYoutube,
-	BiRegularUser
 } from 'solid-icons/bi'
 import ThemeModeController from '../../../components/ThemeModeController'
 import SearchLayout from '../../../layouts/SearchLayout.astro'
 import RegisterForm from '../../../components/RegisterForm'
+import RegisterOrUserProfile from '../../../components/RegisterOrUserProfile';
 ---
 
 <SearchLayout>
 	<div class="flex w-full items-center justify-end space-x-4 px-4 py-4">
 		<ThemeModeController client:only="solid-js" />
-		<BiRegularUser class="h-6 w-6 cursor-pointer" />
+		<RegisterOrUserProfile client:only="solid-js" />
 	</div>
 	<a class="mt-12 flex w-full flex-col items-center space-y-4" href="/">
 		<div class="flex w-full items-center justify-center">

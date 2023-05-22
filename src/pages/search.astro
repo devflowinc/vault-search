@@ -4,12 +4,12 @@ import {
 	BiLogosTwitch,
 	BiLogosTwitter,
 	BiLogosYoutube,
-	BiRegularUser
 } from 'solid-icons/bi'
 import { CardDTO, isCardDTO } from '../../utils/apiTypes'
 import ThemeModeController from '../components/ThemeModeController'
 import SearchLayout from '../layouts/SearchLayout.astro'
-const api_host = import.meta.env.PUBLIC_API_HOST
+import RegisterOrUserProfile from '../components/RegisterOrUserProfile'
+const apiHost = import.meta.env.API_HOST
 const requestParams = Astro.request.url.split('?')[1]
 const params = new URLSearchParams(requestParams)
 const query = params.get('q')
@@ -18,7 +18,7 @@ const page = params.get('page') || 1
 let cards: CardDTO[] = []
 
 try {
-	const queryResult = await fetch(`${api_host}/card/search/${page}`, {
+	const queryResult = await fetch(`${apiHost}/card/search/${page}`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -48,15 +48,15 @@ try {
 <SearchLayout>
 	<div class="flex w-full items-center justify-end space-x-4 px-4 py-4">
 		<ThemeModeController client:only="solid-js" />
-		<BiRegularUser class="h-6 w-6 cursor-pointer" />
+		<RegisterOrUserProfile client:only="solid-js" />
 	</div>
 	<div class="mt-12 flex w-full flex-col items-center space-y-4">
-		<div class="flex w-full items-center justify-center">
+		<a class="flex w-full items-center justify-center" href="/">
 			<img class="w-12" src="/logo_transparent.png" alt="Logo" />
 			<h1 class="text-4xl">
-				Arguflow<span class="text-magenta">Vault</span>
+				Search Arguflow<span class="text-magenta">Vault</span>
 			</h1>
-		</div>
+		</a>
 		<div class="w-full max-w-4xl px-4 sm:px-8 md:px-20">
 			{cards.length}
 		</div>
