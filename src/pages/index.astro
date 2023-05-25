@@ -1,10 +1,5 @@
 ---
-import {
-	BiLogosGithub,
-	BiLogosTwitch,
-	BiLogosTwitter,
-	BiLogosYoutube,
-} from 'solid-icons/bi'
+import { BiLogosGithub, BiLogosTwitch, BiLogosTwitter, BiLogosYoutube } from 'solid-icons/bi'
 import ThemeModeController from '../components/ThemeModeController'
 import SearchLayout from '../layouts/SearchLayout.astro'
 import SearchForm from '../components/SearchForm'
@@ -12,7 +7,7 @@ import RegisterOrUserProfile from '../components/RegisterOrUserProfile'
 ---
 
 <SearchLayout>
-	<div class="flex w-full items-center justify-end space-x-4 px-4 h-[60px]">
+	<div class="flex h-[60px] w-full items-center justify-end space-x-4 px-4">
 		<a
 			href="https://blog.arguflow.com"
 			target="_blank"
@@ -27,14 +22,20 @@ import RegisterOrUserProfile from '../components/RegisterOrUserProfile'
 			<RegisterOrUserProfile client:only="solid-js" />
 		</div>
 	</div>
-	<div class="mt-12 flex w-full flex-col items-center space-y-4">
+	<div class="space-y mt-12 flex w-full flex-col items-center">
 		<a class="flex w-full items-center justify-center" href="/">
 			<img class="w-12" src="/logo_transparent.png" alt="Logo" />
 			<h1 class="text-4xl">
 				Arguflow<span class="text-magenta">Vault</span>
 			</h1>
 		</a>
-		<div class="w-full max-w-4xl px-4 sm:px-8 md:px-20">
+		<div class="text-center text-lg">
+			Discover More with <a
+				href="https://en.wikipedia.org/wiki/Semantic_search"
+				class="text-acid-500 underline">Semantic Search</a
+			>: Find Meaningful Results, Not Just Exact Matches
+		</div>
+		<div class="mt-8 w-full max-w-4xl px-4 sm:px-8 md:px-20">
 			<SearchForm client:load />
 		</div>
 	</div>
