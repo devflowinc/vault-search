@@ -16,6 +16,14 @@ const RegisterForm = () => {
 						<span class="py-2">Register</span>
 					</div>
 					<div class="text-center text-red-500">{getErrorMessage()}</div>
+					<Show when={getErrorMessage().toLowerCase().includes('already')}>
+						<div class="text-center text-sm ">
+							Trouble signing in?{` `}
+							<a class="text-blue-500 underline" href="/auth/password/reset">
+								Reset your password
+							</a>
+						</div>
+					</Show>
 					<form class="flex flex-col space-y-4">
 						<div class="flex flex-col space-y-2">
 							<label for="email">Email</label>
