@@ -19,7 +19,7 @@ const SearchForm = () => {
 				window.location.href = `/search?q=${searchQuery}`
 			}}
 		>
-			<div class="flex w-full justify-center space-x-2 rounded-xl bg-neutral-50 px-4 py-1 dark:bg-neutral-700 ">
+			<div class="flex w-full justify-center space-x-2 rounded-xl bg-neutral-100 px-4 py-1 dark:bg-neutral-700 ">
 				<BiRegularSearch class="mt-1 h-6 w-6" />
 				<textarea
 					id="search-query-textarea"
@@ -53,13 +53,13 @@ const SearchForm = () => {
 			</div>
 			<div class="flex flex-row justify-center space-x-2 px-6 md:px-40">
 				<button
-					class="w-fit rounded bg-neutral-50 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+					class="w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
 					type="submit"
 				>
 					Search Evidence Vault
 				</button>
 				<a
-					class="w-fit rounded bg-neutral-50 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+					class="w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
 					href="/create"
 				>
 					Create Evidence Card

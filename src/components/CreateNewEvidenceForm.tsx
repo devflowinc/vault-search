@@ -1,5 +1,5 @@
 import { Transition } from 'solid-headless'
-import { BiRegularSearch, BiRegularX } from 'solid-icons/bi'
+import { BiRegularX } from 'solid-icons/bi'
 import { Show, createEffect, createSignal } from 'solid-js'
 
 const SearchForm = () => {
@@ -95,7 +95,7 @@ const SearchForm = () => {
 				leaveTo="opacity-0 -translate-y-1 scale-50"
 			>
 				<form
-					class="flex h-full max-h-[calc(100vh-32rem)] w-full flex-col space-y-4 text-neutral-800 dark:text-white"
+					class="flex h-full w-full flex-col space-y-4 text-neutral-800 dark:text-white my-8"
 					onSubmit={(e) => {
 						e.preventDefault()
 						submitEvidence(e)
@@ -108,7 +108,7 @@ const SearchForm = () => {
 							value={evidenceLink()}
 							onInput={(e) => setEvidenceLink(e.target.value)}
 							classList={{
-								'w-fullbg-neutral-50 rounded-md px-4 py-1 dark:bg-neutral-700': true,
+								'w-full bg-neutral-100 rounded-md px-4 py-1 dark:bg-neutral-700': true,
 								'border border-red-500': errorFields().includes('evidenceLink')
 							}}
 						/>
@@ -117,7 +117,7 @@ const SearchForm = () => {
 						<div>Card Content*</div>
 						<div
 							classList={{
-								'flex w-full justify-center space-x-2 rounded-md bg-neutral-50 px-4 py-1 dark:bg-neutral-700':
+								'flex w-full justify-center space-x-2 rounded-md bg-neutral-100 px-4 py-1 dark:bg-neutral-700':
 									true,
 								'border border-red-500': errorFields().includes('cardContent')
 							}}
@@ -154,7 +154,7 @@ const SearchForm = () => {
 					</div>
 					<div class="flex flex-row space-x-2">
 						<button
-							class="w-fit rounded bg-neutral-50 p-2 hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+							class="w-fit rounded bg-neutral-100 p-2 hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
 							type="submit"
 							disabled={isSubmitting()}
 						>

@@ -77,9 +77,9 @@ const ThemeModeController = () => {
 							>
 								<PopoverPanel
 									unmount={true}
-									class="absolute left-1/2 z-10 mt-5 -translate-x-[90%] transform px-4 sm:px-0"
+									class="absolute z-10 -translate-x-[60%] -translate-y-[115%] transform px-4 sm:px-0"
 								>
-									<Menu class="flex flex-col space-y-1 overflow-hidden rounded-lg border border-slate-900 bg-neutral-50 p-1 shadow-lg drop-shadow-lg dark:bg-neutral-700 dark:text-white">
+									<Menu class="flex flex-col space-y-1 overflow-hidden rounded-lg border border-slate-900 bg-neutral-100 p-1 shadow-lg drop-shadow-lg dark:bg-neutral-700 dark:text-white">
 										<MenuItem as="button" aria-label="Empty" />
 										<MenuItem
 											as="div"
