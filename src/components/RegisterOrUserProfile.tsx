@@ -67,7 +67,7 @@ const RegisterOrUserProfile = () => {
 					leaveTo="opacity-0 -translate-y-1 scale-50"
 				>
 					<a
-						class="ml-4 flex space-x-2 rounded-md bg-turquoise-500 p-2 text-neutral-900 sm:ml-6"
+						class="flex space-x-2 rounded-md bg-turquoise-500 p-2 text-neutral-900"
 						href="/auth/register"
 					>
 						Register

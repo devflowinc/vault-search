@@ -1,17 +1,10 @@
 ---
-import {
-	BiLogosGithub,
-	BiLogosTwitch,
-	BiLogosTwitter,
-	BiLogosYoutube,
-	BiRegularChevronLeft,
-	BiRegularChevronRight
-} from 'solid-icons/bi'
+import { BiRegularChevronLeft, BiRegularChevronRight } from 'solid-icons/bi'
 import type { CardDTO } from '../../utils/apiTypes'
-import ThemeModeController from '../components/ThemeModeController'
 import SearchLayout from '../layouts/SearchLayout.astro'
 import RegisterOrUserProfile from '../components/RegisterOrUserProfile'
 import EvidenceCard from '../components/EvidenceCard'
+import Footer from '../components/Footer.astro'
 const apiHost = import.meta.env.API_HOST
 const requestParams = Astro.request.url.split('?')[1]
 const params = new URLSearchParams(requestParams)
@@ -44,17 +37,10 @@ try {
 ---
 
 <SearchLayout>
-	<div class="flex w-full items-center justify-end space-x-4 px-4 h-[60px]">
-		<a
-			href="/create"
-			target="_blank"
-			class="text-xl text-neutral-600 dark:text-neutral-200"
-		>
+	<div class="flex h-[60px] w-full items-center justify-end space-x-4 px-4">
+		<a href="/create" target="_blank" class="text-xl text-neutral-600 dark:text-neutral-200">
 			Create Evidence
 		</a>
-		<div>
-			<ThemeModeController client:only="solid-js" />
-		</div>
 		<div>
 			<RegisterOrUserProfile client:only="solid-js" />
 		</div>
@@ -97,21 +83,5 @@ try {
 		</a>
 	</div>
 	<div class="flex-1"></div>
-	<div class="flex w-full flex-col items-center space-y-4 py-4">
-		<div class="flex w-full justify-center space-x-3">
-			<a href="https://twitter.com/arguflowai" target="_blank">
-				<BiLogosTwitter size={30} />
-			</a>
-			<a href="https://twitch.tv/arguflow" target="_blank">
-				<BiLogosTwitch size={30} />
-			</a>
-			<a href="https://www.youtube.com/@arguflow">
-				<BiLogosYoutube size={30} />
-			</a>
-			<a href="https://github.com/orgs/arguflow/repositories" target="_blank">
-				<BiLogosGithub size={30} />
-			</a>
-		</div>
-		<div class="text-neutral-600 dark:text-neutral-200">contact@arguflow.gg</div>
-	</div>
+	<Footer />
 </SearchLayout>

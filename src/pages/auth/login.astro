@@ -1,14 +1,8 @@
 ---
-import {
-	BiLogosGithub,
-	BiLogosTwitch,
-	BiLogosTwitter,
-	BiLogosYoutube,
-} from 'solid-icons/bi'
-import ThemeModeController from '../../components/ThemeModeController'
 import SearchLayout from '../../layouts/SearchLayout.astro'
 import LoginForm from '../../components/LoginForm'
 import RegisterOrUserProfile from '../../components/RegisterOrUserProfile';
+import Footer from '../../components/Footer.astro';
 ---
 
 <SearchLayout>
@@ -20,9 +14,6 @@ import RegisterOrUserProfile from '../../components/RegisterOrUserProfile';
 		>
 			Blog
 		</a>
-		<div>
-			<ThemeModeController client:only="solid-js" />
-		</div>
 		<div>
 			<RegisterOrUserProfile client:only="solid-js" />
 		</div>
@@ -40,21 +31,5 @@ import RegisterOrUserProfile from '../../components/RegisterOrUserProfile';
 		<LoginForm client:load />
 	</div>
 	<div class="flex-1"></div>
-	<div class="flex w-full flex-col items-center space-y-4 py-4">
-		<div class="flex w-full justify-center space-x-3">
-			<a href="https://twitter.com/arguflowai" target="_blank">
-				<BiLogosTwitter size={30} />
-			</a>
-			<a href="https://twitch.tv/arguflow" target="_blank">
-				<BiLogosTwitch size={30} />
-			</a>
-			<a href="https://www.youtube.com/@arguflow">
-				<BiLogosYoutube size={30} />
-			</a>
-			<a href="https://github.com/orgs/arguflow/repositories" target="_blank">
-				<BiLogosGithub size={30} />
-			</a>
-		</div>
-		<div class="text-neutral-600 dark:text-neutral-200">contact@arguflow.gg</div>
-	</div>
+	<Footer />
 </SearchLayout>
