@@ -8,12 +8,6 @@ export interface CardDTO {
 export const isCardDTO = (card: unknown): card is CardDTO => {
 	if (typeof card !== 'object' || card === null) return false
 
-	console.log(
-		'score',
-		card.hasOwnProperty('link'),
-		typeof (card as CardDTO).link === 'string' || typeof (card as CardDTO).link === null
-	)
-
 	return (
 		card.hasOwnProperty('id') &&
 		typeof (card as CardDTO).id === 'string' &&
@@ -66,4 +60,30 @@ export const getReferralTokenArray = (): string[] => {
 		return previousReferralTokenArray
 	}
 	return []
+}
+
+export interface UserDTO {
+	id: string
+	email: string | null
+	username: string | null
+	website: string | null
+	visible_email: boolean
+}
+
+export const isUserDTO = (user: unknown): user is UserDTO => {
+	if (typeof user !== 'object' || user === null) return false
+
+	return (
+		user.hasOwnProperty('id') &&
+		typeof (user as UserDTO).id === 'string' &&
+		user.hasOwnProperty('email') &&
+		(typeof (user as UserDTO).email === 'string' || (user as UserDTO).email === null) &&
+		user.hasOwnProperty('username') &&
+		(typeof (user as UserDTO).username === 'string' ||
+			(user as UserDTO).username === null) &&
+		user.hasOwnProperty('website') &&
+		(typeof (user as UserDTO).website === 'string' || (user as UserDTO).website === null) &&
+		user.hasOwnProperty('visible_email') &&
+		typeof (user as UserDTO).visible_email === 'boolean'
+	)
 }

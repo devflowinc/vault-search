@@ -1,8 +1,36 @@
 ---
-import EditUserForm from '../../components/EditUserForm'
+import { BiRegularEdit } from 'solid-icons/bi'
+import { isUserDTO, type UserDTO } from '../../../utils/apiTypes'
 import Footer from '../../components/Footer.astro'
 import RegisterOrUserProfile from '../../components/RegisterOrUserProfile'
 import SearchLayout from '../../layouts/SearchLayout.astro'
+
+const apiHost = import.meta.env.API_HOST
+const { id } = Astro.params
+
+let user: UserDTO | null = null
+try {
+	const queryResult = await fetch(`${apiHost}/user/${id}`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	})
+
+	if (queryResult.status !== 200) {
+		console.error('Error fetching user', queryResult)
+	}
+
+	const maybeUser = await queryResult.json()
+	if (isUserDTO(maybeUser)) {
+		user = maybeUser
+	}
+	else {
+		console.error('Error fetching user', maybeUser)
+	}
+} catch (e) {
+	console.error('Error fetching user', e)
+}
 ---
 
 <SearchLayout>
@@ -26,18 +54,25 @@ import SearchLayout from '../../layouts/SearchLayout.astro'
 			</div>
 		</div>
 	</div>
+</div>
 	<div class="mx-auto w-full max-w-6xl px-4">
-		<h1 class="my-8 text-center text-4xl font-bold">username</h1>
-		<div class="grid w-full grid-cols-2 justify-items-end gap-x-8 gap-y-6 text-end">
-			<div class="font-semibold">Total upvotes received:</div>
-			<div class="flex w-full justify-start">0</div>
-			<div class="font-semibold">Number of cards posted:</div>
-			<div class="flex w-full justify-start">0</div>
-			<div class="font-semibold">Website:</div>
-			<a class="flex w-full justify-start">https://arguflow.com</a>
-			<div class="font-semibold">Email:</div>
-			<div class="flex w-full justify-start">contact@arguflow.gg</div>
-		</div>
+		<h1 class="my-8 text-center text-4xl font-bold">
+			{user ? user.username || user.email : 'User not found'}
+		</h1>
+		{
+			user && (
+				<div class="grid w-full grid-cols-2 justify-items-end gap-x-8 gap-y-6 text-end">
+					{user.website && (
+						<div class="font-semibold">Website:</div>
+						<a href={user.website} target="_blank" class="flex w-full justify-start">{user.website}</a>
+					)}
+					{user.email && user.visible_email && (
+						<div class="font-semibold">Email:</div>
+						<a href={`mailto:${user.email}`} class="flex w-full justify-start">{user.email}</a>
+					)}
+				</div>
+			)
+		}
 	</div>
 	<div class="flex-1"></div>
 	<Footer />

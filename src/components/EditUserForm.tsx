@@ -1,17 +1,54 @@
 import { Transition } from 'solid-headless'
 import { BiRegularX } from 'solid-icons/bi'
 import { Show, createEffect, createSignal } from 'solid-js'
+import { UserDTO, isActixApiDefaultError, isUserDTO } from '../../utils/apiTypes'
 
 const SearchForm = () => {
 	const apiHost = import.meta.env.PUBLIC_API_HOST
 
-	const [isLoadingUser, setIsLoadingUser] = createSignal(true)
+	const [currentUser, setCurrentUser] = createSignal<UserDTO | null>(null)
 	const [username, setUsername] = createSignal('')
+	const [website, setWebsite] = createSignal('')
 	const [hideEmail, setHideEmail] = createSignal(false)
+	const [errorText, setErrorText] = createSignal('')
 	const [errorFields, setErrorFields] = createSignal<string[]>([])
 	const [isSubmitting, setIsSubmitting] = createSignal(false)
 
-	const updateUser = async (e: Event) => {}
+	const updateUser = async (e: Event) => {
+		e.preventDefault()
+		setIsSubmitting(true)
+		fetch(`${apiHost}/user`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			credentials: 'include',
+			body: JSON.stringify({
+				username: username(),
+				website: website(),
+				visible_email: !hideEmail()
+			})
+		}).then((response) => {
+			if (!response.ok) {
+				response.json().then((data) => {
+					if (isActixApiDefaultError(data)) {
+						setErrorText(data.message)
+						let newErrorFields: string[] = []
+						data.message.toLowerCase().includes('username') && newErrorFields.push('username')
+						data.message.toLowerCase().includes('website') && newErrorFields.push('website')
+						data.message.toLowerCase().includes('email') && newErrorFields.push('hideEmail')
+						setErrorFields(newErrorFields)
+						setIsSubmitting(false)
+					}
+				})
+				return
+			}
+			setErrorText('')
+			setErrorFields([])
+			setIsSubmitting(false)
+			window.location.href=`/user/${currentUser()?.id}`
+		})
+	}
 
 	createEffect(() => {
 		fetch(`${apiHost}/auth`, {
@@ -22,7 +59,16 @@ const SearchForm = () => {
 			credentials: 'include'
 		}).then((response) => {
 			if (response.ok) {
-				setIsLoadingUser(false)
+				response.json().then((data) => {
+					if (isUserDTO(data)) {
+						setCurrentUser(data)
+						setUsername(data.username || '')
+						setWebsite(data.website || '')
+						setHideEmail(!data.visible_email)
+						return
+					}
+					window.location.href = '/auth/register'
+				})
 				return
 			}
 			window.location.href = '/auth/register'
@@ -32,7 +78,7 @@ const SearchForm = () => {
 	return (
 		<>
 			<Transition
-				show={isLoadingUser()}
+				show={!currentUser()}
 				enter="transition duration-400"
 				enterFrom="opacity-0 -translate-y-1 scale-50"
 				enterTo="opacity-100 translate-y-0 scale-100"
@@ -43,7 +89,7 @@ const SearchForm = () => {
 				<div class="mx-auto mt-16 h-32 w-32 animate-spin rounded-full border-b-2 border-t-2 border-neutral-900 dark:border-white"></div>
 			</Transition>
 			<Transition
-				show={!isLoadingUser()}
+				show={!!currentUser()}
 				enter="transition duration-600"
 				enterFrom="opacity-0 -translate-y-1 scale-50"
 				enterTo="opacity-100 translate-y-0 scale-100"
@@ -52,31 +98,50 @@ const SearchForm = () => {
 				leaveTo="opacity-0 -translate-y-1 scale-50"
 			>
 				<form
-					class="my-8 h-full w-full text-neutral-800 dark:text-white"
+					class="mb-8 h-full w-full text-neutral-800 dark:text-white"
 					onSubmit={(e) => {
 						e.preventDefault()
 						updateUser(e)
 					}}
 				>
-					<div class="grid w-full grid-cols-[1fr,2fr] justify-items-end gap-x-8 gap-y-6">
+					<div class="text-center text-red-500">{errorText()}</div>
+					<div class="mt-8 grid w-full grid-cols-[1fr,2fr] justify-items-end gap-x-8 gap-y-6">
+						<div>Email</div>
+						<div class="flex w-full justify-start">{currentUser()?.email}</div>
+
 						<div>Username</div>
 						<input
 							type="text"
 							value={username()}
 							onInput={(e) => setUsername(e.target.value)}
-              maxlength={20}
+							maxlength={20}
 							classList={{
 								'w-full bg-neutral-100 rounded-md px-4 py-1 dark:bg-neutral-700': true,
-								'border border-red-500': errorFields().includes('evidenceLink')
+								'border border-red-500': errorFields().includes('username')
 							}}
 						/>
+
+						<div>Website</div>
+						<input
+							type="url"
+							value={website()}
+							onInput={(e) => setWebsite(e.target.value)}
+							classList={{
+								'w-full bg-neutral-100 rounded-md px-4 py-1 dark:bg-neutral-700': true,
+								'border border-red-500': errorFields().includes('website')
+							}}
+						/>
+
 						<div>Hide Email</div>
 						<div class="flex w-full justify-start">
 							<input
 								type="checkbox"
 								checked={hideEmail()}
 								onInput={(e) => setHideEmail(e.target.checked)}
-								class="h-6 w-6"
+								classList={{
+									'h-6 w-6': true,
+									'ring ring-red-500 ring-1': errorFields().includes('hideEmail')
+								}}
 							/>
 						</div>
 					</div>

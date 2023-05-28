@@ -5,6 +5,7 @@ import SearchLayout from '../layouts/SearchLayout.astro'
 import RegisterOrUserProfile from '../components/RegisterOrUserProfile'
 import EvidenceCard from '../components/EvidenceCard'
 import Footer from '../components/Footer.astro'
+
 const apiHost = import.meta.env.API_HOST
 const requestParams = Astro.request.url.split('?')[1]
 const params = new URLSearchParams(requestParams)
