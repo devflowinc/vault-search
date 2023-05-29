@@ -1,6 +1,7 @@
 ---
-import { BiRegularEdit } from 'solid-icons/bi'
-import { isUserDTO, type UserDTO } from '../../../utils/apiTypes'
+import { BiRegularChevronLeft, BiRegularChevronRight } from 'solid-icons/bi'
+import { UserDTOWithVotesAndCards, isUserDTOWithVotesAndCards } from '../../../utils/apiTypes'
+import CardMetadataDisplay from '../../components/CardMetadataDisplay'
 import Footer from '../../components/Footer.astro'
 import RegisterOrUserProfile from '../../components/RegisterOrUserProfile'
 import SearchLayout from '../../layouts/SearchLayout.astro'
@@ -8,9 +9,13 @@ import SearchLayout from '../../layouts/SearchLayout.astro'
 const apiHost = import.meta.env.API_HOST
 const { id } = Astro.params
 
-let user: UserDTO | null = null
+const requestParams = Astro.request.url.split('?')[1]
+const params = new URLSearchParams(requestParams)
+const page = Number(params.get('page')) || 1
+
+let user: UserDTOWithVotesAndCards | null = null
 try {
-	const queryResult = await fetch(`${apiHost}/user/${id}`, {
+	const queryResult = await fetch(`${apiHost}/user/${id}/${page}`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json'
@@ -22,11 +27,11 @@ try {
 	}
 
 	const maybeUser = await queryResult.json()
-	if (isUserDTO(maybeUser)) {
+	if (isUserDTOWithVotesAndCards(maybeUser)) {
 		user = maybeUser
 	}
 	else {
-		console.error('Error fetching user', maybeUser)
+		console.error('Error fetching user')
 	}
 } catch (e) {
 	console.error('Error fetching user', e)
@@ -37,7 +42,7 @@ try {
 	<div class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4">
 		<a class="flex w-full items-center" href="/">
 			<img class="w-12" src="/logo_transparent.png" alt="Logo" />
-			<div class="text-2xl sm:text-4xl">
+			<div class="text-xl sm:text-4xl">
 				Arguflow<span class="text-magenta">Vault</span>
 			</div>
 		</a>
@@ -45,7 +50,7 @@ try {
 			<a
 				href="https://blog.arguflow.com"
 				target="_blank"
-				class="text-xl text-neutral-600 dark:text-neutral-200"
+				class="text-xl"
 			>
 				Blog
 			</a>
@@ -61,16 +66,56 @@ try {
 		</h1>
 		{
 			user && (
-				<div class="grid w-full grid-cols-2 justify-items-end gap-x-8 gap-y-6 text-end">
-					{user.website && (
-						<div class="font-semibold">Website:</div>
-						<a href={user.website} target="_blank" class="flex w-full justify-start">{user.website}</a>
+				<>
+					<div class="grid w-fit mx-auto grid-cols-[1fr,2fr] justify-items-end gap-x-2 sm:gap-x-4 gap-y-2 text-end">
+						{user.website && (
+							<div class="font-semibold">Website:</div>
+							<a href={user.website} target="_blank" class="flex w-full justify-start line-clamp-1 text-magenta-500 underline dark:text-turquoise-400">{user.website}</a>
+						)}
+						{user.email && user.visible_email && (
+							<div class="font-semibold">Email:</div>
+							<div class="flex w-full justify-start">{user.email}</div>
+						)}
+						<div class="font-semibold">Cards Created:</div>
+						<div class="flex w-full justify-start">{user.cards.length}</div>
+						<div class="font-semibold">Cumulative Rating:</div>
+						<div class="flex w-full justify-start">{user.total_upvotes_received - user.total_downvotes_received}</div>
+						<div class="font-semibold">Votes Cast:</div>
+						<div class="flex w-full justify-start">{user.total_votes_cast}</div>
+						<div class="font-semibold">Date Created:</div>
+						<div class="flex w-full justify-start">{
+							new Date(user.created_at).toLocaleDateString()
+						}</div>
+					</div>
+					<div class="pt-4 mt-4 mb-4 text-xl font-bold border-t border-neutral-500">
+						Cards Created by {user.username || user.email}
+					</div>
+					{user.cards.map(card => 
+						<CardMetadataDisplay card={card} client:load />	
 					)}
-					{user.email && user.visible_email && (
-						<div class="font-semibold">Email:</div>
-						<a href={`mailto:${user.email}`} class="flex w-full justify-start">{user.email}</a>
-					)}
-				</div>
+					<div
+					class={`mt-12 flex w-full ${
+						page === 1 ? 'justify-end' : 'justify-between'
+					}`}
+					>
+						{page != 1 && (
+							<a
+								class="flex w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+								href={`/user/${user.id}?page=${page - 1}`}
+							>
+								Previous <BiRegularChevronLeft class="h-6 w-6" />
+							</a>
+						)}
+						{user.cards.length === 25 && (
+							<a
+								class="flex w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+								href={`/user/${user.id}?page=${page + 1}`}
+							>
+								Next <BiRegularChevronRight class="h-6 w-6" />
+							</a>
+						)}
+					</div>
+				</>
 			)
 		}
 	</div>

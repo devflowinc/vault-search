@@ -1,7 +1,7 @@
 import { Transition } from 'solid-headless'
 import { Show, createEffect, createSignal } from 'solid-js'
 import type { ScoreCardDTO } from '../../utils/apiTypes'
-import EvidenceCard from './EvidenceCard'
+import ScoreCard from './ScoreCard'
 import { BiRegularChevronLeft, BiRegularChevronRight } from 'solid-icons/bi'
 
 export interface ResultsPageProps {
@@ -68,12 +68,12 @@ const ResultsPage = (props: ResultsPageProps) => {
 			>
 				<div class="mt-12 flex w-full flex-col items-center space-y-4">
 					<Show when={resultCards().length === 0}>
-						<div class="text-2xl text-neutral-600 dark:text-neutral-200">No results found</div>
+						<div class="text-2xl">No results found</div>
 					</Show>
 					<div class="flex w-full max-w-6xl flex-col space-y-4 px-4 sm:px-8 md:px-20">
 						{resultCards().map((card) => (
 							<div>
-								<EvidenceCard card={card} />
+								<ScoreCard card={card} />
 							</div>
 						))}
 					</div>

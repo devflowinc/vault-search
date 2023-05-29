@@ -20,17 +20,38 @@ export const isCardDTO = (card: unknown): card is CardDTO => {
 	)
 }
 
-export interface CardMetadataWithVotes {
-	id: string
+export interface CardMetadata {
+	id: string,
+	content: string,
+	link: string | null,
+	author_id: string,
+	qdrant_point_id: string,
+	created_at: string,
+	updated_at: string,
+}
+
+export const isCardMetadata = (card: unknown): card is CardMetadata => {
+	if (typeof card !== 'object' || card === null) return false
+
+	return (
+		card.hasOwnProperty('id') &&
+		typeof (card as CardMetadata).id === 'string' &&
+		card.hasOwnProperty('content') &&
+		typeof (card as CardMetadata).content === 'string' &&
+		card.hasOwnProperty('qdrant_point_id') &&
+		typeof (card as CardMetadata).qdrant_point_id === 'string' &&
+		card.hasOwnProperty('created_at') &&
+		typeof (card as CardMetadata).created_at === 'string' &&
+		card.hasOwnProperty('updated_at') &&
+		typeof (card as CardMetadata).updated_at === 'string'
+	)
+}
+
+export type CardMetadataWithVotes = Exclude<CardMetadata, "author"> & {
 	author: UserDTO | null
-	content: string
-	link: string | null
-	qdrant_point_id: string
 	total_upvotes: number
 	total_downvotes: number
 	vote_by_current_user: boolean | null
-	created_at: string
-	updated_at: string
 }
 
 const isCardMetadataWithVotes = (card: unknown): card is CardMetadataWithVotes => {
@@ -140,5 +161,33 @@ export const isUserDTO = (user: unknown): user is UserDTO => {
 		(typeof (user as UserDTO).website === 'string' || (user as UserDTO).website === null) &&
 		user.hasOwnProperty('visible_email') &&
 		typeof (user as UserDTO).visible_email === 'boolean'
+	)
+}
+
+export type UserDTOWithVotesAndCards = UserDTO & {
+	created_at: string
+	cards: CardMetadataWithVotes[]
+	total_upvotes_received: number
+	total_downvotes_received: number
+	total_votes_cast: number
+}
+
+export const isUserDTOWithVotesAndCards = (user: unknown): user is UserDTOWithVotesAndCards => {
+	if (typeof user !== 'object' || user === null) return false
+
+	console.log("isUser", isUserDTO(user))
+	console.log("isUser", (user as UserDTOWithVotesAndCards).cards.every((card) => isCardMetadataWithVotes(card)))
+
+	return (
+		isUserDTO(user) &&
+		(user as UserDTOWithVotesAndCards).cards.every((card) => isCardMetadata(card)) &&
+		user.hasOwnProperty('created_at') &&
+		typeof (user as UserDTOWithVotesAndCards).created_at === 'string' &&
+		user.hasOwnProperty('total_upvotes_received') &&
+		typeof (user as UserDTOWithVotesAndCards).total_upvotes_received === 'number' &&
+		user.hasOwnProperty('total_downvotes_received') &&
+		typeof (user as UserDTOWithVotesAndCards).total_downvotes_received === 'number' &&
+		user.hasOwnProperty('total_votes_cast') &&
+		typeof (user as UserDTOWithVotesAndCards).total_votes_cast === 'number'
 	)
 }

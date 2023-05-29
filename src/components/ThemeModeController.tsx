@@ -147,7 +147,6 @@ const ThemeModeController = () => {
 										>
 											<div
 												classList={{
-													'text-neutral-500': currentTheme() !== 'system',
 													'text-violet-500': currentTheme() === 'system'
 												}}
 											>

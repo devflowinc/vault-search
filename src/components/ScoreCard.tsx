@@ -1,4 +1,4 @@
-import { Match, Show, Switch, createEffect, createSignal } from 'solid-js'
+import { Show, createEffect, createSignal } from 'solid-js'
 import type { ScoreCardDTO } from '../../utils/apiTypes'
 import { BiRegularChevronDown, BiRegularChevronUp } from 'solid-icons/bi'
 import {
@@ -8,7 +8,7 @@ import {
 	RiSystemArrowUpCircleLine
 } from 'solid-icons/ri'
 
-const EvidenceCard = (props: { card: ScoreCardDTO }) => {
+const ScoreCard = (props: { card: ScoreCardDTO }) => {
 	const api_host = import.meta.env.PUBLIC_API_HOST
 
 	const [expanded, setExpanded] = createSignal(false)
@@ -105,7 +105,8 @@ const EvidenceCard = (props: { card: ScoreCardDTO }) => {
 				<div class="flex flex-col">
 					<Show when={props.card.metadata.link}>
 						<a
-							class="line-clamp-1 text-turquoise-500 underline"
+							class="line-clamp-1 text-magenta-500 underline dark:text-turquoise-400"
+							target="_blank"
 							href={props.card.metadata.link ?? ''}
 						>
 							{props.card.metadata.link}
@@ -148,4 +149,4 @@ const EvidenceCard = (props: { card: ScoreCardDTO }) => {
 	)
 }
 
-export default EvidenceCard
+export default ScoreCard
