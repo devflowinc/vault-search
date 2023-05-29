@@ -16,7 +16,10 @@ const SearchForm = () => {
 				class="w-full space-y-4 text-neutral-800 dark:text-white"
 				onSubmit={(e) => {
 					e.preventDefault()
-					const searchQuery = encodeURIComponent(textareaInput())
+					const textAreaValue = textareaInput()
+					const searchQuery = encodeURIComponent(
+						textAreaValue.length > 3800 ? textAreaValue.slice(0, 3800) : textAreaValue
+					)
 					window.location.href = `/search?q=${searchQuery}`
 				}}
 			>

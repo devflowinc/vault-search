@@ -1,6 +1,7 @@
 import { Transition } from 'solid-headless'
 import { BiRegularX } from 'solid-icons/bi'
-import { Show, createEffect, createSignal } from 'solid-js'
+import { JSX, Show, createEffect, createSignal } from 'solid-js'
+import { isActixApiDefaultError } from '../../utils/apiTypes'
 
 const SearchForm = () => {
 	const apiHost = import.meta.env.PUBLIC_API_HOST
@@ -8,6 +9,9 @@ const SearchForm = () => {
 	const [isLoadingUser, setIsLoadingUser] = createSignal(true)
 	const [cardContent, setCardContent] = createSignal('')
 	const [evidenceLink, setEvidenceLink] = createSignal('')
+	const [errorText, setErrorText] = createSignal<
+		string | number | boolean | Node | JSX.ArrayElement | null | undefined
+	>('')
 	const [errorFields, setErrorFields] = createSignal<string[]>([])
 	const [isSubmitting, setIsSubmitting] = createSignal(false)
 
@@ -45,14 +49,30 @@ const SearchForm = () => {
 				link: evidenceLinkValue
 			})
 		}).then((response) => {
-			if (response.ok) {
-				const searchQuery = encodeURIComponent(
-					cardContentValue.length > 100 ? cardContentValue.slice(0, 100) : cardContentValue
-				)
-				window.location.href = `/search?q=${searchQuery}`
+			const searchQuery = encodeURIComponent(
+				cardContentValue.length > 3800 ? cardContentValue.slice(0, 3800) : cardContentValue
+			)
+			const newHref = `/search?q=${searchQuery}`
+
+			response.json().then((data) => {
+				if (isActixApiDefaultError(data)) {
+					setErrorFields(['cardContent'])
+					const newErrorText =
+						data.message === 'Card already exists' ? (
+							<a class="underline" href={newHref}>
+								Content with same meaning already exists, view it here
+							</a>
+						) : (
+							data.message
+						)
+					setErrorText(newErrorText)
+					setIsSubmitting(false)
+					return
+				}
+
+				window.location.href = newHref
 				return
-			}
-			setIsSubmitting(false)
+			})
 		})
 	}
 
@@ -95,12 +115,13 @@ const SearchForm = () => {
 				leaveTo="opacity-0 scale-50"
 			>
 				<form
-					class="flex h-full w-full flex-col space-y-4 text-neutral-800 dark:text-white my-8"
+					class="my-8 flex h-full w-full flex-col space-y-4 text-neutral-800 dark:text-white"
 					onSubmit={(e) => {
 						e.preventDefault()
 						submitEvidence(e)
 					}}
 				>
+					<div class="text-center text-red-500">{errorText()}</div>
 					<div class="flex flex-col space-y-2">
 						<div>Link to evidence*</div>
 						<input
