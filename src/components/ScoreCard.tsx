@@ -1,4 +1,4 @@
-import { Show, createEffect, createSignal } from 'solid-js'
+import { Setter, Show, createEffect, createSignal } from 'solid-js'
 import type { ScoreCardDTO } from '../../utils/apiTypes'
 import { BiRegularChevronDown, BiRegularChevronUp } from 'solid-icons/bi'
 import {
@@ -8,7 +8,7 @@ import {
 	RiSystemArrowUpCircleLine
 } from 'solid-icons/ri'
 
-const ScoreCard = (props: { card: ScoreCardDTO }) => {
+const ScoreCard = (props: { card: ScoreCardDTO; setShowModal: Setter<boolean> }) => {
 	const api_host = import.meta.env.PUBLIC_API_HOST
 
 	const [expanded, setExpanded] = createSignal(false)
@@ -35,6 +35,7 @@ const ScoreCard = (props: { card: ScoreCardDTO }) => {
 		}).then((response) => {
 			if (!response.ok) {
 				setUserVote(prev_vote)
+				if (response.status === 401) props.setShowModal(true)
 			}
 		})
 	}
@@ -58,6 +59,7 @@ const ScoreCard = (props: { card: ScoreCardDTO }) => {
 		}).then((response) => {
 			if (!response.ok) {
 				setUserVote(prev_vote)
+				if (response.status === 401) props.setShowModal(true)
 			}
 		})
 	}
@@ -105,7 +107,7 @@ const ScoreCard = (props: { card: ScoreCardDTO }) => {
 				<div class="flex flex-col">
 					<Show when={props.card.metadata.link}>
 						<a
-							class="line-clamp-1 text-magenta-500 underline dark:text-turquoise-400"
+							class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
 							target="_blank"
 							href={props.card.metadata.link ?? ''}
 						>
@@ -117,7 +119,10 @@ const ScoreCard = (props: { card: ScoreCardDTO }) => {
 						<span>{props.card.score}</span>
 						<Show when={props.card.metadata.author}>
 							<span class="font-semibold">Author: </span>
-							<a href={`/user/${props.card.metadata.author?.id}`} class="break-all underline">
+							<a
+								href={`/user/${props.card.metadata.author?.id}`}
+								class="line-clamp-1 break-all underline"
+							>
 								{props.card.metadata.author?.username ?? props.card.metadata.author?.email}
 							</a>
 						</Show>

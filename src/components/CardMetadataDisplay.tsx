@@ -13,7 +13,7 @@ const CardMetadataDisplay = (props: { card: CardMetadataWithVotes }) => {
 				<div class="flex flex-col">
 					<Show when={props.card.link}>
 						<a
-							class="line-clamp-1 text-magenta-500 underline dark:text-turquoise-400"
+							class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
 							target="_blank"
 							href={props.card.link ?? ''}
 						>

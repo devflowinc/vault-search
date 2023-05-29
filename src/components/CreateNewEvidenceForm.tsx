@@ -54,6 +54,11 @@ const SearchForm = () => {
 			)
 			const newHref = `/search?q=${searchQuery}`
 
+			if (response.status === 204) {
+				window.location.href = newHref
+				return
+			}
+
 			response.json().then((data) => {
 				if (isActixApiDefaultError(data)) {
 					setErrorFields(['cardContent'])
@@ -69,9 +74,6 @@ const SearchForm = () => {
 					setIsSubmitting(false)
 					return
 				}
-
-				window.location.href = newHref
-				return
 			})
 		})
 	}

@@ -175,9 +175,6 @@ export type UserDTOWithVotesAndCards = UserDTO & {
 export const isUserDTOWithVotesAndCards = (user: unknown): user is UserDTOWithVotesAndCards => {
 	if (typeof user !== 'object' || user === null) return false
 
-	console.log("isUser", isUserDTO(user))
-	console.log("isUser", (user as UserDTOWithVotesAndCards).cards.every((card) => isCardMetadataWithVotes(card)))
-
 	return (
 		isUserDTO(user) &&
 		(user as UserDTOWithVotesAndCards).cards.every((card) => isCardMetadata(card)) &&

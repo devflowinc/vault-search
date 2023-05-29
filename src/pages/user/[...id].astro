@@ -29,8 +29,7 @@ try {
 	const maybeUser = await queryResult.json()
 	if (isUserDTOWithVotesAndCards(maybeUser)) {
 		user = maybeUser
-	}
-	else {
+	} else {
 		console.error('Error fetching user')
 	}
 } catch (e) {
@@ -42,62 +41,70 @@ try {
 	<div class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4">
 		<a class="flex w-full items-center" href="/">
 			<img class="w-12" src="/logo_transparent.png" alt="Logo" />
-			<div class="text-xl sm:text-4xl">
+			<p class="hidden min-[280px]:text-lg min-[360px]:block min-[380px]:text-xl sm:text-4xl">
 				Arguflow<span class="text-magenta">Vault</span>
-			</div>
+			</p>
 		</a>
 		<div class="flex w-full items-center justify-end space-x-4">
-			<a
-				href="https://blog.arguflow.com"
-				target="_blank"
-				class="text-xl"
-			>
-				Blog
-			</a>
+			<a href="https://blog.arguflow.com" target="_blank" class="text-xl"> Blog</a>
 			<div>
 				<RegisterOrUserProfile client:only="solid-js" />
 			</div>
 		</div>
 	</div>
-</div>
 	<div class="mx-auto w-full max-w-6xl px-4">
-		<h1 class="my-8 text-center text-4xl font-bold">
+		<h1
+			class="my-8 line-clamp-1 break-all text-center text-lg font-bold min-[320px]:text-xl sm:text-4xl"
+		>
 			{user ? user.username || user.email : 'User not found'}
 		</h1>
 		{
 			user && (
 				<>
-					<div class="grid w-fit mx-auto grid-cols-[1fr,2fr] justify-items-end gap-x-2 sm:gap-x-4 gap-y-2 text-end">
+					<div class="mx-auto grid w-fit grid-cols-[1fr,2fr] justify-items-end gap-x-2 gap-y-2 text-end sm:gap-x-4">
 						{user.website && (
-							<div class="font-semibold">Website:</div>
-							<a href={user.website} target="_blank" class="flex w-full justify-start line-clamp-1 text-magenta-500 underline dark:text-turquoise-400">{user.website}</a>
+							<>
+								<div class="font-semibold">Website:</div>
+								<a
+									href={user.website}
+									target="_blank"
+									class="line-clamp-1 flex w-full justify-start text-magenta-500 underline dark:text-turquoise-400"
+								>
+									{user.website}
+								</a>
+							</>
 						)}
 						{user.email && user.visible_email && (
-							<div class="font-semibold">Email:</div>
-							<div class="flex w-full justify-start">{user.email}</div>
+							<>
+								<div class="font-semibold">Email:</div>
+								<div class="flex w-full justify-start break-all">{user.email}</div>
+							</>
 						)}
 						<div class="font-semibold">Cards Created:</div>
 						<div class="flex w-full justify-start">{user.cards.length}</div>
 						<div class="font-semibold">Cumulative Rating:</div>
-						<div class="flex w-full justify-start">{user.total_upvotes_received - user.total_downvotes_received}</div>
+						<div class="flex w-full justify-start">
+							{user.total_upvotes_received - user.total_downvotes_received}
+						</div>
 						<div class="font-semibold">Votes Cast:</div>
 						<div class="flex w-full justify-start">{user.total_votes_cast}</div>
 						<div class="font-semibold">Date Created:</div>
-						<div class="flex w-full justify-start">{
-							new Date(user.created_at).toLocaleDateString()
-						}</div>
+						<div class="flex w-full justify-start">
+							{new Date(user.created_at).toLocaleDateString()}
+						</div>
 					</div>
-					<div class="pt-4 mt-4 mb-4 text-xl font-bold border-t border-neutral-500">
-						Cards Created by {user.username || user.email}
+					<div class="mb-4 mt-4 flex flex-col border-t border-neutral-500 pt-4 text-xl">
+						<span>Cards Created by</span>{' '}
+						<span class="break-all font-bold">{user.username || user.email}</span>
 					</div>
-					{user.cards.map(card => 
-						<CardMetadataDisplay card={card} client:load />	
-					)}
-					<div
-					class={`mt-12 flex w-full ${
-						page === 1 ? 'justify-end' : 'justify-between'
-					}`}
-					>
+					<div class="flex w-full flex-col space-y-4">
+						{user.cards.map((card) => (
+							<div class="w-full">
+								<CardMetadataDisplay card={card} client:load />
+							</div>
+						))}
+					</div>
+					<div class={`mt-12 flex w-full ${page === 1 ? 'justify-end' : 'justify-between'}`}>
 						{page != 1 && (
 							<a
 								class="flex w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
