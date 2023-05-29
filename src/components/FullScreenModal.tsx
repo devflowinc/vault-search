@@ -16,21 +16,12 @@ export const FullScreenModal = (props: FullScreenModalProps) => {
 				onClose={() => props.setIsOpen(false)}
 			>
 				<div class="flex h-screen items-center justify-center px-4">
-					<TransitionChild
-						enter="ease-out duration-300"
-						enterFrom="opacity-0"
-						enterTo="opacity-100"
-						leave="ease-in duration-200"
-						leaveFrom="opacity-100"
-						leaveTo="opacity-0"
-					>
-						<DialogOverlay class="fixed inset-0 bg-gray-500/5 backdrop-blur-[3px]" />
-					</TransitionChild>
+					<DialogOverlay class="fixed inset-0 bg-gray-500/5 backdrop-blur-[3px]" />
 					<span class="inline-block h-screen align-middle" aria-hidden="true">
 						&#8203;
 					</span>
 					<TransitionChild
-						enter="ease-out duration-300"
+						enter="ease-out duration-200"
 						enterFrom="opacity-0 scale-95"
 						enterTo="opacity-100 scale-100"
 						leave="ease-in duration-200"
