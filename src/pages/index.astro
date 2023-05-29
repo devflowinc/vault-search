@@ -3,17 +3,29 @@ import SearchLayout from '../layouts/SearchLayout.astro'
 import SearchForm from '../components/SearchForm'
 import RegisterOrUserProfile from '../components/RegisterOrUserProfile'
 import Footer from '../components/Footer.astro'
+import { isUserDTOWithScore, type UserDTOWithScore } from '../../utils/apiTypes'
+
+const apiHost = import.meta.env.API_HOST
+
+const requestParams = Astro.request.url.split('?')[1]
+const params = new URLSearchParams(requestParams)
+const page = Number(params.get('page')) || 1
+
+let top_users: UserDTOWithScore[] = []
+const top_users_response = await fetch(`${apiHost}/top_users/${page}`)
+const top_users_result: unknown = await top_users_response.json()
+if (
+	top_users_result &&
+	Array.isArray(top_users_result) &&
+	top_users_result.every((user_with_score) => isUserDTOWithScore(user_with_score))
+) {
+	top_users = top_users_result as UserDTOWithScore[]
+}
 ---
 
 <SearchLayout>
 	<div class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-end space-x-4 px-4">
-		<a
-			href="https://blog.arguflow.com"
-			target="_blank"
-			class="text-xl"
-		>
-			Blog
-		</a>
+		<a href="https://blog.arguflow.com" target="_blank" class="text-xl"> Blog</a>
 		<div>
 			<RegisterOrUserProfile client:only="solid-js" />
 		</div>
@@ -28,11 +40,80 @@ import Footer from '../components/Footer.astro'
 		<div class="text-center text-lg">
 			Discover More with <a
 				href="https://en.wikipedia.org/wiki/Semantic_search"
-				class="text-acid-700 underline dark:text-acid-500">Semantic Search</a
+				class="text-turquoise-500 underline dark:text-acid-500">Semantic Search</a
 			>: Find Meaningful Results, Not Just Exact Matches
 		</div>
 		<div class="mt-8 w-full max-w-4xl px-4 sm:px-8 md:px-20">
 			<SearchForm client:load />
+		</div>
+	</div>
+	<div class="mx-auto my-16 w-full max-w-4xl px-4 sm:my-24 sm:px-8 md:px-20">
+		<div class="rounded bg-neutral-100 p-4 dark:bg-neutral-700 sm:p-6 lg:p-8">
+			<div class="sm:flex sm:items-center">
+				<div class="sm:flex-auto">
+					<h1 class="text-base font-semibold leading-6 text-neutral-900 dark:text-neutral-100">
+						Top Contributors
+					</h1>
+					<p class="mt-2 text-sm text-neutral-700 dark:text-neutral-200">
+						A list of all contributors ranked by their cumulative point totals.
+					</p>
+				</div>
+			</div>
+			<div class="mt-8">
+				<table class="min-w-full divide-y divide-neutral-400 dark:divide-neutral-800">
+					<thead>
+						<tr>
+							<th
+								scope="col"
+								class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-neutral-900 dark:text-neutral-100 sm:pl-0"
+								>Username</th
+							>
+							<th
+								scope="col"
+								class="hidden px-3 py-3.5 text-left text-sm font-semibold text-neutral-900 dark:text-neutral-100 sm:table-cell"
+								>Website</th
+							>
+							<th
+								scope="col"
+								class="px-3 py-3.5 text-left text-sm font-semibold text-neutral-900 dark:text-neutral-100"
+								>Cumulative Points</th
+							>
+						</tr>
+					</thead>
+					<tbody class="divide-y divide-neutral-300 dark:divide-neutral-600">
+						{
+							top_users.map((user_with_score) => (
+								<tr>
+									<td class="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 dark:text-neutral-100 sm:w-auto sm:max-w-none sm:pl-0">
+										<a
+											href={`/user/${user_with_score.id}`}
+											class="text-turquoise-500 underline dark:text-acid-500"
+										>
+											{user_with_score.username ?? user_with_score.email}
+										</a>
+										<dl class="font-normal lg:hidden">
+											<dt class="sr-only sm:hidden">Website</dt>
+											<dd class="mt-1 truncate text-neutral-800 dark:text-neutral-100 sm:hidden">
+												<a target="_blank" class="underline" href={user_with_score.website}>
+													{user_with_score.website}
+												</a>
+											</dd>
+										</dl>
+									</td>
+									<td class="hidden px-3 py-4 text-sm text-neutral-800 dark:text-neutral-100 sm:table-cell">
+										<a target="_blank" class="underline" href={user_with_score.website}>
+											{user_with_score.website}
+										</a>
+									</td>
+									<td class="px-3 py-4 text-sm text-neutral-800 dark:text-neutral-100">
+										{user_with_score.score}
+									</td>
+								</tr>
+							))
+						}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 	<div class="flex-1"></div>
