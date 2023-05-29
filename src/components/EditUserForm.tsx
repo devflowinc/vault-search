@@ -80,22 +80,22 @@ const SearchForm = () => {
 			<Transition
 				show={!currentUser()}
 				enter="transition duration-400"
-				enterFrom="opacity-0 -translate-y-1 scale-50"
-				enterTo="opacity-100 translate-y-0 scale-100"
+				enterFrom="opacity-0 scale-50"
+				enterTo="opacity-100 scale-100"
 				leave="transition duration-150"
-				leaveFrom="opacity-100 translate-y-0 scale-100"
-				leaveTo="opacity-0 -translate-y-1 scale-50"
+				leaveFrom="opacity-100 scale-100"
+				leaveTo="opacity-0 scale-50"
 			>
 				<div class="mx-auto mt-16 h-32 w-32 animate-spin rounded-full border-b-2 border-t-2 border-neutral-900 dark:border-white"></div>
 			</Transition>
 			<Transition
 				show={!!currentUser()}
 				enter="transition duration-600"
-				enterFrom="opacity-0 -translate-y-1 scale-50"
-				enterTo="opacity-100 translate-y-0 scale-100"
+				enterFrom="opacity-0 scale-50"
+				enterTo="opacity-100 scale-100"
 				leave="transition duration-200"
-				leaveFrom="opacity-100 translate-y-0 scale-100"
-				leaveTo="opacity-0 -translate-y-1 scale-50"
+				leaveFrom="opacity-100 scale-100"
+				leaveTo="opacity-0 scale-50"
 			>
 				<form
 					class="mb-8 h-full w-full text-neutral-800 dark:text-white"
