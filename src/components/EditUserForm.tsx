@@ -81,9 +81,9 @@ const SearchForm = () => {
 				show={!currentUser()}
 				enter="transition duration-400"
 				enterFrom="opacity-0 scale-50"
-				enterTo="opacity-100 scale-100"
+				enterTo="opacity-100"
 				leave="transition duration-150"
-				leaveFrom="opacity-100 scale-100"
+				leaveFrom="opacity-100"
 				leaveTo="opacity-0 scale-50"
 			>
 				<div class="mx-auto mt-16 h-32 w-32 animate-spin rounded-full border-b-2 border-t-2 border-neutral-900 dark:border-white"></div>
@@ -92,9 +92,9 @@ const SearchForm = () => {
 				show={!!currentUser()}
 				enter="transition duration-600"
 				enterFrom="opacity-0 scale-50"
-				enterTo="opacity-100 scale-100"
+				enterTo="opacity-100"
 				leave="transition duration-200"
-				leaveFrom="opacity-100 scale-100"
+				leaveFrom="opacity-100"
 				leaveTo="opacity-0 scale-50"
 			>
 				<form
