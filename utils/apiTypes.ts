@@ -191,3 +191,20 @@ export const isUserDTOWithVotesAndCards = (user: unknown): user is UserDTOWithVo
 		typeof (user as UserDTOWithVotesAndCards).total_votes_cast === 'number'
 	)
 }
+
+export type UserDTOWithScore = UserDTO & {
+	created_at: string
+	score: number
+}
+
+export const isUserDTOWithScore = (user: unknown): user is UserDTOWithScore => {
+	if (typeof user !== 'object' || user === null) return false
+
+	return (
+		isUserDTO(user) &&
+		user.hasOwnProperty('created_at') &&
+		typeof (user as UserDTOWithScore).created_at === 'string' &&
+		user.hasOwnProperty('score') &&
+		typeof (user as UserDTOWithScore).score === 'number'
+	)
+}
