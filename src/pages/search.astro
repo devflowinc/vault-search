@@ -1,50 +1,29 @@
 ---
 import { BiRegularChevronLeft, BiRegularChevronRight } from 'solid-icons/bi'
-import type { CardDTO } from '../../utils/apiTypes'
+import type { ScoreCardDTO } from '../../utils/apiTypes'
 import SearchLayout from '../layouts/SearchLayout.astro'
 import RegisterOrUserProfile from '../components/RegisterOrUserProfile'
 import EvidenceCard from '../components/EvidenceCard'
 import Footer from '../components/Footer.astro'
+import ResultsPage from '../components/ResultsPage'
 
 const apiHost = import.meta.env.API_HOST
 const requestParams = Astro.request.url.split('?')[1]
 const params = new URLSearchParams(requestParams)
-const query = params.get('q')
+const query = params.get('q') || ''
 const page = Number(params.get('page')) || 1
-
-let cards: CardDTO[] = []
-
-try {
-	const queryResult = await fetch(`${apiHost}/card/search/${page}`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({
-			content: query ?? ''
-		})
-	})
-
-	if (queryResult.status !== 200) {
-		console.error('Error fetching cards', queryResult)
-	}
-
-	cards = await queryResult.json()
-} catch (e) {
-	console.error('Error fetching cards', e)
-}
 ---
 
 <SearchLayout>
 	<div class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4">
 		<a class="flex w-full items-center" href="/">
-			<img class="w-12" src="/logo_transparent.png" alt="Logo" />
-			<div class="text-2xl sm:text-4xl">
+			<img class="w-6 sm:w-12" src="/logo_transparent.png" alt="Logo" />
+			<div class="text-xl sm:text-4xl">
 				Arguflow<span class="text-magenta">Vault</span>
 			</div>
 		</a>
-		<div class="flex w-full items-center justify-end space-x-4">
-			<a href="/create" target="_blank" class="text-xl text-neutral-600 dark:text-neutral-200">
+		<div class="flex w-full items-center justify-end space-x-1 sm:space-x-4">
+			<a href="/create" target="_blank" class="text-lg text-neutral-600 dark:text-neutral-200">
 				Create Evidence
 			</a>
 			<div>
@@ -52,42 +31,7 @@ try {
 			</div>
 		</div>
 	</div>
-	<div class="mt-12 flex w-full flex-col items-center space-y-4">
-		{
-			cards.length === 0 && (
-				<div class="text-2xl text-neutral-600 dark:text-neutral-200">No results found</div>
-			)
-		}
-		<div class="flex w-full max-w-6xl flex-col space-y-4 px-4 sm:px-8 md:px-20">
-			{
-				cards.map((card) => (
-					<div>
-						<EvidenceCard card={card} client:load />
-					</div>
-				))
-			}
-		</div>
-	</div>
-	<div
-		class=`mt-12 flex w-full ${page === 1 ? 'justify-end' : 'justify-between'} px-4 sm:px-8 md:px-20`
-	>
-		{
-			page != 1 && (
-				<a
-					class="flex w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
-					href={`/search?q=${query}&page=${page - 1}`}
-				>
-					Previous <BiRegularChevronLeft class="h-6 w-6" />
-				</a>
-			)
-		}
-		<a
-			class="flex w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
-			href=`/search?q=${query}&page=${page + 1}`
-		>
-			Next <BiRegularChevronRight class="h-6 w-6" />
-		</a>
-	</div>
+	<ResultsPage page={page} query={query} client:only="solid-js" />
 	<div class="flex-1"></div>
 	<Footer />
 </SearchLayout>

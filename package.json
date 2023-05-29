@@ -23,6 +23,7 @@
     "solid-icons": "^1.0.4",
     "solid-js": "^1.4.3",
     "svelte": "^3.59.1",
+    "tailwind-gradient-mask-image": "^1.0.0",
     "tailwind-scrollbar": "^3.0.4",
     "tailwindcss": "^3.0.24"
   }

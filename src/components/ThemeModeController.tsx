@@ -42,11 +42,11 @@ const ThemeModeController = () => {
 		<Transition
 			show={true}
 			enter="transition duration-2000"
-			enterFrom="opacity-0 -translate-y-1 scale-50"
-			enterTo="opacity-100 translate-y-0 scale-100"
+			enterFrom="opacity-0 scale-50"
+			enterTo="opacity-100 scale-100"
 			leave="transition duration-2000"
-			leaveFrom="opacity-100 translate-y-0 scale-100"
-			leaveTo="opacity-0 -translate-y-1 scale-50"
+			leaveFrom="opacity-100 scale-100"
+			leaveTo="opacity-0 scale-50"
 		>
 			<div class="flex w-fit items-center justify-center">
 				<Popover defaultOpen={false} class="relative flex items-center">
@@ -69,11 +69,11 @@ const ThemeModeController = () => {
 							<Transition
 								show={isOpen()}
 								enter="transition duration-200"
-								enterFrom="opacity-0 -translate-y-1 scale-50"
-								enterTo="opacity-100 translate-y-0 scale-100"
+								enterFrom="opacity-0 scale-50"
+								enterTo="opacity-100 scale-100"
 								leave="transition duration-150"
-								leaveFrom="opacity-100 translate-y-0 scale-100"
-								leaveTo="opacity-0 -translate-y-1 scale-50"
+								leaveFrom="opacity-100 scale-100"
+								leaveTo="opacity-0 scale-50"
 							>
 								<PopoverPanel
 									unmount={true}
