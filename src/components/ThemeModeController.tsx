@@ -43,9 +43,9 @@ const ThemeModeController = () => {
 			show={true}
 			enter="transition duration-2000"
 			enterFrom="opacity-0 scale-50"
-			enterTo="opacity-100 scale-100"
+			enterTo="opacity-100"
 			leave="transition duration-2000"
-			leaveFrom="opacity-100 scale-100"
+			leaveFrom="opacity-100"
 			leaveTo="opacity-0 scale-50"
 		>
 			<div class="flex w-fit items-center justify-center">
@@ -70,9 +70,9 @@ const ThemeModeController = () => {
 								show={isOpen()}
 								enter="transition duration-200"
 								enterFrom="opacity-0 scale-50"
-								enterTo="opacity-100 scale-100"
+								enterTo="opacity-100"
 								leave="transition duration-150"
-								leaveFrom="opacity-100 scale-100"
+								leaveFrom="opacity-100"
 								leaveTo="opacity-0 scale-50"
 							>
 								<PopoverPanel

@@ -13,13 +13,14 @@ import { FullScreenModal } from './FullScreenModal'
 export interface ResultsPageProps {
 	query: string
 	page: number
+	defaultResultCards: ScoreCardDTO[]
 }
 
 const ResultsPage = (props: ResultsPageProps) => {
 	const apiHost = import.meta.env.PUBLIC_API_HOST
+	const initialResultCards = props.defaultResultCards
 
-	const [isLoadingResults, setIsLoadingResults] = createSignal(true)
-	const [resultCards, setResultCards] = createSignal<ScoreCardDTO[]>([])
+	const [resultCards, setResultCards] = createSignal<ScoreCardDTO[]>(initialResultCards)
 	const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false)
 
 	createEffect(() => {
@@ -39,7 +40,6 @@ const ResultsPage = (props: ResultsPageProps) => {
 			if (response.ok) {
 				response.json().then((data) => {
 					setResultCards(data)
-					setIsLoadingResults(false)
 				})
 			}
 		})
@@ -51,63 +51,40 @@ const ResultsPage = (props: ResultsPageProps) => {
 
 	return (
 		<>
-			<Transition
-				show={isLoadingResults()}
-				enter="transition duration-400"
-				enterFrom="opacity-0 scale-50"
-				enterTo="opacity-100 scale-100"
-				leave="transition duration-25"
-				leaveFrom="opacity-100 scale-100"
-				leaveTo="opacity-0 scale-50"
+			<div class="mt-12 flex w-full flex-col items-center space-y-4">
+				<Show when={resultCards().length === 0}>
+					<div class="text-2xl">No results found</div>
+				</Show>
+				<div class="flex w-full max-w-6xl flex-col space-y-4 px-4 sm:px-8 md:px-20">
+					{resultCards().map((card) => (
+						<div>
+							<ScoreCard card={card} setShowModal={setShowNeedLoginModal} />
+						</div>
+					))}
+				</div>
+			</div>
+			<div
+				class={`mt-12 flex w-full ${
+					props.page === 1 ? 'justify-end' : 'justify-between'
+				} px-4 sm:px-8 md:px-20`}
 			>
-				<div class="absolute flex h-[calc(100vh-60px)] w-screen items-center justify-center">
-					<div class="h-32 w-32 animate-spin rounded-full border-b-2 border-t-2 border-neutral-900 dark:border-white"></div>
-				</div>
-			</Transition>
-			<Transition
-				show={!isLoadingResults()}
-				enter="transition duration-600"
-				enterFrom="opacity-0 scale-50"
-				enterTo="opacity-100 scale-100"
-				leave="transition duration-200"
-				leaveFrom="opacity-100 scale-100"
-				leaveTo="opacity-0 scale-50"
-			>
-				<div class="mt-12 flex w-full flex-col items-center space-y-4">
-					<Show when={resultCards().length === 0}>
-						<div class="text-2xl">No results found</div>
-					</Show>
-					<div class="flex w-full max-w-6xl flex-col space-y-4 px-4 sm:px-8 md:px-20">
-						{resultCards().map((card) => (
-							<div>
-								<ScoreCard card={card} setShowModal={setShowNeedLoginModal} />
-							</div>
-						))}
-					</div>
-				</div>
-				<div
-					class={`mt-12 flex w-full ${
-						props.page === 1 ? 'justify-end' : 'justify-between'
-					} px-4 sm:px-8 md:px-20`}
-				>
-					{props.page != 1 && (
-						<a
-							class="flex w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
-							href={`/search?q=${props.query}&page=${props.page - 1}`}
-						>
-							Previous <BiRegularChevronLeft class="h-6 w-6" />
-						</a>
-					)}
-					{resultCards().length === 25 && (
-						<a
-							class="flex w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
-							href={`/search?q=${props.query}&page=${props.page + 1}`}
-						>
-							Next <BiRegularChevronRight class="h-6 w-6" />
-						</a>
-					)}
-				</div>
-			</Transition>
+				{props.page != 1 && (
+					<a
+						class="flex w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+						href={`/search?q=${props.query}&page=${props.page - 1}`}
+					>
+						Previous <BiRegularChevronLeft class="h-6 w-6" />
+					</a>
+				)}
+				{resultCards().length === 25 && (
+					<a
+						class="flex w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+						href={`/search?q=${props.query}&page=${props.page + 1}`}
+					>
+						Next <BiRegularChevronRight class="h-6 w-6" />
+					</a>
+				)}
+			</div>
 			<Show when={showNeedLoginModal()}>
 				<FullScreenModal isOpen={showNeedLoginModal} setIsOpen={setShowNeedLoginModal}>
 					<div class="min-w-[250px] sm:min-w-[300px]">

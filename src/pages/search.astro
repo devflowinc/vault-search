@@ -3,18 +3,38 @@ import SearchLayout from '../layouts/SearchLayout.astro'
 import RegisterOrUserProfile from '../components/RegisterOrUserProfile'
 import Footer from '../components/Footer.astro'
 import ResultsPage from '../components/ResultsPage'
+import type { ScoreCardDTO } from '../../utils/apiTypes'
+
+const apiHost = import.meta.env.API_HOST
 
 const requestParams = Astro.request.url.split('?')[1]
 const params = new URLSearchParams(requestParams)
 const query = params.get('q') || ''
 const page = Number(params.get('page')) || 1
+let initialScoreCards: ScoreCardDTO[] = []
+const initialScoreCardsResult = await fetch(`${apiHost}/card/search/${page}`, {
+	method: 'POST',
+	headers: {
+		'Content-Type': 'application/json'
+	},
+	credentials: 'include',
+	body: JSON.stringify({
+		content: query
+	})
+})
+try {
+	const initialScoreCardsJson = await initialScoreCardsResult.json()
+	initialScoreCards = initialScoreCardsJson ?? []
+} catch (e) {
+	console.error(e)
+}
 ---
 
 <SearchLayout>
 	<div class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4">
 		<a class="flex w-full items-center" href="/">
 			<img class="w-6 sm:w-12" src="/logo_transparent.png" alt="Logo" />
-			<div class="hidden min-[380px]:text-xl min-[360px]:block sm:text-4xl">
+			<div class="hidden min-[360px]:block min-[380px]:text-xl sm:text-4xl">
 				Arguflow<span class="text-magenta">Vault</span>
 			</div>
 		</a>
@@ -25,7 +45,7 @@ const page = Number(params.get('page')) || 1
 			</div>
 		</div>
 	</div>
-	<ResultsPage page={page} query={query} client:only="solid-js" />
+	<ResultsPage page={page} query={query} defaultResultCards={initialScoreCards} client:load />
 	<div class="flex-1"></div>
 	<Footer />
 </SearchLayout>

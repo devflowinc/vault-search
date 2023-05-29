@@ -11,13 +11,14 @@ import {
 const ScoreCard = (props: { card: ScoreCardDTO; setShowModal: Setter<boolean> }) => {
 	const api_host = import.meta.env.PUBLIC_API_HOST
 
+	const initialVoteTotal = props.card.metadata.total_upvotes - props.card.metadata.total_downvotes
+
 	const [expanded, setExpanded] = createSignal(false)
 	const [userVote, setUserVote] = createSignal(0)
-	const [totalVote, setTotalVote] = createSignal(0)
+	const [totalVote, setTotalVote] = createSignal(initialVoteTotal)
 
 	createEffect(() => {
-		if (props.card.metadata.vote_by_current_user == null) {
-			setTotalVote(props.card.metadata.total_upvotes - props.card.metadata.total_downvotes)
+		if (props.card.metadata.vote_by_current_user === null) {
 			return
 		}
 		setUserVote(props.card.metadata.vote_by_current_user ? 1 : -1)
@@ -135,7 +136,7 @@ const ScoreCard = (props: { card: ScoreCardDTO; setShowModal: Setter<boolean> })
 							'line-clamp-4 gradient-mask-b-0': !expanded()
 						}}
 					>
-						{props.card.metadata.content}
+						{props.card.metadata.content.toString()}
 					</p>
 				</div>
 			</div>
