@@ -32,7 +32,7 @@ try {
 	</div>
 	<Show when={total_cards > 0}>
 		<div class="text-sm text-neutral-600 dark:text-neutral-400">
-			{total_cards} cards in the database
+			{total_cards.toLocaleString()} cards in the database
 		</div>
 	</Show>
 	<div class="flex w-full justify-center space-x-4">
