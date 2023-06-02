@@ -81,13 +81,13 @@ try {
 							</>
 						)}
 						<div class="font-semibold">Cards Created:</div>
-						<div class="flex w-full justify-start">{user.total_cards_created}</div>
+						<div class="flex w-full justify-start">{user.total_cards_created.toLocaleString()}</div>
 						<div class="font-semibold">Cumulative Rating:</div>
 						<div class="flex w-full justify-start">
-							{user.total_upvotes_received - user.total_downvotes_received}
+							{(user.total_upvotes_received - user.total_downvotes_received).toLocaleString()}
 						</div>
 						<div class="font-semibold">Votes Cast:</div>
-						<div class="flex w-full justify-start">{user.total_votes_cast}</div>
+						<div class="flex w-full justify-start">{user.total_votes_cast.toLocaleString()}</div>
 						<div class="font-semibold">Date Created:</div>
 						<div class="flex w-full justify-start">
 							{new Date(user.created_at).toLocaleDateString()}
