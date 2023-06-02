@@ -1,8 +1,10 @@
 import { BiRegularSearch, BiRegularX } from 'solid-icons/bi'
 import { Show, createSignal } from 'solid-js'
+import { TbMinusVertical } from 'solid-icons/tb'
 
-const SearchForm = () => {
-	const [textareaInput, setTextareaInput] = createSignal('')
+const SearchForm = (props: { query?: string }) => {
+	const initialQuery = props.query || ''
+	const [textareaInput, setTextareaInput] = createSignal(initialQuery)
 
 	const resizeTextarea = (textarea: HTMLTextAreaElement) => {
 		textarea.style.height = 'auto'
@@ -24,10 +26,12 @@ const SearchForm = () => {
 				}}
 			>
 				<div class="flex w-full justify-center space-x-2 rounded-xl bg-neutral-100 px-4 py-1 dark:bg-neutral-700 ">
-					<BiRegularSearch class="mt-1 h-6 w-6" />
+					<Show when={!props.query}>
+						<BiRegularSearch class="mt-1 h-6 w-6" />
+					</Show>
 					<textarea
 						id="search-query-textarea"
-						class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md h-fit max-h-[240px] w-full resize-none whitespace-pre-wrap bg-transparent py-1 scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 focus:outline-none dark:bg-neutral-700 dark:text-white dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600"
+						class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md mr-2 h-fit max-h-[240px] w-full resize-none whitespace-pre-wrap bg-transparent py-1 scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 focus:outline-none dark:bg-neutral-700 dark:text-white dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600"
 						placeholder="Search for evidence cards..."
 						value={textareaInput()}
 						onInput={(e) => resizeTextarea(e.target)}
@@ -42,7 +46,9 @@ const SearchForm = () => {
 					/>
 					<Show when={textareaInput()}>
 						<button
-							class="flex flex-col"
+							classList={{
+								'pt-[2px]': !!props.query
+							}}
 							onClick={(e) => {
 								e.preventDefault()
 								setTextareaInput('')
@@ -51,24 +57,36 @@ const SearchForm = () => {
 								)
 							}}
 						>
-							<BiRegularX class="mt-1 h-6 w-6" />
+							<BiRegularX class="h-7 w-7" />
+						</button>
+					</Show>
+					<Show when={props.query}>
+						<button
+							classList={{
+								'border-l border-neutral-600 pl-1 dark:border-neutral-200': !!textareaInput()
+							}}
+							type="submit"
+						>
+							<BiRegularSearch class="mt-1 h-6 w-6" />
 						</button>
 					</Show>
 				</div>
-				<div class="flex flex-row justify-center space-x-2 px-6 md:px-40">
-					<button
-						class="w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
-						type="submit"
-					>
-						Search Evidence Vault
-					</button>
-					<a
-						class="w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
-						href="/create"
-					>
-						Create Evidence Card
-					</a>
-				</div>
+				<Show when={!props.query}>
+					<div class="flex flex-row justify-center space-x-2 px-6 md:px-40">
+						<button
+							class="w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+							type="submit"
+						>
+							Search Evidence Vault
+						</button>
+						<a
+							class="w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+							href="/create"
+						>
+							Create Evidence Card
+						</a>
+					</div>
+				</Show>
 			</form>
 		</div>
 	)

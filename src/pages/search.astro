@@ -4,6 +4,7 @@ import RegisterOrUserProfile from '../components/RegisterOrUserProfile'
 import Footer from '../components/Footer.astro'
 import ResultsPage from '../components/ResultsPage'
 import type { ScoreCardDTO } from '../../utils/apiTypes'
+import SearchForm from '../components/SearchForm'
 
 const apiHost = import.meta.env.API_HOST
 
@@ -12,18 +13,19 @@ const params = new URLSearchParams(requestParams)
 const query = params.get('q') || ''
 const page = Number(params.get('page')) || 1
 let initialScoreCards: ScoreCardDTO[] = []
-const initialScoreCardsResult = await fetch(`${apiHost}/card/search/${page}`, {
-	method: 'POST',
-	headers: {
-		'Content-Type': 'application/json'
-	},
-	credentials: 'include',
-	body: JSON.stringify({
-		content: query
-	})
-})
 try {
-	const initialScoreCardsJson = await initialScoreCardsResult.json()
+	const initialScoreCardsResult = await fetch(`${apiHost}/card/search/${page}`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		credentials: 'include',
+		body: JSON.stringify({
+			content: query
+		})
+	})
+
+	const initialScoreCardsJson = await initialScoreCardsResult?.json()
 	initialScoreCards = initialScoreCardsJson ?? []
 } catch (e) {
 	console.error(e)
@@ -44,6 +46,9 @@ try {
 				<RegisterOrUserProfile client:only="solid-js" />
 			</div>
 		</div>
+	</div>
+	<div class="mt-8 w-full max-w-4xl px-4 sm:px-8 md:px-20">
+		<SearchForm client:load query={query} />
 	</div>
 	<ResultsPage page={page} query={query} defaultResultCards={initialScoreCards} client:load />
 	<div class="flex-1"></div>
