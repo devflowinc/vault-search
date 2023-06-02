@@ -3,14 +3,12 @@ import type { CardMetadataWithVotes } from '../../utils/apiTypes'
 import { BiRegularChevronDown, BiRegularChevronUp } from 'solid-icons/bi'
 
 const CardMetadataDisplay = (props: { card: CardMetadataWithVotes }) => {
-	const api_host = import.meta.env.PUBLIC_API_HOST
-
 	const [expanded, setExpanded] = createSignal(false)
 
 	return (
 		<div class="flex w-full flex-col items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-700">
-			<div class="flex items-start">
-				<div class="flex flex-col">
+			<div class="flex w-full items-start">
+				<div class="flex w-full flex-col">
 					<Show when={props.card.link}>
 						<a
 							class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
@@ -19,6 +17,18 @@ const CardMetadataDisplay = (props: { card: CardMetadataWithVotes }) => {
 						>
 							{props.card.link}
 						</a>
+					</Show>
+					<Show when={props.card.oc_file_path}>
+						<div class="flex space-x-2">
+							<span class="font-semibold">Original Source: </span>
+							<a
+								class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
+								target="_blank"
+								href={'https://oc.arguflow.com/' + props.card.oc_file_path ?? ''}
+							>
+								{props.card.oc_file_path}
+							</a>
+						</div>
 					</Show>
 					<div class="grid w-fit auto-cols-min grid-cols-[1fr,3fr] gap-x-2 text-neutral-800 dark:text-neutral-200">
 						<span class="font-semibold">Created: </span>

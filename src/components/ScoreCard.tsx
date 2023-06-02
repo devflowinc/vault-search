@@ -67,7 +67,7 @@ const ScoreCard = (props: { card: ScoreCardDTO; setShowModal: Setter<boolean> })
 
 	return (
 		<div class="flex w-full flex-col items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-700">
-			<div class="flex items-start">
+			<div class="flex w-full items-start">
 				<div class="flex flex-col items-center pr-2">
 					<button
 						onClick={(e) => {
@@ -105,7 +105,7 @@ const ScoreCard = (props: { card: ScoreCardDTO; setShowModal: Setter<boolean> })
 						</Show>
 					</button>
 				</div>
-				<div class="flex flex-col">
+				<div class="flex w-full flex-col">
 					<Show when={props.card.metadata.link}>
 						<a
 							class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"

@@ -21,13 +21,14 @@ export const isCardDTO = (card: unknown): card is CardDTO => {
 }
 
 export interface CardMetadata {
-	id: string,
-	content: string,
-	link: string | null,
-	author_id: string,
-	qdrant_point_id: string,
-	created_at: string,
-	updated_at: string,
+	id: string
+	content: string
+	link: string | null
+	author_id: string
+	qdrant_point_id: string
+	created_at: string
+	updated_at: string
+	oc_file_path: string | null
 }
 
 export const isCardMetadata = (card: unknown): card is CardMetadata => {
@@ -43,11 +44,14 @@ export const isCardMetadata = (card: unknown): card is CardMetadata => {
 		card.hasOwnProperty('created_at') &&
 		typeof (card as CardMetadata).created_at === 'string' &&
 		card.hasOwnProperty('updated_at') &&
-		typeof (card as CardMetadata).updated_at === 'string'
+		typeof (card as CardMetadata).updated_at === 'string' &&
+		card.hasOwnProperty('oc_file_path') &&
+		(typeof (card as CardMetadata).oc_file_path === 'string' ||
+			(card as CardMetadata).oc_file_path === null)
 	)
 }
 
-export type CardMetadataWithVotes = Exclude<CardMetadata, "author"> & {
+export type CardMetadataWithVotes = Exclude<CardMetadata, 'author'> & {
 	author: UserDTO | null
 	total_upvotes: number
 	total_downvotes: number
@@ -167,6 +171,7 @@ export const isUserDTO = (user: unknown): user is UserDTO => {
 export type UserDTOWithVotesAndCards = UserDTO & {
 	created_at: string
 	cards: CardMetadataWithVotes[]
+	total_cards_created: number
 	total_upvotes_received: number
 	total_downvotes_received: number
 	total_votes_cast: number
@@ -180,6 +185,8 @@ export const isUserDTOWithVotesAndCards = (user: unknown): user is UserDTOWithVo
 		(user as UserDTOWithVotesAndCards).cards.every((card) => isCardMetadata(card)) &&
 		user.hasOwnProperty('created_at') &&
 		typeof (user as UserDTOWithVotesAndCards).created_at === 'string' &&
+		user.hasOwnProperty('total_cards_created') &&
+		typeof (user as UserDTOWithVotesAndCards).total_cards_created === 'number' &&
 		user.hasOwnProperty('total_upvotes_received') &&
 		typeof (user as UserDTOWithVotesAndCards).total_upvotes_received === 'number' &&
 		user.hasOwnProperty('total_downvotes_received') &&

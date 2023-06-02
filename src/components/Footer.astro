@@ -1,9 +1,21 @@
 ---
 import { BiLogosGithub, BiLogosTwitch, BiLogosTwitter, BiLogosYoutube } from 'solid-icons/bi'
 import ThemeModeController from './ThemeModeController'
+import { Show } from 'solid-js'
+
+const apiHost = import.meta.env.API_HOST
+let total_cards = 0
+
+try {
+	const total_cards_req = await fetch(`${apiHost}/card/count`)
+	const total_cards_json = await total_cards_req.json()
+	total_cards = total_cards_json.total_count
+} catch (e) {
+	console.error(e)
+}
 ---
 
-<div class="flex w-full flex-col items-center space-y-4 py-4">
+<div class="flex w-full flex-col items-center space-y-2 py-4">
 	<div class="flex w-full justify-center space-x-3">
 		<a href="https://twitter.com/arguflowai" target="_blank">
 			<BiLogosTwitter size={30} />
@@ -18,8 +30,13 @@ import ThemeModeController from './ThemeModeController'
 			<BiLogosGithub size={30} />
 		</a>
 	</div>
+	<Show when={total_cards > 0}>
+		<div class="text-sm text-neutral-600 dark:text-neutral-400">
+			{total_cards} cards in the database
+		</div>
+	</Show>
 	<div class="flex w-full justify-center space-x-4">
-		<div class="text-neutral-600 dark:text-neutral-200">contact@arguflow.gg</div>
+		<div>contact@arguflow.gg</div>
 		<div>
 			<ThemeModeController client:only="solid-js" />
 		</div>
