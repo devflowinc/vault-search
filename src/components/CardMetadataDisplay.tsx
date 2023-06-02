@@ -20,13 +20,13 @@ const CardMetadataDisplay = (props: { card: CardMetadataWithVotes }) => {
 					</Show>
 					<Show when={props.card.oc_file_path}>
 						<div class="flex space-x-2">
-							<span class="font-semibold">Original Source: </span>
+							<span class="font-semibold text-neutral-800 dark:text-neutral-200">Brief: </span>
 							<a
 								class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
 								target="_blank"
 								href={'https://oc.arguflow.com/' + props.card.oc_file_path ?? ''}
 							>
-								{props.card.oc_file_path}
+								{props.card.oc_file_path?.split('/').pop() ?? props.card.oc_file_path}
 							</a>
 						</div>
 					</Show>

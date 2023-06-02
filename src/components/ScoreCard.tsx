@@ -115,6 +115,19 @@ const ScoreCard = (props: { card: ScoreCardDTO; setShowModal: Setter<boolean> })
 							{props.card.metadata.link}
 						</a>
 					</Show>
+					<Show when={props.card.metadata.oc_file_path}>
+						<div class="flex space-x-2">
+							<span class="font-semibold text-neutral-800 dark:text-neutral-200">Brief: </span>
+							<a
+								class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
+								target="_blank"
+								href={'https://oc.arguflow.com/' + props.card.metadata.oc_file_path ?? ''}
+							>
+								{props.card.metadata.oc_file_path?.split('/').pop() ??
+									props.card.metadata.oc_file_path}
+							</a>
+						</div>
+					</Show>
 					<div class="grid w-fit auto-cols-min grid-cols-[1fr,3fr] gap-x-2 text-neutral-800 dark:text-neutral-200">
 						<span class="font-semibold">Similarity: </span>
 						<span>{props.card.score}</span>
