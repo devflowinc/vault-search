@@ -1,16 +1,20 @@
 import { BiRegularSearch, BiRegularX } from 'solid-icons/bi'
-import { Show, createSignal } from 'solid-js'
-import { TbMinusVertical } from 'solid-icons/tb'
+import { Show, createEffect, createSignal } from 'solid-js'
 
 const SearchForm = (props: { query?: string }) => {
 	const initialQuery = props.query || ''
 	const [textareaInput, setTextareaInput] = createSignal(initialQuery)
 
-	const resizeTextarea = (textarea: HTMLTextAreaElement) => {
-		textarea.style.height = 'auto'
+	const resizeTextarea = (textarea: HTMLTextAreaElement | null) => {
+		if (!textarea) return
+
 		textarea.style.height = `${textarea.scrollHeight}px`
 		setTextareaInput(textarea.value)
 	}
+
+	createEffect(() => {
+		resizeTextarea(document.getElementById('search-query-textarea') as HTMLTextAreaElement | null)
+	})
 
 	return (
 		<div class="w-full">
@@ -25,7 +29,13 @@ const SearchForm = (props: { query?: string }) => {
 					window.location.href = `/search?q=${searchQuery}`
 				}}
 			>
-				<div class="flex w-full justify-center space-x-2 rounded-xl bg-neutral-100 px-4 py-1 dark:bg-neutral-700 ">
+				<div
+					classList={{
+						'flex w-full justify-center rounded-xl bg-neutral-100 px-4 py-1 dark:bg-neutral-700':
+							true,
+						'space-x-2': !props.query
+					}}
+				>
 					<Show when={!props.query}>
 						<BiRegularSearch class="mt-1 h-6 w-6" />
 					</Show>
@@ -41,14 +51,18 @@ const SearchForm = (props: { query?: string }) => {
 								const searchQuery = encodeURIComponent(textareaInput())
 								window.location.href = `/search?q=${searchQuery}`
 							}
+							if (!e.shiftKey && e.key === 'Enter') {
+								e.preventDefault()
+								const searchQuery = encodeURIComponent(textareaInput())
+								window.location.href = `/search?q=${searchQuery}`
+							}
 						}}
 						rows="1"
-					/>
+					>
+						{textareaInput() || props.query}
+					</textarea>
 					<Show when={textareaInput()}>
 						<button
-							classList={{
-								'pt-[2px]': !!props.query
-							}}
 							onClick={(e) => {
 								e.preventDefault()
 								setTextareaInput('')
