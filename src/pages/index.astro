@@ -4,7 +4,7 @@ import SearchForm from '../components/SearchForm'
 import RegisterOrUserProfile from '../components/RegisterOrUserProfile'
 import Footer from '../components/Footer.astro'
 import { isUserDTOWithScore, UsersWithTotalPagesDTO, type UserDTOWithScore } from '../../utils/apiTypes'
-
+import { Combobox } from '../components/Combobox'
 const apiHost = import.meta.env.API_HOST
 
 const requestParams = Astro.request.url.split('?')[1]
@@ -26,6 +26,7 @@ if (
 ) {
 	top_users_with_pages = top_users_and_cards_result as UsersWithTotalPagesDTO
 }
+
 ---
 
 <SearchLayout>
@@ -50,6 +51,7 @@ if (
 		</div>
 		<div class="mt-8 w-full max-w-4xl px-4 sm:px-8 md:px-20">
 			<SearchForm client:load />
+			<Combobox  client:load/>
 		</div>
 	</div>
 	<div class="mx-auto my-16 w-full max-w-4xl px-4 sm:my-24 sm:px-8 md:px-20">
