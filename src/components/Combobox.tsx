@@ -1,32 +1,21 @@
 import { Menu, MenuItem, Popover, PopoverPanel } from 'solid-headless'
-import {
-	Accessor,
-	For,
-	JSXElement,
-	createEffect,
-	createMemo,
-	createSignal,
-	onCleanup
-} from 'solid-js'
+import { Accessor, Setter, For, createEffect, createMemo, createSignal, onCleanup } from 'solid-js'
 import { FiExternalLink } from 'solid-icons/fi'
 import { FaSolidCheck } from 'solid-icons/fa'
-
+import { selectedComboboxItems, setSelectedComboboxItems } from '../FilterStore'
 export interface comboboxItem {
 	name: string
 	eventId: string
 }
 
-export interface ComboboxProps {
-	aboveOptionsElement?: JSXElement | null
-}
 
-export const Combobox = (props: ComboboxProps) => {
+export const Combobox = () => {
 	const [panelOpen, sePanelOpen] = createSignal(false)
 	const [usingPanel, setUsingPanel] = createSignal(false)
 	const [inputValue, setInputValue] = createSignal('')
-	const [selectedComboboxItems, setSelectedComboboxItems] = createSignal<comboboxItem[]>([])
 	const [comboboxItems, setComboboxItems] = createSignal<comboboxItem[]>([
-		{ name: 'test', eventId: 'test' }
+		{ name: 'Policy', eventId: 'policy' },
+		{ name: 'LD', eventId: 'ld' }
 	])
 	const filteredOptionsWithIsSelected = createMemo(() => {
 		const selected = selectedComboboxItems()
@@ -87,10 +76,7 @@ export const Combobox = (props: ComboboxProps) => {
 				<input
 					class="w-full rounded border border-fuchsia-300 bg-white px-2 text-black dark:border-white dark:bg-slate-900 dark:text-white"
 					type="text"
-					onFocus={() => {
-						sePanelOpen(true)
-						console.log('focus')
-					}}
+					onFocus={() => sePanelOpen(true)}
 					onBlur={() => !usingPanel() && sePanelOpen(false)}
 					value={inputValue()}
 					onInput={(e) => setInputValue(e.currentTarget.value)}
@@ -110,7 +96,6 @@ export const Combobox = (props: ComboboxProps) => {
 						setUsingPanel(false)
 					}}
 				>
-					{props.aboveOptionsElement}
 					<Menu class="flex w-full flex-col space-y-1 overflow-y-auto overflow-x-hidden rounded bg-pink-50 shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-800">
 						<For each={filteredOptionsWithIsSelected()}>
 							{(option) => {

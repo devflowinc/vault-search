@@ -1,5 +1,7 @@
 import { BiRegularSearch, BiRegularX } from 'solid-icons/bi'
-import { Show, createEffect, createSignal } from 'solid-js'
+import { Show, createSignal } from 'solid-js'
+import { TbMinusVertical } from 'solid-icons/tb'
+import { selectedComboboxItems } from '../FilterStore'
 
 const SearchForm = (props: { query?: string }) => {
 	const initialQuery = props.query || ''
@@ -11,31 +13,21 @@ const SearchForm = (props: { query?: string }) => {
 		textarea.style.height = `${textarea.scrollHeight}px`
 		setTextareaInput(textarea.value)
 	}
-
-	createEffect(() => {
-		resizeTextarea(document.getElementById('search-query-textarea') as HTMLTextAreaElement | null)
-	})
-
+	const onSubmit = (e: Event) => {
+		e.preventDefault()
+		const textAreaValue = textareaInput()
+		const searchQuery = encodeURIComponent(
+			textAreaValue.length > 3800 ? textAreaValue.slice(0, 3800) : textAreaValue
+		)
+		const filters = selectedComboboxItems()
+			.map((item) => item.eventId)
+			.join(',')
+		window.location.href = `/search?q=${searchQuery}&f=${filters}`
+	}
 	return (
 		<div class="w-full">
-			<form
-				class="w-full space-y-4 text-neutral-800 dark:text-white"
-				onSubmit={(e) => {
-					e.preventDefault()
-					const textAreaValue = textareaInput()
-					const searchQuery = encodeURIComponent(
-						textAreaValue.length > 3800 ? textAreaValue.slice(0, 3800) : textAreaValue
-					)
-					window.location.href = `/search?q=${searchQuery}`
-				}}
-			>
-				<div
-					classList={{
-						'flex w-full justify-center rounded-xl bg-neutral-100 px-4 py-1 dark:bg-neutral-700':
-							true,
-						'space-x-2': !props.query
-					}}
-				>
+			<form class="w-full space-y-4 text-neutral-800 dark:text-white" onSubmit={onSubmit}>
+				<div class="flex w-full justify-center space-x-2 rounded-xl bg-neutral-100 px-4 py-1 dark:bg-neutral-700 ">
 					<Show when={!props.query}>
 						<BiRegularSearch class="mt-1 h-6 w-6" />
 					</Show>
@@ -46,10 +38,8 @@ const SearchForm = (props: { query?: string }) => {
 						value={textareaInput()}
 						onInput={(e) => resizeTextarea(e.target)}
 						onKeyDown={(e) => {
-							if (e.ctrlKey && e.key === 'Enter') {
-								e.preventDefault()
-								const searchQuery = encodeURIComponent(textareaInput())
-								window.location.href = `/search?q=${searchQuery}`
+							if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+								onSubmit(e)
 							}
 							if (!e.shiftKey && e.key === 'Enter') {
 								e.preventDefault()
