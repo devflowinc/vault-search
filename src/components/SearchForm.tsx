@@ -24,7 +24,7 @@ const SearchForm = (props: { query?: string }) => {
 				.map((item) => item.eventId)
 				.join(',')
 		)
-		window.location.href = `/search?q=${searchQuery}&filters=${filters}`
+		window.location.href = `/search?q=${searchQuery}` + (filters ? `&filters=${filters}` : '')
 	}
 	return (
 		<div class="w-full">
