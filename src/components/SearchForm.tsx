@@ -22,7 +22,7 @@ const SearchForm = (props: { query?: string }) => {
 		const filters = selectedComboboxItems()
 			.map((item) => item.eventId)
 			.join(',')
-		window.location.href = `/search?q=${searchQuery}&f=${filters}`
+		window.location.href = `/search?q=${searchQuery}&filters=${filters}`
 	}
 	return (
 		<div class="w-full">
