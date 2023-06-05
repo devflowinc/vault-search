@@ -8,18 +8,17 @@ export interface comboboxItem {
 	eventId: string
 }
 
-
 export const Combobox = () => {
 	const [panelOpen, sePanelOpen] = createSignal(false)
 	const [usingPanel, setUsingPanel] = createSignal(false)
 	const [inputValue, setInputValue] = createSignal('')
-	const [comboboxItems, setComboboxItems] = createSignal<comboboxItem[]>([
+	const comboboxItems: comboboxItem[] = [
 		{ name: 'Policy', eventId: 'policy' },
 		{ name: 'LD', eventId: 'ld' }
-	])
+	]
 	const filteredOptionsWithIsSelected = createMemo(() => {
 		const selected = selectedComboboxItems()
-		const optionsWithSelected = comboboxItems().map((option) => {
+		const optionsWithSelected = comboboxItems.map((option) => {
 			const isSelected = selected.some(
 				(selectedOption) => selectedOption.eventId === option.eventId
 			)
