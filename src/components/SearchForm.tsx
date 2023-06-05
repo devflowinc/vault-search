@@ -19,9 +19,11 @@ const SearchForm = (props: { query?: string }) => {
 		const searchQuery = encodeURIComponent(
 			textAreaValue.length > 3800 ? textAreaValue.slice(0, 3800) : textAreaValue
 		)
-		const filters = selectedComboboxItems()
-			.map((item) => item.eventId)
-			.join(',')
+		const filters = encodeURIComponent(
+			selectedComboboxItems()
+				.map((item) => item.eventId)
+				.join(',')
+		)
 		window.location.href = `/search?q=${searchQuery}&filters=${filters}`
 	}
 	return (
