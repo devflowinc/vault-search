@@ -1,4 +1,3 @@
-import { Transition } from 'solid-headless'
 import { Show, createEffect, createSignal } from 'solid-js'
 import type { CardsWithTotalPagesDTO, ScoreCardDTO } from '../../utils/apiTypes'
 import ScoreCard from './ScoreCard'
@@ -8,7 +7,7 @@ import {
 	BiRegularLogIn,
 	BiRegularXCircle
 } from 'solid-icons/bi'
-import { FullScreenModal } from './FullScreenModal'
+import { FullScreenModal } from './Atoms/FullScreenModal'
 
 export interface ResultsPageProps {
 	query: string
