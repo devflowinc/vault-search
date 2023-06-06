@@ -18,7 +18,7 @@ let top_users_with_pages: UsersWithTotalPagesDTO = {
 const top_users_response = await fetch(`${apiHost}/top_users/${page}`)
 const top_users_and_cards_result = await top_users_response.json()
 const top_users_result: UserDTOWithScore[] = top_users_and_cards_result?.users
-console.log(top_users_result)
+
 if (
 	top_users_result &&
 	Array.isArray(top_users_result) &&

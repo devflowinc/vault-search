@@ -9,12 +9,31 @@ import {
 	BiRegularXCircle
 } from 'solid-icons/bi'
 import { FullScreenModal } from './FullScreenModal'
-import { PaginationControl } from './PaginationControl'
 
 export interface ResultsPageProps {
 	query: string
 	page: number
 	defaultResultCards: CardsWithTotalPagesDTO
+}
+
+const createArrayWithCenteredRange = (center: number, range: number) => {
+	const array = []
+	const indicesBeforeCenter = Math.floor(range / 2)
+
+	if (center === Math.floor(range / 2) + 1) {
+		for (let j = 1; j <= range; j++) {
+			array.push(j)
+		}
+	} else {
+		let currentValue = Math.max(1, center - indicesBeforeCenter)
+
+		for (let j = 0; j < range; j++) {
+			array.push(currentValue)
+			currentValue++
+		}
+	}
+
+	return array
 }
 
 const ResultsPage = (props: ResultsPageProps) => {
@@ -23,7 +42,7 @@ const ResultsPage = (props: ResultsPageProps) => {
 	const totalPages = props.defaultResultCards.total_card_pages
 	const [resultCards, setResultCards] = createSignal<ScoreCardDTO[]>(initialResultCards)
 	const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false)
-	const [currentPage, setCurrentPage] = createSignal(props.page)
+
 	createEffect(() => {
 		const abortController = new AbortController()
 
@@ -54,7 +73,13 @@ const ResultsPage = (props: ResultsPageProps) => {
 		<>
 			<div class="mt-12 flex w-full flex-col items-center space-y-4">
 				<Show when={resultCards().length === 0}>
-					<div class="text-2xl">No results found</div>
+					<button
+						onClick={() => {
+							window.location.href = `/search?q=${props.query}&page=${props.page + 1}`
+						}}
+					>
+						<div class="text-2xl">No results found</div>
+					</button>
 				</Show>
 				<div class="flex w-full max-w-6xl flex-col space-y-4 px-4 sm:px-8 md:px-20">
 					{resultCards().map((card) => (
@@ -64,33 +89,45 @@ const ResultsPage = (props: ResultsPageProps) => {
 					))}
 				</div>
 			</div>
-			<div
-				class={`mt-12 flex w-full items-center justify-center ${
-					props.page === 1 ? 'justify-end' : 'justify-between'
-				} px-4 sm:px-8 md:px-20`}
-			>
-				<PaginationControl
-					currentPage={currentPage}
-					totalPages={totalPages}
-					setCurrentPage={setCurrentPage}
-					query={props.query}
-				/>
-				{/* {props.page != 1 && (
-					<a
-						class="flex w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
-						href={`/search?q=${props.query}&page=${props.page - 1}`}
+			<div class="mb-16 mt-12 flex w-full items-center justify-center space-x-1">
+				<Show when={props.page > 1}>
+					<button
+						onClick={() => {
+							window.location.href = `/search?q=${props.query}&page=${props.page - 1}`
+						}}
 					>
-						Previous <BiRegularChevronLeft class="h-6 w-6" />
-					</a>
-				)}
-				{resultCards().length === 25 && (
-					<a
-						class="flex w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
-						href={`/search?q=${props.query}&page=${props.page + 1}`}
+						<BiRegularChevronLeft class="h-8 w-8 text-neutral-400 dark:text-neutral-500" />
+					</button>
+				</Show>
+				{createArrayWithCenteredRange(
+					// Center on the current page, unless the current page is the last or second to last page
+					totalPages - props.page > 1 ? props.page : totalPages - 2,
+					// Show 5 pages, unless there are less than 5 total pages
+					Math.min(totalPages, 5)
+				).map((n) => (
+					<button
+						classList={{
+							'flex h-8 w-8 items-center justify-center rounded-full focus:bg-neutral-400/70 dark:focus:bg-neutral-500/80':
+								true,
+							'bg-neutral-400/70 dark:bg-neutral-500/80': n === props.page,
+							'bg-neutral-200 dark:bg-neutral-700': n !== props.page
+						}}
+						onClick={() => {
+							window.location.href = `/search?q=${props.query}&page=${n}`
+						}}
 					>
-						Next <BiRegularChevronRight class="h-6 w-6" />
-					</a>
-				)} */}
+						{n}
+					</button>
+				))}
+				<Show when={props.page < totalPages}>
+					<button
+						onClick={() => {
+							window.location.href = `/search?q=${props.query}&page=${props.page + 1}`
+						}}
+					>
+						<BiRegularChevronRight class="h-8 w-8 text-neutral-400 dark:text-neutral-500" />
+					</button>
+				</Show>
 			</div>
 			<Show when={showNeedLoginModal()}>
 				<FullScreenModal isOpen={showNeedLoginModal} setIsOpen={setShowNeedLoginModal}>
