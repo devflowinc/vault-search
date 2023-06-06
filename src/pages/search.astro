@@ -15,7 +15,7 @@ const page = Number(params.get('page')) || 1
 const filters = params.get('filters') || ''
 let initialScoreCards: CardsWithTotalPagesDTO = {
 	score_cards: [],
-	total_pages: 0
+	total_card_pages: 0
 };
 try {
 	const initialScoreCardsResult = await fetch(`${apiHost}/card/search/${page}`, {
