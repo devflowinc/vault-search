@@ -52,20 +52,20 @@ const RegisterOrUserProfile = () => {
 			<Transition
 				show={!isLoadingUser()}
 				enter="transition duration-500"
-				enterFrom="opacity-0 scale-50"
+				enterFrom="opacity-0"
 				enterTo="opacity-100"
 				leave="transition duration-300"
 				leaveFrom="opacity-100"
-				leaveTo="opacity-0 scale-50"
+				leaveTo="opacity-0"
 			>
 				<Transition
 					show={!currentUser()}
 					enter="transition duration-700"
-					enterFrom="opacity-0 scale-50"
+					enterFrom="opacity-0"
 					enterTo="opacity-100"
 					leave="transition duration-300"
 					leaveFrom="opacity-100"
-					leaveTo="opacity-0 scale-50"
+					leaveTo="opacity-0"
 				>
 					<a
 						class="flex space-x-2 rounded-md bg-turquoise-500 p-2 text-neutral-900"
@@ -78,11 +78,11 @@ const RegisterOrUserProfile = () => {
 				<Transition
 					show={!!currentUser()}
 					enter="transition duration-700"
-					enterFrom="opacity-0 scale-50"
+					enterFrom="opacity-0"
 					enterTo="opacity-100"
 					leave="transition duration-300"
 					leaveFrom="opacity-100"
-					leaveTo="opacity-0 scale-50"
+					leaveTo="opacity-0"
 				>
 					<Popover defaultOpen={false} class="relative flex items-center">
 						{({ isOpen }) => (
@@ -93,11 +93,11 @@ const RegisterOrUserProfile = () => {
 								<Transition
 									show={isOpen()}
 									enter="transition duration-200"
-									enterFrom="opacity-0 scale-50"
+									enterFrom="opacity-0"
 									enterTo="opacity-100"
 									leave="transition duration-150"
 									leaveFrom="opacity-100"
-									leaveTo="opacity-0 scale-50"
+									leaveTo="opacity-0"
 								>
 									<PopoverPanel
 										unmount={true}
