@@ -1,7 +1,7 @@
 import { BiRegularLogIn, BiRegularX, BiRegularXCircle } from 'solid-icons/bi'
 import { JSX, Show, createSignal } from 'solid-js'
 import { isActixApiDefaultError } from '../../utils/apiTypes'
-import { FullScreenModal } from './FullScreenModal'
+import { FullScreenModal } from './Atoms/FullScreenModal'
 
 const SearchForm = () => {
 	const apiHost = import.meta.env.PUBLIC_API_HOST
