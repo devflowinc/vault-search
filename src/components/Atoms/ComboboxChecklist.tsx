@@ -84,7 +84,7 @@ export const Combobox = (props: ComboboxProps) => {
 				/>
 			</div>
 			<div
-				class="mt-1 max-h-[40vh] w-full transform overflow-y-scroll rounded p-2"
+				class="mt-1 max-h-[40vh] w-full transform overflow-y-scroll rounded px-2"
 				onMouseEnter={() => {
 					setUsingPanel(true)
 				}}
@@ -112,7 +112,7 @@ export const Combobox = (props: ComboboxProps) => {
 													classList={{
 														'flex w-full items-center justify-between rounded p-1 focus:text-black focus:outline-none dark:hover:text-white dark:focus:text-white':
 															true,
-														'bg-neutral-200 dark:bg-neutral-800': option.isSelected
+														'bg-neutral-300 dark:bg-neutral-900': option.isSelected
 													}}
 													onClick={onClick}
 												>
