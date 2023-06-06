@@ -1,6 +1,6 @@
 import { Transition } from 'solid-headless'
 import { Show, createEffect, createSignal } from 'solid-js'
-import type { ScoreCardDTO } from '../../utils/apiTypes'
+import type { CardsWithTotalPagesDTO, ScoreCardDTO } from '../../utils/apiTypes'
 import ScoreCard from './ScoreCard'
 import {
 	BiRegularChevronLeft,
@@ -13,13 +13,13 @@ import { FullScreenModal } from './FullScreenModal'
 export interface ResultsPageProps {
 	query: string
 	page: number
-	defaultResultCards: ScoreCardDTO[]
+	defaultResultCards: CardsWithTotalPagesDTO
 }
 
 const ResultsPage = (props: ResultsPageProps) => {
 	const apiHost = import.meta.env.PUBLIC_API_HOST
-	const initialResultCards = props.defaultResultCards
-
+	const initialResultCards = props.defaultResultCards.score_cards
+	const cardPages = props.defaultResultCards.total_pages
 	const [resultCards, setResultCards] = createSignal<ScoreCardDTO[]>(initialResultCards)
 	const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false)
 
@@ -39,7 +39,7 @@ const ResultsPage = (props: ResultsPageProps) => {
 		}).then((response) => {
 			if (response.ok) {
 				response.json().then((data) => {
-					setResultCards(data)
+					setResultCards(data.score_cards)
 				})
 			}
 		})

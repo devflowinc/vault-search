@@ -85,6 +85,11 @@ const isCardMetadataWithVotes = (card: unknown): card is CardMetadataWithVotes =
 	)
 }
 
+export interface CardsWithTotalPagesDTO {
+	score_cards: ScoreCardDTO[]
+	total_pages: number
+}
+
 export interface ScoreCardDTO {
 	metadata: CardMetadataWithVotes
 	score: number
@@ -196,6 +201,10 @@ export const isUserDTOWithVotesAndCards = (user: unknown): user is UserDTOWithVo
 	)
 }
 
+export type UsersWithTotalPagesDTO = {
+	users: UserDTOWithScore[]
+	total_user_pages: number
+}
 export type UserDTOWithScore = UserDTO & {
 	created_at: string
 	score: number
