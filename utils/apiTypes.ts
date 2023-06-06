@@ -87,7 +87,7 @@ const isCardMetadataWithVotes = (card: unknown): card is CardMetadataWithVotes =
 
 export interface CardsWithTotalPagesDTO {
 	score_cards: ScoreCardDTO[]
-	total_pages: number
+	total_card_pages: number
 }
 
 export interface ScoreCardDTO {

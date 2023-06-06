@@ -9,6 +9,7 @@ import {
 	BiRegularXCircle
 } from 'solid-icons/bi'
 import { FullScreenModal } from './FullScreenModal'
+import { PaginationControl } from './PaginationControl'
 
 export interface ResultsPageProps {
 	query: string
@@ -19,10 +20,10 @@ export interface ResultsPageProps {
 const ResultsPage = (props: ResultsPageProps) => {
 	const apiHost = import.meta.env.PUBLIC_API_HOST
 	const initialResultCards = props.defaultResultCards.score_cards
-	const cardPages = props.defaultResultCards.total_pages
+	const totalPages = props.defaultResultCards.total_card_pages
 	const [resultCards, setResultCards] = createSignal<ScoreCardDTO[]>(initialResultCards)
 	const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false)
-
+	const [currentPage, setCurrentPage] = createSignal(props.page)
 	createEffect(() => {
 		const abortController = new AbortController()
 
@@ -64,11 +65,17 @@ const ResultsPage = (props: ResultsPageProps) => {
 				</div>
 			</div>
 			<div
-				class={`mt-12 flex w-full ${
+				class={`mt-12 flex w-full items-center justify-center ${
 					props.page === 1 ? 'justify-end' : 'justify-between'
 				} px-4 sm:px-8 md:px-20`}
 			>
-				{props.page != 1 && (
+				<PaginationControl
+					currentPage={currentPage}
+					totalPages={totalPages}
+					setCurrentPage={setCurrentPage}
+					query={props.query}
+				/>
+				{/* {props.page != 1 && (
 					<a
 						class="flex w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
 						href={`/search?q=${props.query}&page=${props.page - 1}`}
@@ -83,7 +90,7 @@ const ResultsPage = (props: ResultsPageProps) => {
 					>
 						Next <BiRegularChevronRight class="h-6 w-6" />
 					</a>
-				)}
+				)} */}
 			</div>
 			<Show when={showNeedLoginModal()}>
 				<FullScreenModal isOpen={showNeedLoginModal} setIsOpen={setShowNeedLoginModal}>
