@@ -84,7 +84,7 @@ export const Combobox = (props: ComboboxProps) => {
 				/>
 			</div>
 			<div
-				class="mt-1 max-h-[40vh] w-full transform overflow-y-scroll rounded px-2"
+				class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md mt-1 max-h-[40vh] w-full transform overflow-y-auto rounded px-2 scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600"
 				onMouseEnter={() => {
 					setUsingPanel(true)
 				}}

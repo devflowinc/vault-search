@@ -13,6 +13,7 @@ export interface ResultsPageProps {
 	query: string
 	page: number
 	defaultResultCards: CardsWithTotalPagesDTO
+	filters: string[]
 }
 
 const createArrayWithCenteredRange = (center: number, range: number) => {
@@ -89,8 +90,8 @@ const ResultsPage = (props: ResultsPageProps) => {
 					))}
 				</div>
 			</div>
-			<div class="mb-16 mt-12 flex w-full items-center justify-center space-x-1">
-				<Show when={props.page > 1}>
+			<div class="mx-auto my-12 flex items-center space-x-2">
+				<Show when={props.page != 1}>
 					<button
 						onClick={() => {
 							window.location.href = `/search?q=${props.query}&page=${props.page - 1}`
