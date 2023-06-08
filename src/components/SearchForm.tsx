@@ -1,50 +1,57 @@
 import { BiRegularSearch, BiRegularX } from 'solid-icons/bi'
 import { VsTriangleDown } from 'solid-icons/vs'
-import { Show, createSignal } from 'solid-js'
+import { Show, createEffect, createSignal } from 'solid-js'
 import { Combobox, ComboboxItem, ComboboxSection } from './Atoms/ComboboxChecklist'
 import { Menu, MenuItem, Popover, PopoverButton, PopoverPanel, Transition } from 'solid-headless'
 
 const filterComboboxSections: ComboboxSection[] = [
 	{
-		name: 'Year',
-		comboboxItems: [
-			{
-				name: '2014'
-			},
-			{
-				name: '2015'
-			},
-			{
-				name: '2016'
-			}
-		]
-	},
-	{
 		name: 'Data set',
 		comboboxItems: [
 			{
-				name: 'COCO'
+				name: '2013OpenEv'
 			},
 			{
-				name: 'OpenImages'
+				name: '2014OpenEv'
 			},
 			{
-				name: 'VisualGenome'
+				name: '2015OpenEv'
 			},
 			{
-				name: 'LVIS'
+				name: '2016OpenEv'
 			},
 			{
-				name: 'COCO'
+				name: '2017OpenEv'
 			},
 			{
-				name: 'OpenImages'
+				name: '2018OpenEv'
 			},
 			{
-				name: 'VisualGenome'
+				name: '2019OpenEv'
 			},
 			{
-				name: 'LVIS'
+				name: '2020OpenEv'
+			},
+			{
+				name: '2021OpenEv'
+			},
+			{
+				name: '2022OpenEv'
+			},
+			{
+				name: 'hsld22-all-2023'
+			},
+			{
+				name: 'hspf22-all-2023'
+			},
+			{
+				name: 'hspolicy22-all-2023'
+			},
+			{
+				name: 'ndtceda22-all-2023'
+			},
+			{
+				name: 'nfald22-all-2023'
 			}
 		]
 	}
@@ -52,8 +59,12 @@ const filterComboboxSections: ComboboxSection[] = [
 
 const SearchForm = (props: { query?: string; filters: string[] }) => {
 	const initialQuery = props.query || ''
+	const initialFilters = filterComboboxSections.flatMap((section) =>
+		section.comboboxItems.filter((item) => props.filters.includes(item.name))
+	)
 	const [textareaInput, setTextareaInput] = createSignal(initialQuery)
-	const [selectedComboboxItems, setSelectedComboboxItems] = createSignal<ComboboxItem[]>([])
+	const [selectedComboboxItems, setSelectedComboboxItems] =
+		createSignal<ComboboxItem[]>(initialFilters)
 
 	const resizeTextarea = (textarea: HTMLTextAreaElement | null) => {
 		if (!textarea) return
@@ -76,6 +87,10 @@ const SearchForm = (props: { query?: string; filters: string[] }) => {
 		window.location.href = `/search?q=${searchQuery}` + (filters ? `&filters=${filters}` : '')
 	}
 
+	createEffect(() => {
+		resizeTextarea(document.getElementById('search-query-textarea') as HTMLTextAreaElement | null)
+	})
+
 	return (
 		<div class="w-full">
 			<form class="w-full space-y-4 text-neutral-800 dark:text-white" onSubmit={onSubmit}>
@@ -91,12 +106,17 @@ const SearchForm = (props: { query?: string; filters: string[] }) => {
 							value={textareaInput()}
 							onInput={(e) => resizeTextarea(e.target)}
 							onKeyDown={(e) => {
-								if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+								if (
+									((e.ctrlKey || e.metaKey) && e.key === 'Enter') ||
+									(!e.shiftKey && e.key === 'Enter')
+								) {
 									onSubmit(e)
 								}
 							}}
 							rows="1"
-						/>
+						>
+							{textareaInput() || props.query}
+						</textarea>
 						<Show when={textareaInput()}>
 							<button
 								classList={{
@@ -145,7 +165,7 @@ const SearchForm = (props: { query?: string; filters: string[] }) => {
 								>
 									<PopoverPanel
 										unmount={false}
-										class="absolute z-10 mt-2 h-fit w-[180px] -translate-x-[100px] rounded-md bg-neutral-100 p-1 shadow-lg dark:bg-neutral-700"
+										class="absolute z-10 mt-2 h-fit w-[180px] -translate-x-[100px] rounded-md bg-neutral-200 p-1 shadow-lg dark:bg-neutral-800"
 									>
 										<Menu class="h-0">
 											<MenuItem class="h-0" as="button" aria-label="Empty" />
