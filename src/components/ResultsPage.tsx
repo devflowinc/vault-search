@@ -53,7 +53,8 @@ const ResultsPage = (props: ResultsPageProps) => {
 			credentials: 'include',
 			signal: abortController.signal,
 			body: JSON.stringify({
-				content: props.query
+				content: props.query,
+				filter_oc_file_path: props.filters
 			})
 		}).then((response) => {
 			if (response.ok) {
