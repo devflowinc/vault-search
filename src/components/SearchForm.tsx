@@ -16,7 +16,7 @@ const filterComboboxSections: ComboboxSection[] = [
 			},
 			{
 				name: '2016'
-			},
+			}
 		]
 	},
 	{
@@ -34,11 +34,23 @@ const filterComboboxSections: ComboboxSection[] = [
 			{
 				name: 'LVIS'
 			},
+			{
+				name: 'COCO'
+			},
+			{
+				name: 'OpenImages'
+			},
+			{
+				name: 'VisualGenome'
+			},
+			{
+				name: 'LVIS'
+			}
 		]
 	}
 ]
 
-const SearchForm = (props: { query?: string }) => {
+const SearchForm = (props: { query?: string; filters: string[] }) => {
 	const initialQuery = props.query || ''
 	const [textareaInput, setTextareaInput] = createSignal(initialQuery)
 	const [selectedComboboxItems, setSelectedComboboxItems] = createSignal<ComboboxItem[]>([])
