@@ -22,7 +22,8 @@ try {
 		},
 		credentials: 'include',
 		body: JSON.stringify({
-			content: query
+			content: query,
+			filter_oc_file_path: filters
 		})
 	})
 
@@ -51,7 +52,7 @@ try {
 	<div class="mx-auto mt-8 w-full max-w-4xl px-4 sm:px-8 md:px-20">
 		<SearchForm query={query} filters={filters} client:load />
 	</div>
-	<ResultsPage page={page} query={query} defaultResultCards={initialScoreCards} client:load />
+	<ResultsPage page={page} query={query} filters={filters} defaultResultCards={initialScoreCards} client:load />
 	<div class="flex-1"></div>
 	<Footer />
 </SearchLayout>
