@@ -43,7 +43,9 @@ const SearchForm = () => {
 			})
 		}).then((response) => {
 			const searchQuery = encodeURIComponent(
-				cardContentValue.length > 3800 ? cardContentValue.slice(0, 3800) : cardContentValue
+				cardContentValue.length > 3800
+					? cardContentValue.replace(/(<([^>]+)>)/gi, '').slice(0, 3800)
+					: cardContentValue.replace(/(<([^>]+)>)/gi, '')
 			)
 			const newHref = `/search?q=${searchQuery}`
 
