@@ -38,7 +38,8 @@ const SearchForm = () => {
 			},
 			credentials: 'include',
 			body: JSON.stringify({
-				content: cardContentValue,
+				content: cardContentValue.replace(/(<([^>]+)>)/gi, ''),
+				card_html: cardContentValue,
 				link: evidenceLinkValue
 			})
 		}).then((response) => {
@@ -114,7 +115,9 @@ const SearchForm = () => {
 				'alignright alignjustify | bullist numlist outdent indent | ' +
 				'removeformat | help',
 			content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }',
-			menubar: false
+			menubar: false,
+			entity_encoding: 'raw',
+			entities: '160,nbsp,38,amp,60,lt,62,gt'
 		}
 		let tinyMCE: TinyMCE = window.tinymce
 		tinyMCE.init(options)
