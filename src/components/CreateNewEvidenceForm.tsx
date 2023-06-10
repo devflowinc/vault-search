@@ -74,9 +74,11 @@ const SearchForm = () => {
 				}
 			})
 		})
+		if (errorFields().includes('cardContent')) {
+			window.tinymce.activeEditor.focus()
+		}
 	}
 	onMount(() => {
-		console.log(document.getElementById('search-query-textarea'))
 		let options = {
 			selector: '#search-query-textarea',
 			height: '100%',
@@ -102,8 +104,8 @@ const SearchForm = () => {
 				'wordcount'
 			],
 			autoresize_bottom_margin: 150,
-			skin: 'oxide-dark',
-			content_css: 'dark',
+			skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
+			content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
 			toolbar:
 				'undo redo | blocks | ' +
 				'bold italic backcolor | alignleft aligncenter ' +
@@ -141,7 +143,7 @@ const SearchForm = () => {
 				<div class="flex flex-col space-y-2">
 					<div>Card Content*</div>
 
-					<textarea id="search-query-textarea" placeholder="Enter the content for your card..." />
+					<textarea id="search-query-textarea" />
 				</div>
 				<div class="flex flex-row space-x-2">
 					<button
