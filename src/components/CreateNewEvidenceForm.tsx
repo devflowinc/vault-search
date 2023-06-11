@@ -1,12 +1,11 @@
 import { BiRegularLogIn, BiRegularX, BiRegularXCircle } from 'solid-icons/bi'
-import { JSX, Show, createSignal } from 'solid-js'
+import { JSX, Show, createSignal, onMount } from 'solid-js'
 import { isActixApiDefaultError } from '../../utils/apiTypes'
 import { FullScreenModal } from './Atoms/FullScreenModal'
+import type { TinyMCE } from '../../public/tinymce/tinymce'
 
 const SearchForm = () => {
 	const apiHost = import.meta.env.PUBLIC_API_HOST
-
-	const [cardContent, setCardContent] = createSignal('')
 	const [evidenceLink, setEvidenceLink] = createSignal('')
 	const [errorText, setErrorText] = createSignal<
 		string | number | boolean | Node | JSX.ArrayElement | null | undefined
@@ -15,19 +14,14 @@ const SearchForm = () => {
 	const [isSubmitting, setIsSubmitting] = createSignal(false)
 	const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false)
 
-	const resizeTextarea = (textarea: HTMLTextAreaElement) => {
-		textarea.style.height = 'auto'
-		textarea.style.height = `${textarea.scrollHeight}px`
-		setCardContent(textarea.value)
-	}
-
 	const submitEvidence = async (e: Event) => {
 		e.preventDefault()
-		const cardContentValue = cardContent()
+		const cardHTMLContentValue = (window as any).tinymce.activeEditor.getContent()
+		const cardTextContentValue = (window as any).tinyMCE.activeEditor.getBody().textContent
 		const evidenceLinkValue = evidenceLink()
-		if (!cardContentValue || !evidenceLinkValue) {
+		if (!cardTextContentValue || !evidenceLinkValue) {
 			const errors: string[] = []
-			if (!cardContentValue) {
+			if (!cardTextContentValue) {
 				errors.push('cardContent')
 			}
 			if (!evidenceLinkValue) {
@@ -45,12 +39,15 @@ const SearchForm = () => {
 			},
 			credentials: 'include',
 			body: JSON.stringify({
-				content: cardContentValue,
+				content: cardTextContentValue,
+				card_html: cardHTMLContentValue,
 				link: evidenceLinkValue
 			})
 		}).then((response) => {
 			const searchQuery = encodeURIComponent(
-				cardContentValue.length > 3800 ? cardContentValue.slice(0, 3800) : cardContentValue
+				cardTextContentValue.length > 3800
+					? cardTextContentValue.slice(0, 3800)
+					: cardTextContentValue
 			)
 			const newHref = `/search?q=${searchQuery}`
 
@@ -81,7 +78,51 @@ const SearchForm = () => {
 				}
 			})
 		})
+		if (errorFields().includes('cardContent')) {
+			(window as any).tinymce.activeEditor.focus()
+		}
 	}
+	onMount(() => {
+		let options = {
+			selector: '#search-query-textarea',
+			height: '100%',
+			width: '100%',
+			plugins: [
+				'advlist',
+				'autoresize',
+				'autolink',
+				'lists',
+				'link',
+				'image',
+				'charmap',
+				'preview',
+				'anchor',
+				'searchreplace',
+				'visualblocks',
+				'code',
+				'fullscreen',
+				'insertdatetime',
+				'media',
+				'table',
+				'help',
+				'wordcount'
+			],
+			autoresize_bottom_margin: 150,
+			skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
+			content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
+			toolbar:
+				'undo redo | blocks | ' +
+				'bold italic backcolor | alignleft aligncenter ' +
+				'alignright alignjustify | bullist numlist outdent indent | ' +
+				'removeformat | help',
+			content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }',
+			menubar: false,
+			entity_encoding: 'raw',
+			entities: '160,nbsp,38,amp,60,lt,62,gt'
+		}
+		let tinyMCE: TinyMCE = (window as any).tinymce
+		tinyMCE.init(options as any)
+	})
 
 	return (
 		<>
@@ -107,42 +148,8 @@ const SearchForm = () => {
 				</div>
 				<div class="flex flex-col space-y-2">
 					<div>Card Content*</div>
-					<div
-						classList={{
-							'flex w-full justify-center space-x-2 rounded-md bg-neutral-100 px-4 py-1 dark:bg-neutral-700':
-								true,
-							'border border-red-500': errorFields().includes('cardContent')
-						}}
-					>
-						<textarea
-							id="search-query-textarea"
-							class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md h-fit max-h-[50vh] min-h-[150px] w-full resize-none whitespace-pre-wrap bg-transparent py-1 scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 focus:outline-none dark:bg-neutral-700 dark:text-white dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600"
-							placeholder="Enter the content for your card..."
-							value={cardContent()}
-							onInput={(e) => resizeTextarea(e.target)}
-							onKeyDown={(e) => {
-								if (e.ctrlKey && e.key === 'Enter') {
-									submitEvidence(e)
-									return
-								}
-							}}
-							rows="1"
-						/>
-						<Show when={cardContent()}>
-							<button
-								class="flex flex-col"
-								onClick={(e) => {
-									e.preventDefault()
-									setCardContent('')
-									resizeTextarea(
-										document.getElementById('search-query-textarea') as HTMLTextAreaElement
-									)
-								}}
-							>
-								<BiRegularX class="mt-1 h-6 w-6" />
-							</button>
-						</Show>
-					</div>
+
+					<textarea id="search-query-textarea" />
 				</div>
 				<div class="flex flex-row space-x-2">
 					<button
