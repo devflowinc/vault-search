@@ -8,7 +8,6 @@ import {
 	UsersWithTotalPagesDTO,
 	type UserDTOWithScore
 } from '../../utils/apiTypes'
-import { Combobox } from '../components/Atoms/ComboboxChecklist'
 const apiHost = import.meta.env.API_HOST
 
 const requestParams = Astro.request.url.split('?')[1]
@@ -20,16 +19,20 @@ let top_users_with_pages: UsersWithTotalPagesDTO = {
 	total_user_pages: 1,
 	users: []
 }
-const top_users_response = await fetch(`${apiHost}/top_users/${page}`)
-const top_users_and_cards_result = await top_users_response.json()
-const top_users_result: UserDTOWithScore[] = top_users_and_cards_result?.users
+try {
+	const top_users_response = await fetch(`${apiHost}/top_users/${page}`)
+	const top_users_and_cards_result = await top_users_response.json()
+	const top_users_result = top_users_and_cards_result?.users
 
-if (
-	top_users_result &&
-	Array.isArray(top_users_result) &&
-	top_users_result.every((user_with_score) => isUserDTOWithScore(user_with_score))
-) {
-	top_users_with_pages = top_users_and_cards_result as UsersWithTotalPagesDTO
+	if (
+		top_users_result &&
+		Array.isArray(top_users_result) &&
+		top_users_result.every((user_with_score) => isUserDTOWithScore(user_with_score))
+	) {
+		top_users_with_pages = top_users_and_cards_result as UsersWithTotalPagesDTO
+	}
+} catch (e) {
+	console.error(e)
 }
 ---
 
