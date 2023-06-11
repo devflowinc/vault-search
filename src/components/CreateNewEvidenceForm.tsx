@@ -17,7 +17,7 @@ const SearchForm = () => {
 	const submitEvidence = async (e: Event) => {
 		e.preventDefault()
 		const cardHTMLContentValue = (window as any).tinymce.activeEditor.getContent()
-		const cardTextContentValue = (window as any).tinyMCE.activeEditor.getBody().textContent;
+		const cardTextContentValue = (window as any).tinyMCE.activeEditor.getBody().textContent
 		const evidenceLinkValue = evidenceLink()
 		if (!cardTextContentValue || !evidenceLinkValue) {
 			const errors: string[] = []
@@ -45,7 +45,7 @@ const SearchForm = () => {
 			})
 		}).then((response) => {
 			const searchQuery = encodeURIComponent(
-				cardContentValue.length > 3800
+				cardTextContentValue.length > 3800
 					? cardTextContentValue.slice(0, 3800)
 					: cardTextContentValue
 			)
@@ -79,7 +79,7 @@ const SearchForm = () => {
 			})
 		})
 		if (errorFields().includes('cardContent')) {
-			(window as any).tinymce.activeEditor.focus()
+			;(window as any).tinymce.activeEditor.focus()
 		}
 	}
 	onMount(() => {
