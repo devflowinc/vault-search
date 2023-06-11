@@ -2,8 +2,14 @@ import { createSignal } from "solid-js";
 import { Popover, PopoverButton, PopoverPanel, Transition } from 'solid-headless'
 import usePopper from "solid-popper";
 import { RiSystemAddFill } from "solid-icons/ri";
+import type { CardCollectionDTO, ScoreCardDTO } from "../../utils/apiTypes";
 
-const BookmarkPopover = () => {
+export interface BookmarkPopoverProps {
+	card: ScoreCardDTO,
+	cardCollections: CardCollectionDTO[]
+}
+
+const BookmarkPopover = (props: BookmarkPopoverProps) => {
 	const [anchor, setAnchor] = createSignal<HTMLButtonElement>();
 	const [popper, setPopper] = createSignal<HTMLDivElement>();
 
@@ -23,7 +29,7 @@ const BookmarkPopover = () => {
 	});
 
 	return (
-		<Popover defaultOpen={true} class="relative">
+		<Popover defaultOpen={false} class="relative">
 			{({ isOpen }) => (
 				<div>
 					<PopoverButton ref={setAnchor}>
@@ -38,6 +44,13 @@ const BookmarkPopover = () => {
 								<div class="w-full p-2">
 									Add card to collection
 								</div>
+								{...props.cardCollections.map((collection) => (
+									<div>
+										<div class="w-full p-2">
+											{collection.name}
+										</div>
+									</div>
+								))}
 								<button class="flex space-x-2 w-full bg-neutral-100 p-2">
 									<RiSystemAddFill class="h-5 w-5" />
 									<p> New Colletion </p>
