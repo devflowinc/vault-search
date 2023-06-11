@@ -16,7 +16,7 @@ const SearchForm = () => {
 
 	const submitEvidence = async (e: Event) => {
 		e.preventDefault()
-		const cardContentValue = window.tinymce.activeEditor.getContent()
+		const cardContentValue = (window as any).tinymce.activeEditor.getContent()
 		const evidenceLinkValue = evidenceLink()
 		if (!cardContentValue || !evidenceLinkValue) {
 			const errors: string[] = []
@@ -78,7 +78,7 @@ const SearchForm = () => {
 			})
 		})
 		if (errorFields().includes('cardContent')) {
-			window.tinymce.activeEditor.focus()
+			(window as any).tinymce.activeEditor.focus()
 		}
 	}
 	onMount(() => {
@@ -119,8 +119,8 @@ const SearchForm = () => {
 			entity_encoding: 'raw',
 			entities: '160,nbsp,38,amp,60,lt,62,gt'
 		}
-		let tinyMCE: TinyMCE = window.tinymce
-		tinyMCE.init(options)
+		let tinyMCE: TinyMCE = (window as any).tinymce
+		tinyMCE.init(options as any)
 	})
 
 	return (
