@@ -16,11 +16,12 @@ const SearchForm = () => {
 
 	const submitEvidence = async (e: Event) => {
 		e.preventDefault()
-		const cardContentValue = (window as any).tinymce.activeEditor.getContent()
+		const cardHTMLContentValue = (window as any).tinymce.activeEditor.getContent()
+		const cardTextContentValue = (window as any).tinyMCE.activeEditor.getBody().textContent;
 		const evidenceLinkValue = evidenceLink()
-		if (!cardContentValue || !evidenceLinkValue) {
+		if (!cardTextContentValue || !evidenceLinkValue) {
 			const errors: string[] = []
-			if (!cardContentValue) {
+			if (!cardTextContentValue) {
 				errors.push('cardContent')
 			}
 			if (!evidenceLinkValue) {
@@ -38,15 +39,15 @@ const SearchForm = () => {
 			},
 			credentials: 'include',
 			body: JSON.stringify({
-				content: cardContentValue.replace(/(<([^>]+)>)/gi, ''),
-				card_html: cardContentValue,
+				content: cardTextContentValue,
+				card_html: cardHTMLContentValue,
 				link: evidenceLinkValue
 			})
 		}).then((response) => {
 			const searchQuery = encodeURIComponent(
 				cardContentValue.length > 3800
-					? cardContentValue.replace(/(<([^>]+)>)/gi, '').slice(0, 3800)
-					: cardContentValue.replace(/(<([^>]+)>)/gi, '')
+					? cardTextContentValue.slice(0, 3800)
+					: cardTextContentValue
 			)
 			const newHref = `/search?q=${searchQuery}`
 
