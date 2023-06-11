@@ -79,7 +79,7 @@ const SearchForm = () => {
 			})
 		})
 		if (errorFields().includes('cardContent')) {
-			;(window as any).tinymce.activeEditor.focus()
+			(window as any).tinymce.activeEditor.focus()
 		}
 	}
 	onMount(() => {
