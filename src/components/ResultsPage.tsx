@@ -1,5 +1,5 @@
 import { Show, createEffect, createSignal } from 'solid-js'
-import type { CardsWithTotalPagesDTO, ScoreCardDTO } from '../../utils/apiTypes'
+import type { CardCollectionDTO, CardsWithTotalPagesDTO, ScoreCardDTO } from '../../utils/apiTypes'
 import ScoreCard from './ScoreCard'
 import {
 	BiRegularLogIn,
@@ -26,10 +26,13 @@ const ResultsPage = (props: ResultsPageProps) => {
 	const apiHost = import.meta.env.PUBLIC_API_HOST
 	const initialResultCards = props.defaultResultCards.score_cards
 	const totalPages = props.defaultResultCards.total_card_pages
+
+	const [cardCollections, SetCardCollections] = createSignal<CardCollectionDTO[]>([])
 	const [resultCards, setResultCards] = createSignal<ScoreCardDTO[]>(initialResultCards)
 	const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false)
 	createEffect(() => {
 		const abortController = new AbortController()
+		const collectionAbortController = new AbortController()
 
 		fetch(`${apiHost}/card/${props.searchType}/${props.page}`, {
 			method: 'POST',
@@ -51,8 +54,21 @@ const ResultsPage = (props: ResultsPageProps) => {
 			}
 		})
 
+		fetch(`${apiHost}/card_collection`, {
+			method: 'GET',
+			credentials: 'include',
+			signal: collectionAbortController.signal,
+		}).then((response) => {
+			if (response.ok) {
+				response.json().then((data) => {
+					SetCardCollections(data)
+				})
+			}
+		});
+
 		return () => {
 			abortController.abort()
+			collectionAbortController.abort()
 		}
 	})
 
@@ -71,7 +87,7 @@ const ResultsPage = (props: ResultsPageProps) => {
 				<div class="flex w-full max-w-6xl flex-col space-y-4 px-4 sm:px-8 md:px-20">
 					{resultCards().map((card) => (
 						<div>
-							<ScoreCard card={card} setShowModal={setShowNeedLoginModal} />
+							<ScoreCard cardCollections={cardCollections()} card={card} setShowModal={setShowNeedLoginModal} />
 						</div>
 					))}
 				</div>

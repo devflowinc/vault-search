@@ -1,5 +1,5 @@
 import { Setter, Show, createEffect, createSignal } from 'solid-js'
-import type { CardMetadata, ScoreCardDTO } from '../../utils/apiTypes'
+import type { CardCollectionDTO, ScoreCardDTO } from '../../utils/apiTypes'
 import { BiRegularChevronDown, BiRegularChevronUp } from 'solid-icons/bi'
 import {
 	RiSystemArrowDownCircleFill,
@@ -9,11 +9,7 @@ import {
 } from 'solid-icons/ri'
 import BookmarkPopover from './BookmarkPopover'
 
-const ScoreCard = (props: {
-	card: ScoreCardDTO
-	collection?: boolean
-	setShowModal: Setter<boolean>
-}) => {
+const ScoreCard = (props: { cardCollections: CardCollectionDTO[], card: ScoreCardDTO; setShowModal: Setter<boolean> }) => {
 	const api_host = import.meta.env.PUBLIC_API_HOST
 
 	const initialVoteTotal = props.card.metadata.total_upvotes - props.card.metadata.total_downvotes
@@ -21,7 +17,6 @@ const ScoreCard = (props: {
 	const [expanded, setExpanded] = createSignal(false || props.card.score === 0)
 	const [userVote, setUserVote] = createSignal(0)
 	const [totalVote, setTotalVote] = createSignal(initialVoteTotal)
-
 
 	createEffect(() => {
 		if (props.card.metadata.vote_by_current_user === null) {
@@ -161,7 +156,7 @@ const ScoreCard = (props: {
 					</div>
 				</div>
 				<div>
-					<BookmarkPopover />
+					<BookmarkPopover cardCollections={props.cardCollections} card={props.card} />
 				</div>
 			</div>
 			<Show when={props.card.score != 0 || props.collection}>
