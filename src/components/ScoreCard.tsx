@@ -5,8 +5,9 @@ import {
 	RiSystemArrowDownCircleFill,
 	RiSystemArrowDownCircleLine,
 	RiSystemArrowUpCircleFill,
-	RiSystemArrowUpCircleLine
+	RiSystemArrowUpCircleLine,
 } from 'solid-icons/ri'
+import BookmarkPopover from './BookmarkPopover'
 
 const ScoreCard = (props: {
 	card: ScoreCardDTO
@@ -20,6 +21,8 @@ const ScoreCard = (props: {
 	const [expanded, setExpanded] = createSignal(false || props.card.score === 0)
 	const [userVote, setUserVote] = createSignal(0)
 	const [totalVote, setTotalVote] = createSignal(initialVoteTotal)
+
+
 	createEffect(() => {
 		if (props.card.metadata.vote_by_current_user === null) {
 			return
@@ -27,8 +30,8 @@ const ScoreCard = (props: {
 		setUserVote(props.card.metadata.vote_by_current_user ? 1 : -1)
 		setTotalVote(
 			props.card.metadata.total_upvotes -
-				props.card.metadata.total_downvotes -
-				(props.card.metadata.vote_by_current_user ? 1 : -1)
+			props.card.metadata.total_downvotes -
+			(props.card.metadata.vote_by_current_user ? 1 : -1)
 		)
 	})
 
@@ -70,92 +73,95 @@ const ScoreCard = (props: {
 
 	return (
 		<div class="flex w-full flex-col items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-700">
-			<div class="flex w-full items-start">
-				<div class="flex flex-col items-center pr-2">
-					<button
-						onClick={(e) => {
-							e.preventDefault()
-							setUserVote((prev) => {
-								const new_val = prev === 1 ? 0 : 1
-								createVote(prev, new_val)
-								return new_val
-							})
-						}}
-					>
-						<Show when={userVote() === 1}>
-							<RiSystemArrowUpCircleFill class="h-8 w-8 !text-turquoise-500" />
-						</Show>
-						<Show when={userVote() != 1}>
-							<RiSystemArrowUpCircleLine class="h-8 w-8" />
-						</Show>
-					</button>
-					<span class="my-1">{totalVote() + userVote()}</span>
-					<button
-						onClick={(e) => {
-							e.preventDefault()
-							setUserVote((prev) => {
-								const new_val = prev === -1 ? 0 : -1
-								createVote(prev, new_val)
-								return new_val
-							})
-						}}
-					>
-						<Show when={userVote() === -1}>
-							<RiSystemArrowDownCircleFill class="h-8 w-8 !text-turquoise-500" />
-						</Show>
-						<Show when={userVote() != -1}>
-							<RiSystemArrowDownCircleLine class="h-8 w-8" />
-						</Show>
-					</button>
-				</div>
-				<div class="flex w-full flex-col">
-					<Show when={props.card.metadata.link}>
-						<a
-							class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
-							target="_blank"
-							href={props.card.metadata.link ?? ''}
+			<div class="flex w-full">
+				<div class="flex w-full items-start">
+					<div class="flex flex-col items-center pr-2">
+						<button
+							onClick={(e) => {
+								e.preventDefault()
+								setUserVote((prev) => {
+									const new_val = prev === 1 ? 0 : 1
+									createVote(prev, new_val)
+									return new_val
+								})
+							}}
 						>
-							{props.card.metadata.link}
-						</a>
-					</Show>
-					<Show when={props.card.metadata.oc_file_path}>
-						<div class="flex space-x-2">
-							<span class="font-semibold text-neutral-800 dark:text-neutral-200">Brief: </span>
+							<Show when={userVote() === 1}>
+								<RiSystemArrowUpCircleFill class="h-8 w-8 !text-turquoise-500" />
+							</Show>
+							<Show when={userVote() != 1}>
+								<RiSystemArrowUpCircleLine class="h-8 w-8" />
+							</Show>
+						</button>
+						<span class="my-1">{totalVote() + userVote()}</span>
+						<button
+							onClick={(e) => {
+								e.preventDefault()
+								setUserVote((prev) => {
+									const new_val = prev === -1 ? 0 : -1
+									createVote(prev, new_val)
+									return new_val
+								})
+							}}
+						>
+							<Show when={userVote() === -1}>
+								<RiSystemArrowDownCircleFill class="h-8 w-8 !text-turquoise-500" />
+							</Show>
+							<Show when={userVote() != -1}>
+								<RiSystemArrowDownCircleLine class="h-8 w-8" />
+							</Show>
+						</button>
+					</div>
+					<div class="flex w-full flex-col">
+						<Show when={props.card.metadata.link}>
 							<a
 								class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
 								target="_blank"
-								href={'https://oc.arguflow.com/' + props.card.metadata.oc_file_path ?? ''}
+								href={props.card.metadata.link ?? ''}
 							>
-								{props.card.metadata.oc_file_path?.split('/').pop() ??
-									props.card.metadata.oc_file_path}
+								{props.card.metadata.link}
 							</a>
-						</div>
-					</Show>
-					<div class="grid w-fit auto-cols-min grid-cols-[1fr,3fr] gap-x-2 text-neutral-800 dark:text-neutral-200">
-						<Show when={props.card.score != 0 && !props.collection}>
+						</Show>
+						<Show when={props.card.metadata.oc_file_path}>
+							<div class="flex space-x-2">
+								<span class="font-semibold text-neutral-800 dark:text-neutral-200">Brief: </span>
+								<a
+									class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
+									target="_blank"
+									href={'https://oc.arguflow.com/' + props.card.metadata.oc_file_path ?? ''}
+								>
+									{props.card.metadata.oc_file_path?.split('/').pop() ??
+										props.card.metadata.oc_file_path}
+								</a>
+							</div>
+						</Show>
+						<div class="grid w-fit auto-cols-min grid-cols-[1fr,3fr] gap-x-2 text-neutral-800 dark:text-neutral-200">
 							<span class="font-semibold">Similarity: </span>
 							<span>{props.card.score}</span>
-						</Show>
-						<Show when={props.card.metadata.author}>
-							<span class="font-semibold">Author: </span>
-							<a
-								href={`/user/${props.card.metadata.author?.id}`}
-								class="line-clamp-1 break-all underline"
-							>
-								{props.card.metadata.author?.username ?? props.card.metadata.author?.email}
-							</a>
-						</Show>
-						<span class="font-semibold">Created: </span>
-						<span>{new Date(props.card.metadata.created_at).toLocaleDateString()}</span>
+							<Show when={props.card.metadata.author}>
+								<span class="font-semibold">Author: </span>
+								<a
+									href={`/user/${props.card.metadata.author?.id}`}
+									class="line-clamp-1 break-all underline"
+								>
+									{props.card.metadata.author?.username ?? props.card.metadata.author?.email}
+								</a>
+							</Show>
+							<span class="font-semibold">Created: </span>
+							<span>{new Date(props.card.metadata.created_at).toLocaleDateString()}</span>
+						</div>
+						<div class="mb-1 h-1 w-full border-b border-neutral-300 dark:border-neutral-600" />
+						<p
+							classList={{
+								'line-clamp-4 gradient-mask-b-0': !expanded()
+							}}
+						>
+							{props.card.metadata.content.toString()}
+						</p>
 					</div>
-					<div class="mb-1 h-1 w-full border-b border-neutral-300 dark:border-neutral-600" />
-					<p
-						classList={{
-							'line-clamp-4 gradient-mask-b-0': !expanded()
-						}}
-					>
-						{props.card.metadata.content.toString()}
-					</p>
+				</div>
+				<div>
+					<BookmarkPopover />
 				</div>
 			</div>
 			<Show when={props.card.score != 0 || props.collection}>
