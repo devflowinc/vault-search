@@ -594,6 +594,11 @@
     picocolors "^1.0.0"
     tslib "^2.5.0"
 
+"@popperjs/core@^2.11.8":
+  version "2.11.8"
+  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.8.tgz#6b79032e760a0899cd4204710beede972a3a185f"
+  integrity sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==
+
 "@proload/core@^0.3.3":
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/@proload/core/-/core-0.3.3.tgz#0a30c5ab69e21254b339813c674a6197a42337c3"
@@ -4186,6 +4191,11 @@ solid-js@^1.4.3:
   dependencies:
     csstype "^3.1.0"
     seroval "^0.5.0"
+
+solid-popper@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/solid-popper/-/solid-popper-0.3.0.tgz#83eea03b367c801f0c79e5dd130c6efa1006e6e4"
+  integrity sha512-XlfEWAyxGGqFgg/uRpF+BemSfCqjbLA8p6fToDa+6v3paw3eBQj0TU08aBOIj2VeigaEiz8ZTlDx1eBLVRivBg==
 
 solid-use@^0.6.2:
   version "0.6.2"
