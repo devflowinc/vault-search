@@ -1,8 +1,9 @@
 import { BiRegularSearch, BiRegularX } from 'solid-icons/bi'
 import { VsTriangleDown } from 'solid-icons/vs'
-import { Show, createEffect, createSignal } from 'solid-js'
+import { For, Show, createEffect, createSignal } from 'solid-js'
 import { Combobox, ComboboxItem, ComboboxSection } from './Atoms/ComboboxChecklist'
 import { Menu, MenuItem, Popover, PopoverButton, PopoverPanel, Transition } from 'solid-headless'
+import { FaSolidCheck } from 'solid-icons/fa'
 
 const filterComboboxSections: ComboboxSection[] = [
 	{
@@ -57,11 +58,15 @@ const filterComboboxSections: ComboboxSection[] = [
 	}
 ]
 
-const SearchForm = (props: { query?: string; filters: string[] }) => {
+const SearchForm = (props: { query?: string; filters: string[]; searchType: String }) => {
 	const initialQuery = props.query || ''
 	const initialFilters = filterComboboxSections.flatMap((section) =>
 		section.comboboxItems.filter((item) => props.filters.includes(item.name))
 	)
+	let [searchTypes, setSearchTypes] = createSignal([
+		{ name: 'Full Text', isSelected: false, route: 'fulltextsearch' },
+		{ name: 'Semantic', isSelected: true, route: 'search' }
+	])
 	const [textareaInput, setTextareaInput] = createSignal(initialQuery)
 	const [selectedComboboxItems, setSelectedComboboxItems] =
 		createSignal<ComboboxItem[]>(initialFilters)
@@ -84,18 +89,31 @@ const SearchForm = (props: { query?: string; filters: string[] }) => {
 				.map((item) => item.name)
 				.join(',')
 		)
-		window.location.href = `/search?q=${searchQuery}` + (filters ? `&filters=${filters}` : '')
+
+		window.location.href =
+			`/search?q=${searchQuery}` +
+			(filters ? `&filters=${filters}` : '') +
+			(searchTypes()[0].isSelected ? `&searchType=fulltextsearch` : '')
 	}
 
 	createEffect(() => {
 		resizeTextarea(document.getElementById('search-query-textarea') as HTMLTextAreaElement | null)
+		setSearchTypes((prev) => {
+			return prev.map((item) => {
+				if (props.searchType == item.route) {
+					return { ...item, isSelected: true }
+				} else {
+					return { ...item, isSelected: false }
+				}
+			})
+		})
 	})
 
 	return (
 		<div class="w-full">
 			<form class="w-full space-y-4 text-neutral-800 dark:text-white" onSubmit={onSubmit}>
 				<div class="flex space-x-2">
-					<div class="flex w-full justify-center space-x-2 rounded-md bg-neutral-100 px-4 py-1 dark:bg-neutral-700 ">
+					<div class="pr-0. flex w-full justify-center space-x-2 rounded-md bg-neutral-100 px-4 py-1 pr-[10px] dark:bg-neutral-700 ">
 						<Show when={!props.query}>
 							<BiRegularSearch class="mt-1 h-6 w-6" />
 						</Show>
@@ -136,7 +154,7 @@ const SearchForm = (props: { query?: string; filters: string[] }) => {
 						<Show when={props.query}>
 							<button
 								classList={{
-									'border-l border-neutral-600 pl-1 dark:border-neutral-200': !!textareaInput()
+									'border-l border-neutral-600 pl-[10px] dark:border-neutral-200': !!textareaInput()
 								}}
 								type="submit"
 							>
@@ -182,10 +200,79 @@ const SearchForm = (props: { query?: string; filters: string[] }) => {
 						)}
 					</Popover>
 				</div>
+				<Popover defaultOpen={false} class="relative sm:absolute">
+					{({ isOpen, setState }) => (
+						<>
+							<PopoverButton
+								aria-label="Toggle filters"
+								type="button"
+								class="flex items-center space-x-1 text-sm"
+							>
+								<span>Search Type</span> <VsTriangleDown class="h-3.5 w-3.5" />
+							</PopoverButton>
+							<Transition
+								show={isOpen()}
+								enter="transition duration-200"
+								enterFrom="opacity-0"
+								enterTo="opacity-100"
+								leave="transition duration-150"
+								leaveFrom="opacity-100"
+								leaveTo="opacity-0"
+							>
+								<PopoverPanel
+									unmount={false}
+									class="absolute z-10 mt-2 h-fit w-[180px]  rounded-md bg-neutral-200 p-1 shadow-lg dark:bg-neutral-800"
+								>
+									<Menu class="ml-1 space-y-1">
+										<For each={searchTypes()}>
+											{(option) => {
+												const onClick = (e: Event) => {
+													e.preventDefault()
+													e.stopPropagation()
+													let resultType = []
+													setSearchTypes((prev) => {
+														return prev.map((item) => {
+															if (item.name === option.name) {
+																return { ...item, isSelected: true }
+															} else {
+																return { ...item, isSelected: false }
+															}
+														})
+													})
+													setState(true)
+												}
+												return (
+													<MenuItem
+														as="button"
+														classList={{
+															'flex w-full items-center justify-between rounded p-1 focus:text-black focus:outline-none dark:hover:text-white dark:focus:text-white':
+																true,
+															'bg-neutral-300 dark:bg-neutral-900': option.isSelected
+														}}
+														onClick={onClick}
+													>
+														<div class="flex flex-row justify-start space-x-2">
+															<span class="text-left">{option.name}</span>
+														</div>
+														{option.isSelected && (
+															<span>
+																<FaSolidCheck class="text-xl" />
+															</span>
+														)}
+													</MenuItem>
+												)
+											}}
+										</For>
+									</Menu>
+								</PopoverPanel>
+							</Transition>
+						</>
+					)}
+				</Popover>
 				<Show when={!props.query}>
 					<div class="flex flex-row justify-center space-x-2 px-6 md:px-40">
 						<button
-							class="w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+							class="w-fit rounded  bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
 							type="submit"
 						>
 							Search Evidence Vault

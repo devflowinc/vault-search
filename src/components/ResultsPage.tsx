@@ -14,6 +14,7 @@ export interface ResultsPageProps {
 	page: number
 	defaultResultCards: CardsWithTotalPagesDTO
 	filters: string[]
+	searchType: String
 }
 
 const createArrayWithCenteredRange = (center: number, range: number) => {
@@ -46,7 +47,7 @@ const ResultsPage = (props: ResultsPageProps) => {
 	createEffect(() => {
 		const abortController = new AbortController()
 
-		fetch(`${apiHost}/card/search/${props.page}`, {
+		fetch(`${apiHost}/card/${props.searchType}}/${props.page}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
