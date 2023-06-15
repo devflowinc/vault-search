@@ -1,7 +1,7 @@
 import { For, Match, Switch, createSignal } from "solid-js";
-import { Popover, PopoverButton, PopoverPanel, Transition } from 'solid-headless'
+import { Menu, MenuItem, Popover, PopoverButton, PopoverPanel, Transition } from 'solid-headless'
 import usePopper from "solid-popper";
-import { RiSystemAddFill } from "solid-icons/ri";
+import { RiSystemAddFill, RiSystemCheckFill } from "solid-icons/ri";
 import type { CardCollectionDTO, ScoreCardDTO } from "../../utils/apiTypes";
 import InputRowsForm from "./Atoms/InputRowsForm";
 
@@ -37,7 +37,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
 	});
 
 	return (
-		<Popover defaultOpen={true} class="relative">
+		<Popover defaultOpen={false} class="relative">
 			{({ isOpen }) => (
 				<div>
 					<PopoverButton ref={setAnchor}>
@@ -53,74 +53,93 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
 						leaveTo="opacity-0 translate-y-2"
 					>
 						<PopoverPanel unmount={false} ref={setPopper} class="absolute w-screen max-w-sm">
-							<div class="flex flex-col bg-white w-full drop-shadow-md overflow-hidden">
+							<Menu class="flex flex-col bg-white w-full drop-shadow-md overflow-hidden">
 								<div class="w-full font-bold p-2 text-lg">
 									Add card to collection
 								</div>
+								<MenuItem as="button" aria-label="Empty" />
 								<For each={props.cardCollections}>
-									{(collection) => (
-										<div>
-											<div class="w-full p-2">
-												{collection.name}
-											</div>
-										</div>
-
-									)}
+									{(collection) => {
+										return (
+											<MenuItem
+												class="flex justify-between p-2 hover:bg-gray-100"
+												onClick={() => {
+													fetch(`${apiHost}/card_collection/${collection.id}`, {
+														method: 'POST',
+														headers: {
+															'Content-Type': 'application/json'
+														},
+														credentials: 'include',
+														body: JSON.stringify({
+															card_metadata_id: props.card.metadata.id,
+														})
+													}).then((response) => {
+														if (response.ok) {
+															response.json().then((data) => {
+																console.log(data)
+															})
+														} else {
+															response.json().then((data) => {
+																console.log(data)
+															})
+														}
+													});
+												}}
+												as="button">
+												<p>{collection.name} </p>
+												<div class="rounded-md text-white px-2 bg-magenta-500">
+													save
+												</div>
+											</MenuItem>
+										);
+									}}
 								</For>
 								{showCollectionForm() && (
-									<div class="p-2">
-										<InputRowsForm
-											createButtonText="Create collection"
-											onCreate={() => {
-												fetch(`${apiHost}/card_collection`, {
-													method: 'POST',
-													headers: {
-														'Content-Type': 'application/json'
-													},
-													credentials: 'include',
-													body: JSON.stringify({
-														name: collectionFormTitle(),
-														description: collectionFormDescription(),
-														is_public: true,
-													})
-												}).then((response) => {
-													if (response.ok) {
-														response.json().then((data) => {
-															console.log(data)
-														})
-													} else {
-														response.json().then((data) => {
-															console.log(data)
-														})
-													}
-												});
-											}}
-											onCancel={() => {
-												setShowCollectionForm(false);
-											}}
-											inputGroups={[
-												{
-													label: "Title",
-													inputValue: collectionFormTitle,
-													setInputValue: setCollectionFormTitle
+									<InputRowsForm
+										createButtonText="Create collection"
+										onCreate={() => {
+											fetch(`${apiHost}/card_collection`, {
+												method: 'POST',
+												headers: {
+													'Content-Type': 'application/json'
 												},
-												{
-													label: "Description",
-													inputValue: collectionFormDescription,
-													setInputValue: setCollectionFormDescription,
-													type: "textarea"
+												credentials: 'include',
+												body: JSON.stringify({
+													name: collectionFormTitle(),
+													description: collectionFormDescription(),
+													is_public: true,
+												})
+											}).then((response) => {
+												if (response.ok) {
+													response.json().then((data) => {
+														console.log(data)
+													})
+												} else {
+													response.json().then((data) => {
+														console.log(data)
+													})
 												}
-											]}
-										/>
-									</div>
+											});
+										}}
+										onCancel={() => {
+											setShowCollectionForm(false);
+										}}
+										inputGroups={[
+											{
+												label: "Title",
+												inputValue: collectionFormTitle,
+												setInputValue: setCollectionFormTitle
+											},
+										]}
+									/>
 								)}
 								{!showCollectionForm() && (
-									<div onClick={() => { setShowCollectionForm(true) }} class="flex space-x-2 w-full bg-neutral-100 p-2">
+									<MenuItem as="button" onClick={() => { setShowCollectionForm(true) }} class="flex space-x-2 w-full bg-neutral-100 p-2">
 										<RiSystemAddFill class="h-5 w-5" />
 										<p> New Colletion </p>
-									</div>
+									</MenuItem>
 								)}
-							</div>
+							</Menu>
 						</PopoverPanel>
 					</Transition>
 				</div>
