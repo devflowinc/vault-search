@@ -18,13 +18,10 @@ export interface InputRowsFormProps {
 }
 
 const InputRowsForm = (props: InputRowsFormProps) => {
-  const borderColor = createMemo(() => {
-    return props.borderColor ?? "border-white";
-  });
 
   return (
     <div
-      class={`w-full rounded border dark:${borderColor()} border-fuchsia-400 px-2 py-2 dark:text-white `}
+      class={`w-full rounded px-2 py-2 dark:text-white `}
     >
       <div class="flex flex-col space-y-4">
         <div class="flex flex-col space-y-1">
@@ -35,7 +32,7 @@ const InputRowsForm = (props: InputRowsFormProps) => {
                 {((!inputGroup.component && !inputGroup.type) ||
                   inputGroup.type == "input") && (
                   <input
-                    class="w-full rounded border border-fuchsia-300 px-2 dark:border-white dark:bg-slate-900 dark:text-white"
+                    class="w-full rounded border border-black px-2 dark:border-white dark:bg-neutral-500/80 dark:text-white"
                     type="text"
                     onInput={(e) =>
                       inputGroup.setInputValue?.(e.currentTarget.value)
@@ -45,7 +42,7 @@ const InputRowsForm = (props: InputRowsFormProps) => {
                 )}
                 {!inputGroup.component && inputGroup.type == "textarea" && (
                   <textarea
-                    class="w-full rounded border border-fuchsia-300 px-2 text-black dark:border-white dark:bg-slate-900 dark:text-white"
+                    class="w-full rounded border border-black px-2 text-black dark:border-white dark:bg-neutral-500/80 dark:text-white"
                     onInput={(e) =>
                       inputGroup.setInputValue?.(e.currentTarget.value)
                     }

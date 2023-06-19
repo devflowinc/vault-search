@@ -9,7 +9,14 @@ import {
 } from 'solid-icons/ri'
 import BookmarkPopover from './BookmarkPopover'
 
-const ScoreCard = (props: { cardCollections: CardCollectionDTO[], card: ScoreCardDTO; setShowModal: Setter<boolean> }) => {
+export interface ScoreCardProps {
+	cardCollections: CardCollectionDTO[]
+	card: ScoreCardDTO
+	setShowModal: Setter<boolean>
+	fetchCardCollections: () => void
+}
+
+const ScoreCard = (props: ScoreCardProps) => {
 	const api_host = import.meta.env.PUBLIC_API_HOST
 
 	const initialVoteTotal = props.card.metadata.total_upvotes - props.card.metadata.total_downvotes
@@ -156,7 +163,7 @@ const ScoreCard = (props: { cardCollections: CardCollectionDTO[], card: ScoreCar
 					</div>
 				</div>
 				<div>
-					<BookmarkPopover cardCollections={props.cardCollections} card={props.card} />
+					<BookmarkPopover cardCollections={props.cardCollections} card={props.card} fetchCardCollections={props.fetchCardCollections} />
 				</div>
 			</div>
 			<Show when={props.card.score != 0 || props.collection}>
