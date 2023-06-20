@@ -43,11 +43,10 @@ const ResultsPage = (props: ResultsPageProps) => {
 	const totalPages = props.defaultResultCards.total_card_pages
 	const [resultCards, setResultCards] = createSignal<ScoreCardDTO[]>(initialResultCards)
 	const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false)
-
 	createEffect(() => {
 		const abortController = new AbortController()
 
-		fetch(`${apiHost}/card/${props.searchType}}/${props.page}`, {
+		fetch(`${apiHost}/card/${props.searchType}/${props.page}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
