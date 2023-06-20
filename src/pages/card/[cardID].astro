@@ -1,26 +1,25 @@
 ---
-import Footer from "../../components/Footer.astro"
-import RegisterOrUserProfile from "../../components/RegisterOrUserProfile"
-import SearchLayout from "../../layouts/SearchLayout.astro"
-import {SingleCardPage} from "../../components/SingleCardPage"
+import Footer from '../../components/Footer.astro'
+import RegisterOrUserProfile from '../../components/RegisterOrUserProfile'
+import SearchLayout from '../../layouts/SearchLayout.astro'
+import { SingleCardPage } from '../../components/SingleCardPage'
+import type { CardMetadataWithVotes } from '../../../utils/apiTypes'
 
-const {cardID} = Astro.params
+const { cardID } = Astro.params
 const apiHost = import.meta.env.API_HOST
-let specifcCards;
+let specificCards: unknown;
 
 try {
-	const specifcCard = await fetch(`${apiHost}/card/${cardID}`, {
-		method: 'GET',
-        credentials: 'include',
+	const specificCard = await fetch(`${apiHost}/card/${cardID}`, {
+		method: 'GET'
 	})
-
-	const specifcCardJson = await specifcCard?.json()
-    specifcCards = specifcCardJson ?? []
+		const specificCardJson = await specificCard?.json()
+		specificCards = {metadata: specificCardJson, status: specificCard.status}
 } catch (e) {
 	console.error(e)
 }
-
 ---
+
 <SearchLayout>
 	<div class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4">
 		<a class="flex w-full items-center" href="/">
@@ -36,7 +35,6 @@ try {
 			</div>
 		</div>
 	</div>
-    <SingleCardPage cardID={cardID} defaultResultCards={specifcCards} client:load/>
+	<SingleCardPage cardID={cardID} defaultResultCards={specificCards as { metadata: CardMetadataWithVotes; status: number; }} client:load />
 	<Footer />
 </SearchLayout>
-
