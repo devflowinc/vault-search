@@ -90,6 +90,9 @@ export interface CardsWithTotalPagesDTO {
 	total_card_pages: number
 }
 
+
+
+
 export interface ScoreCardDTO {
 	metadata: CardMetadataWithVotes
 	score: number
