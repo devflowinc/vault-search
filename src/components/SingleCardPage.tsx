@@ -15,12 +15,11 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
 	const [convertedCard, setConvertedCard] = createSignal<ScoreCardDTO>(ScoreDTOCard)
 	const [error, setError] = createSignal('')
 	const [fetching, setFetching] = createSignal(true)
-	if (props.defaultResultCards.status == 401) {
+	if (props.defaultResultCards.status == 403) {
 		setError('You are not authorized to view this card.')
 	}
 
 	createEffect(() => {
-		console.log(`${apiHost}/card/${props.cardID}`)
 		setFetching(true)
 		fetch(`${apiHost}/card/${props.cardID}`, {
 			method: 'GET',
@@ -34,10 +33,10 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
 					setFetching(false)
 				})
 			}
-			if (response.status == 403) {
+			if (response.status == 401) {
 				setFetching(false)
 			}
-			if (response.status == 401) {
+			if (response.status == 403) {
 				setShowNeedLoginModal(true)
 			}
 		})
