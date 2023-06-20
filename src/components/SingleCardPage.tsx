@@ -15,7 +15,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
 	const [convertedCard, setConvertedCard] = createSignal<ScoreCardDTO>(ScoreDTOCard)
 	const [error, setError] = createSignal('')
 	const [fetching, setFetching] = createSignal(true)
-	if (props.defaultResultCards.status == 403) {
+	if (props.defaultResultCards.status == 401) {
 		setError('You are not authorized to view this card.')
 	}
 
@@ -34,10 +34,10 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
 					setFetching(false)
 				})
 			}
-			if (response.status == 401) {
+			if (response.status == 403) {
 				setFetching(false)
 			}
-			if (response.status == 403) {
+			if (response.status == 401) {
 				setShowNeedLoginModal(true)
 			}
 		})
