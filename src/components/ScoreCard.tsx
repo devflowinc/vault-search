@@ -1,5 +1,5 @@
 import { Setter, Show, createEffect, createSignal } from 'solid-js'
-import type { ScoreCardDTO } from '../../utils/apiTypes'
+import type { CardMetadata, ScoreCardDTO } from '../../utils/apiTypes'
 import { BiRegularChevronDown, BiRegularChevronUp } from 'solid-icons/bi'
 import {
 	RiSystemArrowDownCircleFill,
@@ -13,10 +13,9 @@ const ScoreCard = (props: { card: ScoreCardDTO; setShowModal: Setter<boolean> })
 
 	const initialVoteTotal = props.card.metadata.total_upvotes - props.card.metadata.total_downvotes
 
-	const [expanded, setExpanded] = createSignal(false)
+	const [expanded, setExpanded] = createSignal(false || props.card.score === 0)
 	const [userVote, setUserVote] = createSignal(0)
 	const [totalVote, setTotalVote] = createSignal(initialVoteTotal)
-
 	createEffect(() => {
 		if (props.card.metadata.vote_by_current_user === null) {
 			return
@@ -129,8 +128,10 @@ const ScoreCard = (props: { card: ScoreCardDTO; setShowModal: Setter<boolean> })
 						</div>
 					</Show>
 					<div class="grid w-fit auto-cols-min grid-cols-[1fr,3fr] gap-x-2 text-neutral-800 dark:text-neutral-200">
-						<span class="font-semibold">Similarity: </span>
-						<span>{props.card.score}</span>
+						<Show when={props.card.score != 0}>
+							<span class="font-semibold">Similarity: </span>
+							<span>{props.card.score}</span>
+						</Show>
 						<Show when={props.card.metadata.author}>
 							<span class="font-semibold">Author: </span>
 							<a
@@ -153,17 +154,19 @@ const ScoreCard = (props: { card: ScoreCardDTO; setShowModal: Setter<boolean> })
 					</p>
 				</div>
 			</div>
-			<button class="ml-2 font-semibold" onClick={() => setExpanded((prev) => !prev)}>
-				{expanded() ? (
-					<div class="flex flex-row items-center">
-						<div>Show Less</div> <BiRegularChevronUp class="h-8 w-8" />
-					</div>
-				) : (
-					<div class="flex flex-row items-center">
-						<div>Show More</div> <BiRegularChevronDown class="h-8 w-8" />
-					</div>
-				)}
-			</button>
+			<Show when={props.card.score != 0}>
+				<button class="ml-2 font-semibold" onClick={() => setExpanded((prev) => !prev)}>
+					{expanded() ? (
+						<div class="flex flex-row items-center">
+							<div>Show Less</div> <BiRegularChevronUp class="h-8 w-8" />
+						</div>
+					) : (
+						<div class="flex flex-row items-center">
+							<div>Show More</div> <BiRegularChevronDown class="h-8 w-8" />
+						</div>
+					)}
+				</button>
+			</Show>
 		</div>
 	)
 }
