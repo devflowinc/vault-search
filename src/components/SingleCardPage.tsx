@@ -50,8 +50,8 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
 						<ScoreCard card={convertedCard()} setShowModal={setShowNeedLoginModal} />
 					</Show>
 					<Show when={error().length > 0 && !fetching()}>
-						<div class="flex w-full flex-col items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-700">
-							<div class="text-xl font-bold">{error()}</div>
+						<div class="flex w-full flex-col items-center rounded-md p-2">
+							<div class="text-xl font-bold text-red-500">{error()}</div>
 						</div>
 					</Show>
 				</div>
