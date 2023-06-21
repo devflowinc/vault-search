@@ -4,8 +4,9 @@ import { For, Show, createEffect, createSignal } from 'solid-js'
 import { Combobox, ComboboxItem, ComboboxSection } from './Atoms/ComboboxChecklist'
 import { Menu, MenuItem, Popover, PopoverButton, PopoverPanel, Transition } from 'solid-headless'
 import { FaSolidCheck } from 'solid-icons/fa'
+import type { Filters } from './ResultsPage'
 
-const filterComboboxSections: ComboboxSection[] = [
+const filterDataTypeComboboxSections: ComboboxSection[] = [
 	{
 		name: 'Data set',
 		comboboxItems: [
@@ -57,19 +58,74 @@ const filterComboboxSections: ComboboxSection[] = [
 		]
 	}
 ]
+const filterLinkComboboxSections: ComboboxSection[] = [
+	{
+		name: 'Links',
+		comboboxItems: [
+			{
+				name: 'reuters.com'
+			},
+			{
+				name: 'bloomberg.com'
+			},
+			{
+				name: 'jstor.org'
+			},
+			{
+				name: 'tandfonline.com'
+			},
+			{
+				name: 'theatlantic.com'
+			},
+			{
+				name: 'theguardian.com'
+			},
+			{
+				name: 'nytimes.com'
+			},
+			{
+				name: 'foreignaffairs.com'
+			},
+			{
+				name: 'heritage.org'
+			},
+			{
+				name: 'brookings.edu'
+			},
+			{
+				name: 'sagepub.com'
+			},
+			{
+				name: 'ncbi.nlm.nih.com'
+			},
+			{
+				name: 'businessinsider.com'
+			}
+		]
+	}
+]
 
-const SearchForm = (props: { query?: string; filters: string[]; searchType: String }) => {
+const SearchForm = (props: { query?: string; filters: Filters; searchType: String }) => {
 	const initialQuery = props.query || ''
-	const initialFilters = filterComboboxSections.flatMap((section) =>
-		section.comboboxItems.filter((item) => props.filters.includes(item.name))
+	const initialDataTypeFilters = filterDataTypeComboboxSections.flatMap((section) =>
+		section.comboboxItems.filter((item) => props.filters.dataTypes.includes(item.name))
+	)
+	const initialLinkFilters = filterLinkComboboxSections.flatMap((section) =>
+		section.comboboxItems.filter((item) => props.filters.links.includes(item.name))
 	)
 	let [searchTypes, setSearchTypes] = createSignal([
 		{ name: 'Full Text', isSelected: false, route: 'fulltextsearch' },
 		{ name: 'Semantic', isSelected: true, route: 'search' }
 	])
 	const [textareaInput, setTextareaInput] = createSignal(initialQuery)
-	const [selectedComboboxItems, setSelectedComboboxItems] =
-		createSignal<ComboboxItem[]>(initialFilters)
+	const [selectedDataTypeComboboxItems, setDataTypeSelectedComboboxItems] =
+		createSignal<ComboboxItem[]>(initialDataTypeFilters)
+	const [selectedLinkComboboxItems, setLinkSelectedComboboxItems] =
+		createSignal<ComboboxItem[]>(initialLinkFilters)
+	const [filterDataTypes, setFilterDataTypes] = createSignal<ComboboxSection[]>(
+		filterDataTypeComboboxSections
+	)
+	const [filterLinks, setFilterLinks] = createSignal<ComboboxSection[]>(filterLinkComboboxSections)
 
 	const resizeTextarea = (textarea: HTMLTextAreaElement | null) => {
 		if (!textarea) return
@@ -84,15 +140,21 @@ const SearchForm = (props: { query?: string; filters: string[]; searchType: Stri
 		const searchQuery = encodeURIComponent(
 			textAreaValue.length > 3800 ? textAreaValue.slice(0, 3800) : textAreaValue
 		)
-		const filters = encodeURIComponent(
-			selectedComboboxItems()
+		const dataTypeFilters = encodeURIComponent(
+			selectedDataTypeComboboxItems()
+				.map((item) => item.name)
+				.join(',')
+		)
+		const linkFilters = encodeURIComponent(
+			selectedLinkComboboxItems()
 				.map((item) => item.name)
 				.join(',')
 		)
 
 		window.location.href =
 			`/search?q=${searchQuery}` +
-			(filters ? `&filters=${filters}` : '') +
+			(dataTypeFilters ? `&datatypes=${dataTypeFilters}` : '') +
+			(linkFilters ? `&links=${linkFilters}` : '') +
 			(searchTypes()[0].isSelected ? `&searchType=fulltextsearch` : '')
 	}
 
@@ -107,6 +169,32 @@ const SearchForm = (props: { query?: string; filters: string[]; searchType: Stri
 				}
 			})
 		})
+
+		const customDataTypeFilters = JSON.parse(localStorage.getItem('customDatasetFilters') || '[]')
+		const customLinkFilters = JSON.parse(localStorage.getItem('customLinksFilters') || '[]')
+		if (Object.keys(customDataTypeFilters).length > 0) {
+			setFilterDataTypes((prev) => {
+				const newComboboxItems = [...prev[0].comboboxItems, customDataTypeFilters]
+				console.log(newComboboxItems)
+				return [
+					{
+						name: prev[0].name,
+						comboboxItems: newComboboxItems
+					}
+				]
+			})
+		}
+		if (Object.keys(customLinkFilters).length > 0) {
+			setFilterLinks((prev) => {
+				const newComboboxItems = [...prev[0].comboboxItems, customLinkFilters]
+				return [
+					{
+						name: prev[0].name,
+						comboboxItems: newComboboxItems
+					}
+				]
+			})
+		}
 	})
 
 	return (
@@ -162,15 +250,17 @@ const SearchForm = (props: { query?: string; filters: string[]; searchType: Stri
 							</button>
 						</Show>
 					</div>
+				</div>
+				<div class="flex space-x-2">
 					<Popover defaultOpen={false} class="relative">
 						{({ isOpen, setState }) => (
 							<>
 								<PopoverButton
 									aria-label="Toggle filters"
 									type="button"
-									class="flex items-center space-x-1 rounded-md bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+									class="flex items-center space-x-1 text-sm"
 								>
-									<span>Filters</span> <VsTriangleDown class="h-4 w-4" />
+									<span>Filters</span> <VsTriangleDown class="h-3.5 w-3.5" />
 								</PopoverButton>
 								<Transition
 									show={isOpen()}
@@ -183,92 +273,102 @@ const SearchForm = (props: { query?: string; filters: string[]; searchType: Stri
 								>
 									<PopoverPanel
 										unmount={false}
-										class="absolute z-10 mt-2 h-fit w-[180px] -translate-x-[100px] rounded-md bg-neutral-200 p-1 shadow-lg dark:bg-neutral-800"
+										class="absolute z-10 mt-2 h-fit w-fit rounded-md bg-neutral-200 p-1 shadow-lg dark:bg-neutral-800"
 									>
 										<Menu class="h-0">
 											<MenuItem class="h-0" as="button" aria-label="Empty" />
 										</Menu>
-										<Combobox
-											selectedComboboxItems={selectedComboboxItems}
-											setSelectedComboboxItems={setSelectedComboboxItems}
-											comboboxSections={filterComboboxSections}
-											setPopoverOpen={setState}
-										/>
+										<div class="flex w-full min-w-full space-x-2">
+											<Combobox
+												selectedComboboxItems={selectedDataTypeComboboxItems}
+												setSelectedComboboxItems={setDataTypeSelectedComboboxItems}
+												comboboxSections={filterDataTypes}
+												setComboboxSections={setFilterDataTypes}
+												setPopoverOpen={setState}
+											/>
+											<Combobox
+												selectedComboboxItems={selectedLinkComboboxItems}
+												setSelectedComboboxItems={setLinkSelectedComboboxItems}
+												comboboxSections={filterLinks}
+												setComboboxSections={setFilterLinks}
+												setPopoverOpen={setState}
+											/>
+										</div>
+									</PopoverPanel>
+								</Transition>
+							</>
+						)}
+					</Popover>
+					<Popover defaultOpen={false} class="relative">
+						{({ isOpen, setState }) => (
+							<>
+								<PopoverButton
+									aria-label="Toggle filters"
+									type="button"
+									class="flex items-center space-x-1 text-sm"
+								>
+									<span>Search Type</span> <VsTriangleDown class="h-3.5 w-3.5" />
+								</PopoverButton>
+								<Transition
+									show={isOpen()}
+									enter="transition duration-200"
+									enterFrom="opacity-0"
+									enterTo="opacity-100"
+									leave="transition duration-150"
+									leaveFrom="opacity-100"
+									leaveTo="opacity-0"
+								>
+									<PopoverPanel
+										unmount={false}
+										class="absolute z-10 mt-2 h-fit w-[180px]  rounded-md bg-neutral-200 p-1 shadow-lg dark:bg-neutral-800"
+									>
+										<Menu class="ml-1 space-y-1">
+											<For each={searchTypes()}>
+												{(option) => {
+													const onClick = (e: Event) => {
+														e.preventDefault()
+														e.stopPropagation()
+														let resultType = []
+														setSearchTypes((prev) => {
+															return prev.map((item) => {
+																if (item.name === option.name) {
+																	return { ...item, isSelected: true }
+																} else {
+																	return { ...item, isSelected: false }
+																}
+															})
+														})
+														setState(true)
+													}
+													return (
+														<MenuItem
+															as="button"
+															classList={{
+																'flex w-full items-center justify-between rounded p-1 focus:text-black focus:outline-none dark:hover:text-white dark:focus:text-white':
+																	true,
+																'bg-neutral-300 dark:bg-neutral-900': option.isSelected
+															}}
+															onClick={onClick}
+														>
+															<div class="flex flex-row justify-start space-x-2">
+																<span class="text-left">{option.name}</span>
+															</div>
+															{option.isSelected && (
+																<span>
+																	<FaSolidCheck class="text-xl" />
+																</span>
+															)}
+														</MenuItem>
+													)
+												}}
+											</For>
+										</Menu>
 									</PopoverPanel>
 								</Transition>
 							</>
 						)}
 					</Popover>
 				</div>
-				<Popover defaultOpen={false} class="relative sm:absolute">
-					{({ isOpen, setState }) => (
-						<>
-							<PopoverButton
-								aria-label="Toggle filters"
-								type="button"
-								class="flex items-center space-x-1 text-sm"
-							>
-								<span>Search Type</span> <VsTriangleDown class="h-3.5 w-3.5" />
-							</PopoverButton>
-							<Transition
-								show={isOpen()}
-								enter="transition duration-200"
-								enterFrom="opacity-0"
-								enterTo="opacity-100"
-								leave="transition duration-150"
-								leaveFrom="opacity-100"
-								leaveTo="opacity-0"
-							>
-								<PopoverPanel
-									unmount={false}
-									class="absolute z-10 mt-2 h-fit w-[180px]  rounded-md bg-neutral-200 p-1 shadow-lg dark:bg-neutral-800"
-								>
-									<Menu class="ml-1 space-y-1">
-										<For each={searchTypes()}>
-											{(option) => {
-												const onClick = (e: Event) => {
-													e.preventDefault()
-													e.stopPropagation()
-													let resultType = []
-													setSearchTypes((prev) => {
-														return prev.map((item) => {
-															if (item.name === option.name) {
-																return { ...item, isSelected: true }
-															} else {
-																return { ...item, isSelected: false }
-															}
-														})
-													})
-													setState(true)
-												}
-												return (
-													<MenuItem
-														as="button"
-														classList={{
-															'flex w-full items-center justify-between rounded p-1 focus:text-black focus:outline-none dark:hover:text-white dark:focus:text-white':
-																true,
-															'bg-neutral-300 dark:bg-neutral-900': option.isSelected
-														}}
-														onClick={onClick}
-													>
-														<div class="flex flex-row justify-start space-x-2">
-															<span class="text-left">{option.name}</span>
-														</div>
-														{option.isSelected && (
-															<span>
-																<FaSolidCheck class="text-xl" />
-															</span>
-														)}
-													</MenuItem>
-												)
-											}}
-										</For>
-									</Menu>
-								</PopoverPanel>
-							</Transition>
-						</>
-					)}
-				</Popover>
 				<Show when={!props.query}>
 					<div class="flex flex-row justify-center space-x-2 px-6 md:px-40">
 						<button

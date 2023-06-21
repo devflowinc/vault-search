@@ -1,10 +1,22 @@
 ---
 ---
-
+<style is:global>
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-corner);
+    border-radius: 3px !important;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+    background-color: var(--scrollbar-track);
+    border-radius: 3px !important;
+}
+.scrollbar-thin::-webkit-scrollbar-corner {
+    background-color: var(--scrollbar-corner);
+    border-radius: 3px !important;
+}
+</style>
 <html
 	lang="en"
-	class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600"
->
+	class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600">
 	<head>
 		<script is:inline>
 			const theme = (() => {

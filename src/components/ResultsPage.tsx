@@ -9,11 +9,15 @@ import {
 } from 'solid-icons/bi'
 import { FullScreenModal } from './Atoms/FullScreenModal'
 
+export interface Filters {
+	dataTypes: string[]
+	links: string[]
+}
 export interface ResultsPageProps {
 	query: string
 	page: number
 	defaultResultCards: CardsWithTotalPagesDTO
-	filters: string[]
+	filters: Filters
 	searchType: String
 }
 
@@ -55,7 +59,8 @@ const ResultsPage = (props: ResultsPageProps) => {
 			signal: abortController.signal,
 			body: JSON.stringify({
 				content: props.query,
-				filter_oc_file_path: props.filters
+				filter_oc_file_path: props.filters.dataTypes,
+				filter_link_url: props.filters.links
 			})
 		}).then((response) => {
 			if (response.ok) {
@@ -94,7 +99,15 @@ const ResultsPage = (props: ResultsPageProps) => {
 				<Show when={props.page != 1}>
 					<button
 						onClick={() => {
-							window.location.href = `/search?q=${props.query}&page=${props.page - 1}`
+							const dataTypeFilters = encodeURIComponent(props.filters.dataTypes.join(','))
+							const linkFilters = encodeURIComponent(props.filters.links.join(','))
+
+							window.location.href =
+								`/search?q=${props.query}` +
+								(dataTypeFilters ? `&datatypes=${dataTypeFilters}` : '') +
+								(linkFilters ? `&links=${linkFilters}` : '') +
+								(props.searchType == 'fulltextsearch' ? `&searchType=fulltextsearch` : '') +
+								`&page=${props.page - 1}`
 						}}
 					>
 						<BiRegularChevronLeft class="h-8 w-8 text-neutral-400 dark:text-neutral-500" />
@@ -114,7 +127,15 @@ const ResultsPage = (props: ResultsPageProps) => {
 							'bg-neutral-200 dark:bg-neutral-700': n !== props.page
 						}}
 						onClick={() => {
-							window.location.href = `/search?q=${props.query}&page=${n}`
+							const dataTypeFilters = encodeURIComponent(props.filters.dataTypes.join(','))
+							const linkFilters = encodeURIComponent(props.filters.links.join(','))
+
+							window.location.href =
+								`/search?q=${props.query}` +
+								(dataTypeFilters ? `&datatypes=${dataTypeFilters}` : '') +
+								(linkFilters ? `&links=${linkFilters}` : '') +
+								(props.searchType == 'fulltextsearch' ? `&searchType=fulltextsearch` : '') +
+								`&page=${n}`
 						}}
 					>
 						{n}
@@ -123,7 +144,15 @@ const ResultsPage = (props: ResultsPageProps) => {
 				<Show when={props.page < totalPages}>
 					<button
 						onClick={() => {
-							window.location.href = `/search?q=${props.query}&page=${props.page + 1}`
+							const dataTypeFilters = encodeURIComponent(props.filters.dataTypes.join(','))
+							const linkFilters = encodeURIComponent(props.filters.links.join(','))
+
+							window.location.href =
+								`/search?q=${props.query}` +
+								(dataTypeFilters ? `&datatypes=${dataTypeFilters}` : '') +
+								(linkFilters ? `&links=${linkFilters}` : '') +
+								(props.searchType == 'fulltextsearch' ? `&searchType=fulltextsearch` : '') +
+								`&page=${props.page + 1}`
 						}}
 					>
 						<BiRegularChevronRight class="h-8 w-8 text-neutral-400 dark:text-neutral-500" />
