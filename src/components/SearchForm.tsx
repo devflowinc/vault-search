@@ -107,26 +107,54 @@ const filterLinkComboboxSections: ComboboxSection[] = [
 
 const SearchForm = (props: { query?: string; filters: Filters; searchType: String }) => {
 	const initialQuery = props.query || ''
-	const initialDataTypeFilters = filterDataTypeComboboxSections.flatMap((section) =>
-		section.comboboxItems.filter((item) => props.filters.dataTypes.includes(item.name))
-	)
-	const initialLinkFilters = filterLinkComboboxSections.flatMap((section) =>
-		section.comboboxItems.filter((item) => props.filters.links.includes(item.name))
-	)
+
 	let [searchTypes, setSearchTypes] = createSignal([
 		{ name: 'Full Text', isSelected: false, route: 'fulltextsearch' },
 		{ name: 'Semantic', isSelected: true, route: 'search' }
 	])
 	const [textareaInput, setTextareaInput] = createSignal(initialQuery)
+
+	const [filterDataTypes, setFilterDataTypes] = createSignal<ComboboxSection[]>(
+		filterDataTypeComboboxSections
+	)
+
+	const [filterLinks, setFilterLinks] = createSignal<ComboboxSection[]>(filterLinkComboboxSections)
+	const customDataTypeFilters = JSON.parse(localStorage.getItem('customDatasetFilters') || '[]')
+	const customLinkFilters = JSON.parse(localStorage.getItem('customLinksFilters') || '[]')
+	if (Object.keys(customDataTypeFilters).length > 0) {
+		setFilterDataTypes((prev) => {
+			const newComboboxItems = [...prev[0].comboboxItems, customDataTypeFilters]
+			console.log(newComboboxItems)
+			return [
+				{
+					name: prev[0].name,
+					comboboxItems: newComboboxItems
+				}
+			]
+		})
+	}
+	if (Object.keys(customLinkFilters).length > 0) {
+		setFilterLinks((prev) => {
+			const newComboboxItems = [...prev[0].comboboxItems, customLinkFilters]
+			return [
+				{
+					name: prev[0].name,
+					comboboxItems: newComboboxItems
+				}
+			]
+		})
+	}
+
+	const initialDataTypeFilters = filterDataTypes().flatMap((section) =>
+		section.comboboxItems.filter((item) => props.filters.dataTypes.includes(item.name))
+	)
+	const initialLinkFilters = filterLinks().flatMap((section) =>
+		section.comboboxItems.filter((item) => props.filters.links.includes(item.name))
+	)
 	const [selectedDataTypeComboboxItems, setDataTypeSelectedComboboxItems] =
 		createSignal<ComboboxItem[]>(initialDataTypeFilters)
 	const [selectedLinkComboboxItems, setLinkSelectedComboboxItems] =
 		createSignal<ComboboxItem[]>(initialLinkFilters)
-	const [filterDataTypes, setFilterDataTypes] = createSignal<ComboboxSection[]>(
-		filterDataTypeComboboxSections
-	)
-	const [filterLinks, setFilterLinks] = createSignal<ComboboxSection[]>(filterLinkComboboxSections)
-
 	const resizeTextarea = (textarea: HTMLTextAreaElement | null) => {
 		if (!textarea) return
 
@@ -169,32 +197,6 @@ const SearchForm = (props: { query?: string; filters: Filters; searchType: Strin
 				}
 			})
 		})
-
-		const customDataTypeFilters = JSON.parse(localStorage.getItem('customDatasetFilters') || '[]')
-		const customLinkFilters = JSON.parse(localStorage.getItem('customLinksFilters') || '[]')
-		if (Object.keys(customDataTypeFilters).length > 0) {
-			setFilterDataTypes((prev) => {
-				const newComboboxItems = [...prev[0].comboboxItems, customDataTypeFilters]
-				console.log(newComboboxItems)
-				return [
-					{
-						name: prev[0].name,
-						comboboxItems: newComboboxItems
-					}
-				]
-			})
-		}
-		if (Object.keys(customLinkFilters).length > 0) {
-			setFilterLinks((prev) => {
-				const newComboboxItems = [...prev[0].comboboxItems, customLinkFilters]
-				return [
-					{
-						name: prev[0].name,
-						comboboxItems: newComboboxItems
-					}
-				]
-			})
-		}
 	})
 
 	return (
