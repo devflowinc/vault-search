@@ -8,12 +8,13 @@ import {
 	UsersWithTotalPagesDTO,
 	type UserDTOWithScore
 } from '../../utils/apiTypes'
+import type { Filters } from '../components/ResultsPage'
 const apiHost = import.meta.env.API_HOST
 
 const requestParams = Astro.request.url.split('?')[1]
 const params = new URLSearchParams(requestParams)
 const page = Number(params.get('page')) || 1
-const filters: string[] = params.get('filters')?.split(',') || []
+const filters: Filters = {"dataTypes" : params.get('datatypes')?.split(',') || [] , "links": params.get('links')?.split(',') || [] }
 const searchType: String = params.get("searchType") || "search"
 
 let top_users_with_pages: UsersWithTotalPagesDTO = {

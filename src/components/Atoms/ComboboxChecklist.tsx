@@ -11,7 +11,8 @@ export interface ComboboxSection {
 }
 
 export interface ComboboxProps {
-	comboboxSections: ComboboxSection[]
+	comboboxSections: Accessor<ComboboxSection[]>
+	setComboboxSections: Setter<ComboboxSection[]>
 	selectedComboboxItems: Accessor<ComboboxItem[]>
 	setSelectedComboboxItems: Setter<ComboboxItem[]>
 	setPopoverOpen: (newState: boolean) => void
@@ -23,7 +24,7 @@ export const Combobox = (props: ComboboxProps) => {
 
 	const filteredSectionsWithIsSelected = createMemo(() => {
 		const selected = props.selectedComboboxItems()
-		const sectionsWithSelected = props.comboboxSections.map((section) => {
+		const sectionsWithSelected = props.comboboxSections().map((section) => {
 			return {
 				sectionName: section.name,
 				sectionSelectedItems: section.comboboxItems.map((option) => {
@@ -38,16 +39,45 @@ export const Combobox = (props: ComboboxProps) => {
 
 		if (!inputValue()) return sectionsWithSelected
 		return sectionsWithSelected.map((section) => {
+			let sectionSelectedItems = section.sectionSelectedItems.filter((option) => {
+				return option.name.toLowerCase().includes(inputValue().toLowerCase())
+			})
+			if (sectionSelectedItems.length == 0) {
+				sectionSelectedItems = [
+					{
+						name: '+ Add custom filter',
+						isSelected: false
+					}
+				]
+			}
 			return {
 				...section,
-				sectionSelectedItems: section.sectionSelectedItems.filter((option) => {
-					return option.name.toLowerCase().includes(inputValue().toLowerCase())
-				})
+				sectionSelectedItems
 			}
 		})
 	})
 
 	const onSelect = (option: ComboboxItem) => {
+		if (option.name === '+ Add custom filter') {
+			props.setComboboxSections((prev) => {
+				const newComboboxItems = [...prev[0].comboboxItems, { name: inputValue() }]
+				return [
+					{
+						name: prev[0].name,
+						comboboxItems: newComboboxItems
+					}
+				]
+			})
+			props.setSelectedComboboxItems((prev) => {
+				return [...prev, { name: inputValue() }]
+			})
+			localStorage.setItem(
+				`custom${props.comboboxSections()[0].name.replace(' ', '')}Filters`,
+				JSON.stringify({ name: inputValue() })
+			)
+			props.setPopoverOpen(true)
+			return
+		}
 		props.setSelectedComboboxItems((prev) => {
 			const prevIncludesOption = prev.find((prevOption) => {
 				return prevOption.name === option.name
@@ -71,7 +101,10 @@ export const Combobox = (props: ComboboxProps) => {
 	})
 
 	return (
-		<div class="w-full">
+		<div class="w-full min-w-[150px]">
+			<div class="mb-1 text-center text-sm font-semibold">
+				{filteredSectionsWithIsSelected()[0].sectionName}{' '}
+			</div>
 			<div class="flex w-fit items-center space-x-2 rounded bg-white px-2 focus:outline-black dark:bg-neutral-600 dark:focus:outline-white">
 				<BiRegularSearchAlt class="h-5 w-5 text-neutral-500 dark:text-neutral-400" />
 				<input
@@ -96,7 +129,6 @@ export const Combobox = (props: ComboboxProps) => {
 					{({ sectionName, sectionSelectedItems }) => {
 						return (
 							<div>
-								<div class="text-sm font-semibold"> {sectionName} </div>
 								<div class="ml-1 space-y-1">
 									<For each={sectionSelectedItems}>
 										{(option) => {
