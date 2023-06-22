@@ -4192,11 +4192,6 @@ solid-js@^1.4.3:
     csstype "^3.1.0"
     seroval "^0.5.0"
 
-solid-popper@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/solid-popper/-/solid-popper-0.3.0.tgz#83eea03b367c801f0c79e5dd130c6efa1006e6e4"
-  integrity sha512-XlfEWAyxGGqFgg/uRpF+BemSfCqjbLA8p6fToDa+6v3paw3eBQj0TU08aBOIj2VeigaEiz8ZTlDx1eBLVRivBg==
-
 solid-use@^0.6.2:
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/solid-use/-/solid-use-0.6.2.tgz#c9d997d5db3658693bf7436741439924f487d5c8"
@@ -4403,11 +4398,6 @@ svelte2tsx@^0.5.11:
   dependencies:
     dedent-js "^1.0.1"
     pascal-case "^3.1.1"
-
-svelte@^3.59.1:
-  version "3.59.1"
-  resolved "https://registry.yarnpkg.com/svelte/-/svelte-3.59.1.tgz#3de3d56b9165748f32f3131589b8d183cabe7449"
-  integrity sha512-pKj8fEBmqf6mq3/NfrB9SLtcJcUvjYSWyePlfCqN9gujLB25RitWK8PvFzlwim6hD/We35KbPlRteuA6rnPGcQ==
 
 synckit@^0.8.4:
   version "0.8.5"
