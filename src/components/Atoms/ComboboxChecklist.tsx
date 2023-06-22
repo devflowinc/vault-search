@@ -2,8 +2,10 @@ import { Menu, MenuItem, Popover, PopoverPanel } from 'solid-headless'
 import { Accessor, For, Setter, createEffect, createMemo, createSignal, onCleanup } from 'solid-js'
 import { FaSolidCheck } from 'solid-icons/fa'
 import { BiRegularSearchAlt } from 'solid-icons/bi'
+import { VsClose } from 'solid-icons/vs'
 export interface ComboboxItem {
 	name: string
+	custom?: boolean
 }
 export interface ComboboxSection {
 	name: string
@@ -21,6 +23,7 @@ export interface ComboboxProps {
 export const Combobox = (props: ComboboxProps) => {
 	const [usingPanel, setUsingPanel] = createSignal(false)
 	const [inputValue, setInputValue] = createSignal('')
+	const [hoverOverCustom, setHoverOverCustom] = createSignal(false)
 
 	const filteredSectionsWithIsSelected = createMemo(() => {
 		const selected = props.selectedComboboxItems()
@@ -60,7 +63,7 @@ export const Combobox = (props: ComboboxProps) => {
 	const onSelect = (option: ComboboxItem) => {
 		if (option.name === '+ Add custom filter') {
 			props.setComboboxSections((prev) => {
-				const newComboboxItems = [...prev[0].comboboxItems, { name: inputValue() }]
+				const newComboboxItems = [...prev[0].comboboxItems, { name: inputValue(), custom: true }]
 				return [
 					{
 						name: prev[0].name,
@@ -99,6 +102,27 @@ export const Combobox = (props: ComboboxProps) => {
 		})
 		return placeholder
 	})
+
+	const removeCustomItem = (e: Event, customItem: ComboboxItem) => {
+		e.preventDefault()
+		e.stopPropagation()
+		props.setComboboxSections((prev) => {
+			const newComboboxItems = prev[0].comboboxItems.filter((comboboxItem) => {
+				return comboboxItem.name !== customItem.name
+			})
+			return [
+				{
+					name: prev[0].name,
+					comboboxItems: newComboboxItems
+				}
+			]
+		})
+		props.setSelectedComboboxItems((prev) => {
+			return prev.filter((prevOption) => prevOption.name !== customItem.name)
+		})
+		localStorage.removeItem(`custom${props.comboboxSections()[0].name.replace(' ', '')}Filters`)
+		props.setPopoverOpen(true)
+	}
 
 	return (
 		<div class="w-full min-w-[150px]">
@@ -147,6 +171,12 @@ export const Combobox = (props: ComboboxProps) => {
 														'bg-neutral-300 dark:bg-neutral-900': option.isSelected
 													}}
 													onClick={onClick}
+													onMouseEnter={() => {
+														option?.custom && setHoverOverCustom(true)
+													}}
+													onMouseLeave={() => {
+														option?.custom && setHoverOverCustom(false)
+													}}
 												>
 													<div class="flex flex-row justify-start space-x-2">
 														<span class="text-left">{option.name}</span>
@@ -154,6 +184,11 @@ export const Combobox = (props: ComboboxProps) => {
 													{option.isSelected && (
 														<span>
 															<FaSolidCheck class="text-xl" />
+														</span>
+													)}
+													{hoverOverCustom() && !option.isSelected && option?.custom && (
+														<span onClick={(e) => removeCustomItem(e, option)}>
+															<VsClose class="text-xl" />
 														</span>
 													)}
 												</button>
