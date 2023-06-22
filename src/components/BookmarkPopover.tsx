@@ -1,7 +1,6 @@
-import { For, Match, Switch, createSignal } from 'solid-js'
+import { For, createSignal } from 'solid-js'
 import { Menu, MenuItem, Popover, PopoverButton, PopoverPanel, Transition } from 'solid-headless'
-import usePopper from 'solid-popper'
-import { RiSystemAddFill, RiSystemCheckFill } from 'solid-icons/ri'
+import { RiSystemAddFill } from 'solid-icons/ri'
 import type { CardCollectionDTO, ScoreCardDTO } from '../../utils/apiTypes'
 import InputRowsForm from './Atoms/InputRowsForm'
 
@@ -22,7 +21,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
 		<Popover defaultOpen={false} class="relative">
 			{({ isOpen, setState }) => (
 				<div>
-					<PopoverButton ref={setAnchor}>
+					<PopoverButton>
 						<RiSystemAddFill class="h-5 w-5" />
 					</PopoverButton>
 					<Transition
@@ -34,7 +33,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
 						leaveFrom="opacity-100 translate-y-0"
 						leaveTo="opacity-0 translate-y-2"
 					>
-						<PopoverPanel unmount={false} ref={setPopper} class="absolute w-screen max-w-sm">
+						<PopoverPanel unmount={false} class="absolute w-screen max-w-sm">
 							<Menu class="flex w-full flex-col overflow-hidden bg-white drop-shadow-md dark:bg-shark-500">
 								<div class="w-full p-2 text-lg font-bold">Add card to collection</div>
 								<MenuItem as="button" aria-label="Empty" />
