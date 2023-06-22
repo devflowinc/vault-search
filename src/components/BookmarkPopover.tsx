@@ -14,27 +14,9 @@ export interface BookmarkPopoverProps {
 const BookmarkPopover = (props: BookmarkPopoverProps) => {
 	const apiHost = import.meta.env.PUBLIC_API_HOST
 
-	const [anchor, setAnchor] = createSignal<HTMLButtonElement>()
-	const [popper, setPopper] = createSignal<HTMLDivElement>()
-
 	const [showCollectionForm, setShowCollectionForm] = createSignal(false)
 
 	const [collectionFormTitle, setCollectionFormTitle] = createSignal('')
-
-	usePopper(anchor, popper, {
-		placement: 'auto',
-		modifiers: [
-			{
-				name: 'offset',
-				options: {
-					offset: [10, 20]
-				}
-			},
-			{
-				name: 'preventOverflow'
-			}
-		]
-	})
 
 	return (
 		<Popover defaultOpen={false} class="relative">
