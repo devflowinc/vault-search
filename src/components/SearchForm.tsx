@@ -123,6 +123,7 @@ const SearchForm = (props: { query?: string; filters: Filters; searchType: Strin
 	const customLinkFilters = JSON.parse(localStorage.getItem('customLinksFilters') || '[]')
 	if (Object.keys(customDataTypeFilters).length > 0) {
 		setFilterDataTypes((prev) => {
+			customDataTypeFilters.custom = true
 			const newComboboxItems = [...prev[0].comboboxItems, customDataTypeFilters]
 			console.log(newComboboxItems)
 			return [
@@ -135,6 +136,7 @@ const SearchForm = (props: { query?: string; filters: Filters; searchType: Strin
 	}
 	if (Object.keys(customLinkFilters).length > 0) {
 		setFilterLinks((prev) => {
+			customLinkFilters.custom = true
 			const newComboboxItems = [...prev[0].comboboxItems, customLinkFilters]
 			return [
 				{
