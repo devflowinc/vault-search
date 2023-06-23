@@ -23,7 +23,7 @@ export const CollectionUserPageView = (props: { user: UserDTOWithVotesAndCards }
 		<h1>
 			<span>Collections Created by</span>{' '}
 			<span class="break-all font-bold">{props.user.username || props.user.email}</span>
-			<div class="flex flex-wrap space-x-2">
+			<div class="flex flex-wrap gap-x-2">
 				{collections()?.map((collection) => (
 					<button
 						class="text-md mt-1 flex w-fit items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-700"

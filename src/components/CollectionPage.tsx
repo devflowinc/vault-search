@@ -1,26 +1,37 @@
 import { Show, createEffect, createSignal } from 'solid-js'
-import type { CardMetadata, CardMetadataWithVotes, ScoreCardDTO } from '../../utils/apiTypes'
+import type {
+	CardCollectionDTO,
+	CardMetadata,
+	CardMetadataWithVotes,
+	ScoreCardDTO
+} from '../../utils/apiTypes'
 import ScoreCard from './ScoreCard'
 import { FullScreenModal } from './Atoms/FullScreenModal'
 import { BiRegularLogIn, BiRegularXCircle } from 'solid-icons/bi'
 
 export interface CollectionPageProps {
 	collectionID: string | undefined
-	defaultResultCards: { metadata: CardMetadataWithVotes[]; status: number }
+	defaultCollectionCards: {
+		metadata: { card_metadata: CardMetadataWithVotes[]; collection: CardCollectionDTO }
+		status: number
+	}
 }
 export const CollectionPage = (props: CollectionPageProps) => {
 	const apiHost = import.meta.env.PUBLIC_API_HOST
 	let ScoreDTOCards: ScoreCardDTO[] = []
-	if (props.defaultResultCards.metadata.length > 0)
-		props.defaultResultCards.metadata.forEach((card) => {
+	if (props.defaultCollectionCards.metadata.card_metadata?.length > 0)
+		props.defaultCollectionCards.metadata.card_metadata.forEach((card) => {
 			ScoreDTOCards.push({ metadata: card, score: 2 })
 		})
 
 	const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false)
 	const [convertedCard, setConvertedCard] = createSignal<ScoreCardDTO[]>(ScoreDTOCards)
+	const [collectionInfo, setCollectionInfo] = createSignal<CardCollectionDTO>(
+		props.defaultCollectionCards.metadata.collection
+	)
 	const [error, setError] = createSignal('')
 	const [fetching, setFetching] = createSignal(true)
-	if (props.defaultResultCards.status == 401) {
+	if (props.defaultCollectionCards.status == 401) {
 		setError('You are not authorized to view this collection.')
 	}
 
@@ -32,13 +43,13 @@ export const CollectionPage = (props: CollectionPageProps) => {
 		}).then((response) => {
 			if (response.ok) {
 				response.json().then((data) => {
-					console.log(data)
+					console.log(data.card_metadata)
 					//take the data and convert it to ScoreCardDTO
 					let ScoreDTOCards: ScoreCardDTO[] = []
-					data.forEach((card: CardMetadataWithVotes) => {
+					data.card_metadata.forEach((card: CardMetadataWithVotes) => {
 						ScoreDTOCards.push({ metadata: card, score: 2 })
 					})
-
+					setCollectionInfo(data.collection)
 					setConvertedCard(ScoreDTOCards)
 					setError('')
 					setFetching(false)
@@ -55,11 +66,31 @@ export const CollectionPage = (props: CollectionPageProps) => {
 	})
 	return (
 		<>
-			<div class="mt-12 flex w-full flex-col items-center space-y-4">
-				<div class="flex w-full max-w-6xl flex-col space-y-4 px-4 sm:px-8 md:px-20">
+			<div class=" flex w-full flex-col items-center space-y-2">
+				<Show when={error().length == 0 && !fetching()}>
+					<div class="flex gap-x-2 ">
+						<h1 class="my-8 line-clamp-1  break-all text-center text-lg font-bold min-[320px]:text-xl sm:text-4xl">
+							Collection:
+						</h1>
+						<h1 class="my-8 line-clamp-1 break-all text-center text-lg min-[320px]:text-xl sm:text-4xl">
+							{collectionInfo().name}
+						</h1>
+					</div>
+					<Show when={collectionInfo().description?.length > 0}>
+						<div class="mx-auto flex max-w-[300px] justify-items-center gap-x-2 md:max-w-fit">
+							<div class="text-md text-center font-semibold">Description:</div>
+							<div class="break- flex w-full justify-start text-center">
+								{collectionInfo().description}
+							</div>
+						</div>
+					</Show>
+				</Show>
+				<div class="flex w-full max-w-6xl flex-col space-y-4 border-t border-neutral-500 px-4 sm:px-8 md:px-20">
 					<Show when={error().length == 0 && !fetching()}>
 						{convertedCard().map((card) => (
-							<ScoreCard card={card} collection={true} setShowModal={setShowNeedLoginModal} />
+							<div class="mt-4">
+								<ScoreCard card={card} collection={true} setShowModal={setShowNeedLoginModal} />
+							</div>
 						))}
 					</Show>
 					<Show when={error().length > 0 && !fetching()}>
