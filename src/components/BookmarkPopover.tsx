@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { For, createSignal } from "solid-js";
+import { For, Setter, createEffect, createSignal } from "solid-js";
 import {
   Menu,
   MenuItem,
@@ -10,31 +11,68 @@ import {
   Transition,
 } from "solid-headless";
 import { RiSystemAddFill } from "solid-icons/ri";
-import type { CardCollectionDTO, ScoreCardDTO } from "../../utils/apiTypes";
+import type {
+  CardBookmarksDTO,
+  CardCollectionDTO,
+  ScoreCardDTO,
+} from "../../utils/apiTypes";
 import InputRowsForm from "./Atoms/InputRowsForm";
 
 export interface BookmarkPopoverProps {
   card: ScoreCardDTO;
   cardCollections: CardCollectionDTO[];
   fetchCardCollections: () => void;
+  setLoginModal: Setter<boolean>;
 }
 
 const BookmarkPopover = (props: BookmarkPopoverProps) => {
   const apiHost = import.meta.env.PUBLIC_API_HOST;
 
   const [showCollectionForm, setShowCollectionForm] = createSignal(false);
-
+  const [notLoggedIn, setNotLoggedIn] = createSignal(false);
   const [collectionFormTitle, setCollectionFormTitle] = createSignal("");
+  const [cardCollections, setCardCollections] =
+    createSignal<CardBookmarksDTO[]>();
+  const [usingPanel, setUsingPanel] = createSignal(false);
 
+  const fetchCollections = () => {
+    void fetch(
+      `${apiHost}/card_collection/bookmark/${props.card.metadata.id}`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    ).then((response) => {
+      if (response.ok) {
+        void response.json().then((collection) => {
+          setCardCollections(collection as CardBookmarksDTO[]);
+        });
+      }
+      if (response.status == 401) {
+        setNotLoggedIn(true);
+      }
+    });
+  };
+  createEffect(() => {
+    fetchCollections();
+  });
   return (
     <Popover defaultOpen={false} class="relative">
       {({ isOpen, setState }) => (
         <div>
-          <PopoverButton>
+          <PopoverButton
+            onClick={() => {
+              if (notLoggedIn()) {
+                props.setLoginModal(true);
+                return;
+              }
+              fetchCollections();
+            }}
+          >
             <RiSystemAddFill class="h-5 w-5" />
           </PopoverButton>
           <Transition
-            show={isOpen()}
+            show={isOpen() || usingPanel()}
             enter="transition duration-200"
             enterFrom="opacity-0 translate-y-2"
             enterTo="opacity-100 translate-y-0"
@@ -42,47 +80,66 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-2"
           >
-            <PopoverPanel unmount={false} class="absolute w-screen max-w-sm">
-              <Menu class="flex w-full flex-col overflow-hidden bg-white drop-shadow-md dark:bg-shark-500">
+            <PopoverPanel
+              unmount={false}
+              class="absolute w-screen max-w-xs -translate-x-[300px]"
+              onMouseEnter={() => setUsingPanel(true)}
+              onMouseLeave={() => setUsingPanel(false)}
+              onClick={() => setState(true)}
+            >
+              <Menu class=" flex w-full flex-col justify-end overflow-hidden bg-white drop-shadow-md dark:bg-shark-500">
                 <div class="w-full p-2 text-lg font-bold">
                   Add card to collection
                 </div>
                 <MenuItem as="button" aria-label="Empty" />
-                <For each={props.cardCollections}>
-                  {(collection) => {
-                    return (
-                      <PopoverButton
-                        class="flex justify-between p-2 hover:bg-gray-100 dark:hover:bg-neutral-500/80"
-                        onClick={() => {
-                          void fetch(
-                            `${apiHost}/card_collection/${collection.id}`,
-                            {
-                              method: "POST",
-                              headers: {
-                                "Content-Type": "application/json",
-                              },
-                              credentials: "include",
-                              body: JSON.stringify({
-                                card_metadata_id: props.card.metadata.id,
-                              }),
-                            },
-                          ).then((response) => {
-                            if (response.ok) {
-                              /* empty */
-                            }
-                          });
-                          setState(true);
-                        }}
-                        as="button"
-                      >
-                        <p>{collection.name} </p>
-                        <div class="rounded-md bg-magenta-500 px-2 text-white dark:bg-turquoise-400 dark:text-black">
-                          save
+                <div class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md max-w-screen max-h-[20vh] transform justify-end overflow-y-auto rounded scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600">
+                  <For each={props.cardCollections}>
+                    {(collection) => {
+                      return (
+                        <div class="flex w-full items-center justify-between p-2 hover:bg-gray-100 dark:hover:bg-neutral-500/80">
+                          <p class="flex flex-row justify-start">
+                            {collection.name}{" "}
+                          </p>
+
+                          <input
+                            type="checkbox"
+                            checked={cardCollections()?.some(
+                              (c) => c.collection_id == collection.id,
+                            )}
+                            onChange={(e: Event) => {
+                              console.log(
+                                cardCollections()?.some(
+                                  (c) => c.collection_id == collection.id,
+                                ),
+                              );
+                              void fetch(
+                                `${apiHost}/card_collection/${collection.id}`,
+                                {
+                                  method: e.currentTarget?.checked
+                                    ? "POST"
+                                    : "DELETE",
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                  },
+                                  credentials: "include",
+                                  body: JSON.stringify({
+                                    card_metadata_id: props.card.metadata.id,
+                                  }),
+                                },
+                              ).then((response) => {
+                                if (response.ok) {
+                                  /* empty */
+                                }
+                              });
+                              setState(true);
+                            }}
+                            class="h-4 w-4 rounded-sm	border-gray-300 bg-neutral-500 accent-turquoise focus:ring-neutral-200 dark:border-neutral-700 dark:focus:ring-neutral-600"
+                          />
                         </div>
-                      </PopoverButton>
-                    );
-                  }}
-                </For>
+                      );
+                    }}
+                  </For>
+                </div>
                 {showCollectionForm() && (
                   <div class="bg-gray-100 dark:bg-neutral-500/80">
                     <div class="px-2 pt-2 text-lg font-bold">
