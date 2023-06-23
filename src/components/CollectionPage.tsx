@@ -67,7 +67,6 @@ export const CollectionPage = (props: CollectionPageProps) => {
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          console.log(data.bookmarks);
           //take the data and convert it to ScoreCardDTO
           const ScoreDTOCards: ScoreCardDTO[] = [];
           data.bookmarks.forEach((card: CardMetadataWithVotes) => {
@@ -79,7 +78,6 @@ export const CollectionPage = (props: CollectionPageProps) => {
           setFetching(false);
         });
       }
-      console.log(response.status);
       if (response.status == 403) {
         setFetching(false);
       }

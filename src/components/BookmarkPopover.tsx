@@ -107,11 +107,6 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                               (c) => c.collection_id == collection.id,
                             )}
                             onChange={(e: Event) => {
-                              console.log(
-                                cardCollections()?.some(
-                                  (c) => c.collection_id == collection.id,
-                                ),
-                              );
                               void fetch(
                                 `${apiHost}/card_collection/${collection.id}`,
                                 {
@@ -127,8 +122,9 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                                   }),
                                 },
                               ).then((response) => {
-                                if (response.ok) {
-                                  /* empty */
+                                if (!response.ok) {
+                                  e.currentTarget.checked =
+                                    !e.currentTarget?.checked;
                                 }
                               });
                               setState(true);

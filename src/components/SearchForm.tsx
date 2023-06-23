@@ -152,7 +152,6 @@ const SearchForm = (props: {
         ...prev[0].comboboxItems,
         customDataTypeFilters,
       ];
-      console.log(newComboboxItems);
       return [
         {
           name: prev[0].name,
