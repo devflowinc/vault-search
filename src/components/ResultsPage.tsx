@@ -122,8 +122,8 @@ const ResultsPage = (props: ResultsPageProps) => {
               ? `&searchType=fulltextsearch`
               : "")
           }
-          page={totalPages}
-          totalPages={props.page}
+          page={props.page}
+          totalPages={totalPages}
         />
       </div>
       <Show when={showNeedLoginModal()}>
