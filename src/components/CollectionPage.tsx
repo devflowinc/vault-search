@@ -85,6 +85,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
         setShowNeedLoginModal(true);
       }
     });
+    fetchCardCollections();
   });
   return (
     <>
