@@ -54,7 +54,6 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          console.log(data);
           setConvertedCard({ metadata: data, score: 0 });
           setError("");
           setFetching(false);
