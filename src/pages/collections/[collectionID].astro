@@ -11,13 +11,13 @@ const { collectionID } = Astro.params;
 const apiHost = import.meta.env.API_HOST;
 let collectionCards: {
   metadata: {
-    card_metadata: CardMetadataWithVotes[];
+    bookmarks: CardMetadataWithVotes[];
     collection: CardCollectionDTO;
   };
   status: number;
 } = {
   metadata: {
-    card_metadata: [],
+    bookmarks: [],
     collection: { id: "", name: "", description: "", is_public: false },
   },
   status: 0,

@@ -17,7 +17,7 @@ export interface CollectionPageProps {
   collectionID: string | undefined;
   defaultCollectionCards: {
     metadata: {
-      card_metadata: CardMetadataWithVotes[];
+      bookmarks: CardMetadataWithVotes[];
       collection: CardCollectionDTO;
     };
     status: number;
@@ -26,8 +26,8 @@ export interface CollectionPageProps {
 export const CollectionPage = (props: CollectionPageProps) => {
   const apiHost: string = import.meta.env.PUBLIC_API_HOST;
   const ScoreDTOCards: ScoreCardDTO[] = [];
-  if (props.defaultCollectionCards.metadata.card_metadata.length > 0)
-    props.defaultCollectionCards.metadata.card_metadata.forEach((card) => {
+  if (props.defaultCollectionCards.metadata.bookmarks?.length > 0)
+    props.defaultCollectionCards.metadata.bookmarks.forEach((card) => {
       ScoreDTOCards.push({ metadata: card, score: 2 });
     });
 
@@ -67,10 +67,10 @@ export const CollectionPage = (props: CollectionPageProps) => {
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          console.log(data.card_metadata);
+          console.log(data.bookmarks);
           //take the data and convert it to ScoreCardDTO
           const ScoreDTOCards: ScoreCardDTO[] = [];
-          data.card_metadata.forEach((card: CardMetadataWithVotes) => {
+          data.bookmarks.forEach((card: CardMetadataWithVotes) => {
             ScoreDTOCards.push({ metadata: card, score: 2 });
           });
           setCollectionInfo(data.collection);

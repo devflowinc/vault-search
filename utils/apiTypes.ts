@@ -96,6 +96,12 @@ export interface CardCollectionDTO {
   is_public: boolean;
 }
 
+export interface CardBookmarksDTO {
+  id: string;
+  collection_id: string;
+  card_metadata_id: string;
+}
+
 export interface CardsWithTotalPagesDTO {
   score_cards: ScoreCardDTO[];
   total_card_pages: number;
