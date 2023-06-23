@@ -11,6 +11,7 @@ import BookmarkPopover from './BookmarkPopover'
 
 export interface ScoreCardProps {
 	cardCollections: CardCollectionDTO[]
+	collection?: boolean
 	card: ScoreCardDTO
 	setShowModal: Setter<boolean>
 	fetchCardCollections: () => void
