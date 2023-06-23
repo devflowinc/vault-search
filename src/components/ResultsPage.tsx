@@ -32,7 +32,7 @@ const ResultsPage = (props: ResultsPageProps) => {
   const initialResultCards = props.defaultResultCards.score_cards;
   const totalPages = props.defaultResultCards.total_card_pages;
 
-  const [cardCollections, SetCardCollections] = createSignal<
+  const [cardCollections, setCardCollections] = createSignal<
     CardCollectionDTO[]
   >([]);
 
@@ -47,7 +47,7 @@ const ResultsPage = (props: ResultsPageProps) => {
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          SetCardCollections(data);
+          setCardCollections(data);
         });
       }
     });
