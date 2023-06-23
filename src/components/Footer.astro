@@ -1,44 +1,51 @@
 ---
-import { BiLogosGithub, BiLogosTwitch, BiLogosTwitter, BiLogosYoutube } from 'solid-icons/bi'
-import ThemeModeController from './ThemeModeController'
-import { Show } from 'solid-js'
+import {
+  BiLogosGithub,
+  BiLogosTwitch,
+  BiLogosTwitter,
+  BiLogosYoutube,
+} from "solid-icons/bi";
+import ThemeModeController from "./ThemeModeController";
+import { Show } from "solid-js";
 
-const apiHost = import.meta.env.API_HOST
-let total_cards = 0
+const apiHost = import.meta.env.API_HOST;
+let total_cards = 0;
 
 try {
-	const total_cards_req = await fetch(`${apiHost}/card/count`)
-	const total_cards_json = await total_cards_req.json()
-	total_cards = total_cards_json.total_count
+  const total_cards_req = await fetch(`${apiHost}/card/count`);
+  const total_cards_json = await total_cards_req.json();
+  total_cards = total_cards_json.total_count;
 } catch (e) {
-	console.error(e)
+  console.error(e);
 }
 ---
 
 <div class="flex w-full flex-col items-center space-y-2 py-4">
-	<div class="flex w-full justify-center space-x-3">
-		<a href="https://twitter.com/arguflowai" target="_blank">
-			<BiLogosTwitter size={30} />
-		</a>
-		<a href="https://twitch.tv/arguflow" target="_blank">
-			<BiLogosTwitch size={30} />
-		</a>
-		<a href="https://www.youtube.com/@arguflow">
-			<BiLogosYoutube size={30} />
-		</a>
-		<a href="https://github.com/orgs/arguflow/repositories" target="_blank">
-			<BiLogosGithub size={30} />
-		</a>
-	</div>
-	<Show when={total_cards > 0}>
-		<div class="w-full text-center text-sm text-neutral-600 dark:text-neutral-400">
-			{total_cards.toLocaleString()} cards in the database
-		</div>
-	</Show>
-	<div class="flex w-full justify-center space-x-4">
-		<div>contact@arguflow.gg</div>
-		<div>
-			<ThemeModeController client:only="solid-js" />
-		</div>
-	</div>
+  <div class="flex w-full justify-center space-x-3">
+    <a href="https://twitter.com/arguflowai" target="_blank">
+      <BiLogosTwitter size={30} />
+    </a>
+    <a href="https://twitch.tv/arguflow" target="_blank">
+      <BiLogosTwitch size={30} />
+    </a>
+    <a href="https://www.youtube.com/@arguflow">
+      <BiLogosYoutube size={30} />
+    </a>
+    <a href="https://github.com/orgs/arguflow/repositories" target="_blank">
+      <BiLogosGithub size={30} />
+    </a>
+  </div>
+  <Show when={total_cards > 0}>
+    <div
+      class="w-full text-center text-sm text-neutral-600 dark:text-neutral-400"
+    >
+      {total_cards.toLocaleString()} cards in the database
+    </div>
+  </Show>
+  <div class="flex w-full justify-center space-x-4">
+    <div>contact@arguflow.gg</div>
+    <div>
+      <ThemeModeController client:only="solid-js" />
+    </div>
+  </div>
 </div>

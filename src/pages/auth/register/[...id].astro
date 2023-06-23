@@ -1,33 +1,39 @@
 ---
-import SearchLayout from '../../../layouts/SearchLayout.astro'
-import SetPasswordForm from '../../../components/SetPasswordForm'
-import RegisterOrUserProfile from '../../../components/RegisterOrUserProfile'
-import Footer from '../../../components/Footer.astro'
+import SearchLayout from "../../../layouts/SearchLayout.astro";
+import SetPasswordForm from "../../../components/SetPasswordForm";
+import RegisterOrUserProfile from "../../../components/RegisterOrUserProfile";
+import Footer from "../../../components/Footer.astro";
 
-const { id } = Astro.params
+const { id } = Astro.params;
 ---
 
 <SearchLayout>
-	<div class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4">
-		<a class="flex w-full items-center" href="/">
-			<img class="w-12" src="/logo_transparent.png" alt="Logo" />
-			<div class="text-2xl sm:text-4xl">
-				Arguflow<span class="text-magenta">Vault</span>
-			</div>
-		</a>
-		<div class="flex w-full items-center justify-end space-x-4">
-			<a href=href="https://blog.arguflow.com" target="_blank" class="text-xl">
-				Blog
-			</a>
-			<div>
-				<RegisterOrUserProfile client:only="solid-js" />
-			</div>
-		</div>
-	</div>
-	<div class="flex-1"></div>
-	<div class="flex justify-center">
-		<SetPasswordForm id={id ?? ''} client:load />
-	</div>
-	<div class="flex-1"></div>
-	<Footer />
+  <div
+    class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4"
+  >
+    <a class="flex w-full items-center" href="/">
+      <img class="w-12" src="/logo_transparent.png" alt="Logo" />
+      <div class="text-2xl sm:text-4xl">
+        Arguflow<span class="text-magenta">Vault</span>
+      </div>
+    </a>
+    <div class="flex w-full items-center justify-end space-x-4">
+      <a
+        href='href="https://blog.arguflow.com"'
+        target="_blank"
+        class="text-xl"
+      >
+        Blog
+      </a>
+      <div>
+        <RegisterOrUserProfile client:only="solid-js" />
+      </div>
+    </div>
+  </div>
+  <div class="flex-1"></div>
+  <div class="flex justify-center">
+    <SetPasswordForm id={id ?? ""} client:load />
+  </div>
+  <div class="flex-1"></div>
+  <Footer />
 </SearchLayout>
