@@ -1,9 +1,7 @@
 import { createSignal } from "solid-js";
-import { isActixApiDefaultError } from '../../utils/apiTypes'
+import { isActixApiDefaultError } from "../../utils/apiTypes";
 
-const SetPasswordForm = (
-  params: { id: string },
-) => {
+const SetPasswordForm = (params: { id: string }) => {
   const api_host: string = import.meta.env.PUBLIC_API_HOST as unknown as string;
 
   const [getErrorMessage, setErrorMessage] = createSignal("");

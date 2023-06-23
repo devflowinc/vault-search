@@ -1,56 +1,67 @@
 ---
-import Footer from '../../components/Footer.astro'
-import RegisterOrUserProfile from '../../components/RegisterOrUserProfile'
-import SearchLayout from '../../layouts/SearchLayout.astro'
-import type { CardMetadataWithVotes } from '../../../utils/apiTypes'
-import { CollectionPage } from '../../components/CollectionPage'
-import { Show } from 'solid-js'
-import type { CardCollectionDTO } from '../../../utils/apiTypes'
+import Footer from "../../components/Footer.astro";
+import RegisterOrUserProfile from "../../components/RegisterOrUserProfile";
+import SearchLayout from "../../layouts/SearchLayout.astro";
+import type { CardMetadataWithVotes } from "../../../utils/apiTypes";
+import { CollectionPage } from "../../components/CollectionPage";
+import { Show } from "solid-js";
+import type { CardCollectionDTO } from "../../../utils/apiTypes";
 
-const { collectionID } = Astro.params
-const apiHost = import.meta.env.API_HOST
+const { collectionID } = Astro.params;
+const apiHost = import.meta.env.API_HOST;
 let collectionCards: {
-	metadata: { card_metadata: CardMetadataWithVotes[]; collection: CardCollectionDTO }
-	status: number
+  metadata: {
+    card_metadata: CardMetadataWithVotes[];
+    collection: CardCollectionDTO;
+  };
+  status: number;
 } = {
-	metadata: {
-		card_metadata: [],
-		collection: { id: '', name: '', description: '', is_public: false }
-	},
-	status: 0
-}
+  metadata: {
+    card_metadata: [],
+    collection: { id: "", name: "", description: "", is_public: false },
+  },
+  status: 0,
+};
 
 try {
-	const collectionCard = await fetch(`${apiHost}/card_collection/${collectionID}`, {
-		method: 'GET'
-	})
-	const collectionCardJson = await collectionCard?.json()
-	collectionCards = { metadata: collectionCardJson, status: collectionCard.status }
+  const collectionCard = await fetch(
+    `${apiHost}/card_collection/${collectionID}`,
+    {
+      method: "GET",
+    },
+  );
+  const collectionCardJson = await collectionCard?.json();
+  collectionCards = {
+    metadata: collectionCardJson,
+    status: collectionCard.status,
+  };
 } catch (e) {
-	console.error(e)
+  console.error(e);
 }
 ---
 
 <SearchLayout>
-	<div class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4">
-		<a class="flex w-full items-center" href="/">
-			<img class="w-6 sm:w-12" src="/logo_transparent.png" alt="Logo" />
-			<div class="hidden min-[360px]:block min-[380px]:text-xl sm:text-4xl">
-				Arguflow<span class="text-magenta">Vault</span>
-			</div>
-		</a>
-		<div class="flex w-full items-center justify-end space-x-1 sm:space-x-4">
-			<a href="/create" class="min-[420px]:text-lg"> Create Evidence</a>
-			<div>
-				<RegisterOrUserProfile client:only="solid-js" />
-			</div>
-		</div>
-	</div>
-	<CollectionPage
-		collectionID={collectionID}
-		defaultCollectionCards={collectionCards}
-		client:load
-	/>
+  <div
+    class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4"
+  >
+    <a class="flex w-full items-center" href="/">
+      <img class="w-6 sm:w-12" src="/logo_transparent.png" alt="Logo" />
+      <div class="hidden min-[360px]:block min-[380px]:text-xl sm:text-4xl">
+        Arguflow<span class="text-magenta">Vault</span>
+      </div>
+    </a>
+    <div class="flex w-full items-center justify-end space-x-1 sm:space-x-4">
+      <a href="/create" class="min-[420px]:text-lg"> Create Evidence</a>
+      <div>
+        <RegisterOrUserProfile client:only="solid-js" />
+      </div>
+    </div>
+  </div>
+  <CollectionPage
+    collectionID={collectionID}
+    defaultCollectionCards={collectionCards}
+    client:load
+  />
 
-	<Footer />
+  <Footer />
 </SearchLayout>

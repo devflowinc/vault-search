@@ -1,92 +1,108 @@
 ---
 ---
+
 <style is:global>
-.scrollbar-thin::-webkit-scrollbar-thumb {
+  .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: var(--scrollbar-corner);
     border-radius: 3px !important;
-}
-.scrollbar-thin::-webkit-scrollbar-track {
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
     background-color: var(--scrollbar-track);
     border-radius: 3px !important;
-}
-.scrollbar-thin::-webkit-scrollbar-corner {
+  }
+  .scrollbar-thin::-webkit-scrollbar-corner {
     background-color: var(--scrollbar-corner);
     border-radius: 3px !important;
-}
+  }
 </style>
 <html
-	lang="en"
-	class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600">
-	<head>
-		<script is:inline>
-			const theme = (() => {
-				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-					return localStorage.getItem('theme')
-				}
-				if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-					return 'dark'
-				}
-				return 'light'
-			})()
+  lang="en"
+  class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600"
+>
+  <head>
+    <script is:inline>
+      const theme = (() => {
+        if (
+          typeof localStorage !== "undefined" &&
+          localStorage.getItem("theme")
+        ) {
+          return localStorage.getItem("theme");
+        }
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          return "dark";
+        }
+        return "light";
+      })();
 
-			if (theme === 'light') {
-				document.documentElement.classList.remove('dark')
-			} else {
-				document.documentElement.classList.add('dark')
-			}
+      if (theme === "light") {
+        document.documentElement.classList.remove("dark");
+      } else {
+        document.documentElement.classList.add("dark");
+      }
 
-			if ('serviceWorker' in navigator) {
-				window.addEventListener('load', function () {
-					navigator.serviceWorker.register('/sw.js').then(
-						function (registration) {
-							console.log('Service Worker registered with scope:', registration.scope)
-						},
-						function (error) {
-							console.log('Service Worker registration failed:', error)
-						}
-					)
-				})
-			}
-		</script>
-		<meta charset="UTF-8" />
-		<link rel="manifest" href="/manifest.json" />
-		<meta name="theme-color" content="#5E5E5E" />
-		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-		<meta name="viewport" content="width=device-width" />
-		<title>Arguflow Vault</title>
-		<meta
-			name="description"
-			content="Community ranked semantically searchable embedding store. Demonstrate your research abilities by creating embedding cards and collecting votes. "
-		/>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker.register("/sw.js").then(
+            function (registration) {
+              console.log(
+                "Service Worker registered with scope:",
+                registration.scope,
+              );
+            },
+            function (error) {
+              console.log("Service Worker registration failed:", error);
+            },
+          );
+        });
+      }
+    </script>
+    <meta charset="UTF-8" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#5E5E5E" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Arguflow Vault</title>
+    <meta
+      name="description"
+      content="Community ranked semantically searchable embedding store. Demonstrate your research abilities by creating embedding cards and collecting votes. "
+    />
 
-		<!-- Facebook Meta Tags -->
-		<meta property="og:url" content="https://vault.arguflow.com/" />
-		<meta property="og:type" content="website" />
-		<meta property="og:title" content="Arguflow Vault" />
-		<meta
-			property="og:description"
-			content="Community ranked semantically searchable embedding store. Demonstrate your research abilities by creating embedding cards and collecting votes. "
-		/>
-		<meta property="og:image" content="https://blog.arguflow.com/arguflow-og.png" />
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="https://vault.arguflow.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Arguflow Vault" />
+    <meta
+      property="og:description"
+      content="Community ranked semantically searchable embedding store. Demonstrate your research abilities by creating embedding cards and collecting votes. "
+    />
+    <meta
+      property="og:image"
+      content="https://blog.arguflow.com/arguflow-og.png"
+    />
 
-		<!-- Twitter Meta Tags -->
-		<meta name="twitter:card" content="summary_large_image" />
-		<meta property="twitter:domain" content="vault.arguflow.com" />
-		<meta property="twitter:url" content="https://vault.arguflow.com/" />
-		<meta name="twitter:title" content="Arguflow Vault" />
-		<meta
-			name="twitter:description"
-			content="Community ranked semantically searchable embedding store. Demonstrate your research abilities by creating embedding cards and collecting votes. "
-		/>
-		<meta name="twitter:image" content="https://blog.arguflow.com/arguflow-og.png" />
-	</head>
-	<body
-		class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600"
-	>
-		<div class="flex min-h-screen flex-col bg-white dark:bg-shark-500 dark:text-white">
-			<slot />
-		</div>
-	</body>
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:domain" content="vault.arguflow.com" />
+    <meta property="twitter:url" content="https://vault.arguflow.com/" />
+    <meta name="twitter:title" content="Arguflow Vault" />
+    <meta
+      name="twitter:description"
+      content="Community ranked semantically searchable embedding store. Demonstrate your research abilities by creating embedding cards and collecting votes. "
+    />
+    <meta
+      name="twitter:image"
+      content="https://blog.arguflow.com/arguflow-og.png"
+    />
+  </head>
+  <body
+    class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600"
+  >
+    <div
+      class="flex min-h-screen flex-col bg-white dark:bg-shark-500 dark:text-white"
+    >
+      <slot />
+    </div>
+  </body>
 </html>

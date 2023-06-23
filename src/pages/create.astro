@@ -1,37 +1,45 @@
 ---
-import SearchLayout from '../layouts/SearchLayout.astro'
-import CreateNewEvidenceForm from '../components/CreateNewEvidenceForm'
-import RegisterOrUserProfile from '../components/RegisterOrUserProfile'
-import Footer from '../components/Footer.astro'
+import SearchLayout from "../layouts/SearchLayout.astro";
+import CreateNewEvidenceForm from "../components/CreateNewEvidenceForm";
+import RegisterOrUserProfile from "../components/RegisterOrUserProfile";
+import Footer from "../components/Footer.astro";
 ---
-<head>
-<script src="/tinymce/tinymce.min.js" :inline/>
 
+<head>
+  <script src="/tinymce/tinymce.min.js" :inline></script>
 </head>
 <SearchLayout>
-	<div class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4">
-		<a class="flex w-full items-center" href="/">
-			<img class="w-6 sm:w-12" src="/logo_transparent.png" alt="Logo" />
-			<div class="hidden min-[360px]:block min-[380px]:text-xl sm:text-4xl">
-				Arguflow<span class="text-magenta">Vault</span>
-			</div>
-		</a>
-		<div class="flex w-full items-center justify-end space-x-4">
-			<a href="https://blog.arguflow.com" target="_blank" class="min-[420px]:text-lg"> Blog</a>
-			<div>
-				<RegisterOrUserProfile client:only="solid-js" />
-			</div>
-		</div>
-	</div>
-	<div class="mt-4 flex w-full flex-col items-center space-y-4 px-4 sm:mt-12">
-		<a class="flex w-full items-center justify-center" href="/">
-			<img class="w-12" src="/logo_transparent.png" alt="Logo" />
-			<h1 class="text-4xl">Create New Evidence Card</h1>
-		</a>
-		<div class="w-full max-w-4xl px-4 sm:px-8 md:px-20">
-			<CreateNewEvidenceForm client:only />
-		</div>
-	</div>
-	<div class="flex-1"></div>
-	<Footer />
+  <div
+    class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4"
+  >
+    <a class="flex w-full items-center" href="/">
+      <img class="w-6 sm:w-12" src="/logo_transparent.png" alt="Logo" />
+      <div class="hidden min-[360px]:block min-[380px]:text-xl sm:text-4xl">
+        Arguflow<span class="text-magenta">Vault</span>
+      </div>
+    </a>
+    <div class="flex w-full items-center justify-end space-x-4">
+      <a
+        href="https://blog.arguflow.com"
+        target="_blank"
+        class="min-[420px]:text-lg"
+      >
+        Blog</a
+      >
+      <div>
+        <RegisterOrUserProfile client:only="solid-js" />
+      </div>
+    </div>
+  </div>
+  <div class="mt-4 flex w-full flex-col items-center space-y-4 px-4 sm:mt-12">
+    <a class="flex w-full items-center justify-center" href="/">
+      <img class="w-12" src="/logo_transparent.png" alt="Logo" />
+      <h1 class="text-4xl">Create New Evidence Card</h1>
+    </a>
+    <div class="w-full max-w-4xl px-4 sm:px-8 md:px-20">
+      <CreateNewEvidenceForm client:only />
+    </div>
+  </div>
+  <div class="flex-1"></div>
+  <Footer />
 </SearchLayout>

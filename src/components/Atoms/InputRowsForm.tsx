@@ -1,4 +1,4 @@
-import { Accessor, For, JSXElement, createMemo } from "solid-js";
+import { Accessor, For, JSXElement } from "solid-js";
 
 export interface InputGroup {
   label: string;
@@ -18,11 +18,8 @@ export interface InputRowsFormProps {
 }
 
 const InputRowsForm = (props: InputRowsFormProps) => {
-
   return (
-    <div
-      class={`w-full rounded px-2 py-2 dark:text-white `}
-    >
+    <div class={`w-full rounded px-2 py-2 dark:text-white `}>
       <div class="flex flex-col space-y-4">
         <div class="flex flex-col space-y-1">
           <For each={props.inputGroups}>

@@ -1,40 +1,49 @@
 ---
-import Footer from '../../components/Footer.astro'
-import RegisterOrUserProfile from '../../components/RegisterOrUserProfile'
-import SearchLayout from '../../layouts/SearchLayout.astro'
-import { SingleCardPage } from '../../components/SingleCardPage'
-import type { CardMetadataWithVotes } from '../../../utils/apiTypes'
+import Footer from "../../components/Footer.astro";
+import RegisterOrUserProfile from "../../components/RegisterOrUserProfile";
+import SearchLayout from "../../layouts/SearchLayout.astro";
+import { SingleCardPage } from "../../components/SingleCardPage";
+import type { CardMetadataWithVotes } from "../../../utils/apiTypes";
 
-const { cardID } = Astro.params
-const apiHost = import.meta.env.API_HOST
+const { cardID } = Astro.params;
+const apiHost = import.meta.env.API_HOST;
 let specificCards: unknown;
 
 try {
-	const specificCard = await fetch(`${apiHost}/card/${cardID}`, {
-		method: 'GET'
-	})
-		const specificCardJson = await specificCard?.json()
-		specificCards = {metadata: specificCardJson, status: specificCard.status}
+  const specificCard = await fetch(`${apiHost}/card/${cardID}`, {
+    method: "GET",
+  });
+  const specificCardJson = await specificCard?.json();
+  specificCards = { metadata: specificCardJson, status: specificCard.status };
 } catch (e) {
-	console.error(e)
+  console.error(e);
 }
 ---
 
 <SearchLayout>
-	<div class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4">
-		<a class="flex w-full items-center" href="/">
-			<img class="w-6 sm:w-12" src="/logo_transparent.png" alt="Logo" />
-			<div class="hidden min-[360px]:block min-[380px]:text-xl sm:text-4xl">
-				Arguflow<span class="text-magenta">Vault</span>
-			</div>
-		</a>
-		<div class="flex w-full items-center justify-end space-x-1 sm:space-x-4">
-			<a href="/create" class="min-[420px]:text-lg"> Create Evidence</a>
-			<div>
-				<RegisterOrUserProfile client:only="solid-js" />
-			</div>
-		</div>
-	</div>
-	<SingleCardPage cardID={cardID} defaultResultCards={specificCards as { metadata: CardMetadataWithVotes; status: number; }} client:load />
-	<Footer />
+  <div
+    class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4"
+  >
+    <a class="flex w-full items-center" href="/">
+      <img class="w-6 sm:w-12" src="/logo_transparent.png" alt="Logo" />
+      <div class="hidden min-[360px]:block min-[380px]:text-xl sm:text-4xl">
+        Arguflow<span class="text-magenta">Vault</span>
+      </div>
+    </a>
+    <div class="flex w-full items-center justify-end space-x-1 sm:space-x-4">
+      <a href="/create" class="min-[420px]:text-lg"> Create Evidence</a>
+      <div>
+        <RegisterOrUserProfile client:only="solid-js" />
+      </div>
+    </div>
+  </div>
+  <SingleCardPage
+    cardID={cardID}
+    defaultResultCards={specificCards as {
+      metadata: CardMetadataWithVotes;
+      status: number;
+    }}
+    client:load
+  />
+  <Footer />
 </SearchLayout>

@@ -1,124 +1,143 @@
 ---
-import { UserDTOWithVotesAndCards, isUserDTOWithVotesAndCards } from '../../../utils/apiTypes'
-import CardMetadataDisplay from '../../components/CardMetadataDisplay'
-import Footer from '../../components/Footer.astro'
-import RegisterOrUserProfile from '../../components/RegisterOrUserProfile'
-import SearchLayout from '../../layouts/SearchLayout.astro'
-import { PaginationController } from '../../components/Atoms/PaginationController'
-import { CollectionUserPageView } from '../../components/CollectionUserPageView'
+import {
+  UserDTOWithVotesAndCards,
+  isUserDTOWithVotesAndCards,
+} from "../../../utils/apiTypes";
+import CardMetadataDisplay from "../../components/CardMetadataDisplay";
+import Footer from "../../components/Footer.astro";
+import RegisterOrUserProfile from "../../components/RegisterOrUserProfile";
+import SearchLayout from "../../layouts/SearchLayout.astro";
+import { PaginationController } from "../../components/Atoms/PaginationController";
+import { CollectionUserPageView } from "../../components/CollectionUserPageView";
 
-const apiHost = import.meta.env.API_HOST
-const { id } = Astro.params
+const apiHost = import.meta.env.API_HOST;
+const { id } = Astro.params;
 
-const requestParams = Astro.request.url.split('?')[1]
-const params = new URLSearchParams(requestParams)
-const page = Number(params.get('page')) || 1
+const requestParams = Astro.request.url.split("?")[1];
+const params = new URLSearchParams(requestParams);
+const page = Number(params.get("page")) || 1;
 
-let user: UserDTOWithVotesAndCards | null = null
+let user: UserDTOWithVotesAndCards | null = null;
 try {
-	const queryResult = await fetch(`${apiHost}/user/${id}/${page}`, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json'
-		}
-	})
+  const queryResult = await fetch(`${apiHost}/user/${id}/${page}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
-	if (queryResult.status !== 200) {
-		console.error('Error fetching user', queryResult)
-	}
+  if (queryResult.status !== 200) {
+    console.error("Error fetching user", queryResult);
+  }
 
-	const maybeUser = await queryResult.json()
-	if (isUserDTOWithVotesAndCards(maybeUser)) {
-		user = maybeUser
-	} else {
-		console.error('Error fetching user')
-	}
+  const maybeUser = await queryResult.json();
+  if (isUserDTOWithVotesAndCards(maybeUser)) {
+    user = maybeUser;
+  } else {
+    console.error("Error fetching user");
+  }
 } catch (e) {
-	console.error('Error fetching user', e)
+  console.error("Error fetching user", e);
 }
 ---
 
 <SearchLayout>
-	<div class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4">
-		<a class="flex w-full items-center" href="/">
-			<img class="w-12" src="/logo_transparent.png" alt="Logo" />
-			<p class="hidden min-[280px]:text-lg min-[360px]:block min-[380px]:text-xl sm:text-4xl">
-				Arguflow<span class="text-magenta">Vault</span>
-			</p>
-		</a>
-		<div class="flex w-full items-center justify-end space-x-4">
-			<a href="https://blog.arguflow.com" target="_blank" class="text-xl"> Blog</a>
-			<div>
-				<RegisterOrUserProfile client:only="solid-js" />
-			</div>
-		</div>
-	</div>
-	<div class="mx-auto w-full max-w-6xl px-4">
-		<h1
-			class="my-8 line-clamp-1 break-all text-center text-lg font-bold min-[320px]:text-xl sm:text-4xl"
-		>
-			{user ? user.username || user.email : 'User not found'}
-		</h1>
-		{
-			user && (
-				<>
-					<div class="mx-auto grid w-fit grid-cols-[1fr,2fr] justify-items-end gap-x-2 gap-y-2 text-end sm:gap-x-4">
-						{user.website && (
-							<>
-								<div class="font-semibold">Website:</div>
-								<a
-									href={user.website}
-									target="_blank"
-									class="line-clamp-1 flex w-full justify-start text-magenta-500 underline dark:text-turquoise-400"
-								>
-									{user.website}
-								</a>
-							</>
-						)}
-						{user.email && user.visible_email && (
-							<>
-								<div class="font-semibold">Email:</div>
-								<div class="flex w-full justify-start break-all">{user.email}</div>
-							</>
-						)}
-						<div class="font-semibold">Cards Created:</div>
-						<div class="flex w-full justify-start">{user.total_cards_created.toLocaleString()}</div>
-						<div class="font-semibold">Cumulative Rating:</div>
-						<div class="flex w-full justify-start">
-							{(user.total_upvotes_received - user.total_downvotes_received).toLocaleString()}
-						</div>
-						<div class="font-semibold">Votes Cast:</div>
-						<div class="flex w-full justify-start">{user.total_votes_cast.toLocaleString()}</div>
-						<div class="font-semibold">Date Created:</div>
-						<div class="flex w-full justify-start">
-							{new Date(user.created_at).toLocaleDateString()}
-						</div>
-					</div>
-					<div class="mb-4 mt-4 flex flex-col border-t border-neutral-500 pt-4 text-xl">
-						<CollectionUserPageView user={user} client:load />
-					</div>
-					<div class="mb-4 mt-4 flex flex-col border-t border-neutral-500 pt-4 text-xl">
-						<span>Cards Created by</span>{' '}
-						<span class="break-all font-bold">{user.username || user.email}</span>
-					</div>
-					<div class="flex w-full flex-col space-y-4">
-						{user.cards.map((card) => (
-							<div class="w-full">
-								<CardMetadataDisplay card={card} client:load />
-							</div>
-						))}
-					</div>
-					<div class="mx-auto my-12 flex items-center justify-center space-x-2">
-						<PaginationController
-							query="/user/${user.id}"
-							page={page}
-							totalPages={Math.ceil(user.total_cards_created / 25)}
-						/>
-					</div>
-				</>
-			)
-		}
-	</div>
-	<div class="flex-1"></div>
-	<Footer />
+  <div
+    class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4"
+  >
+    <a class="flex w-full items-center" href="/">
+      <img class="w-12" src="/logo_transparent.png" alt="Logo" />
+      <p
+        class="hidden min-[280px]:text-lg min-[360px]:block min-[380px]:text-xl sm:text-4xl"
+      >
+        Arguflow<span class="text-magenta">Vault</span>
+      </p>
+    </a>
+    <div class="flex w-full items-center justify-end space-x-4">
+      <a href="https://blog.arguflow.com" target="_blank" class="text-xl">
+        Blog</a
+      >
+      <div>
+        <RegisterOrUserProfile client:only="solid-js" />
+      </div>
+    </div>
+  </div>
+  <div class="mx-auto w-full max-w-6xl px-4">
+    <h1
+      class="my-8 line-clamp-1 break-all text-center text-lg font-bold min-[320px]:text-xl sm:text-4xl"
+    >
+      {user ? user.username || user.email : "User not found"}
+    </h1>
+    {
+      user && (
+        <>
+          <div class="mx-auto grid w-fit grid-cols-[1fr,2fr] justify-items-end gap-x-2 gap-y-2 text-end sm:gap-x-4">
+            {user.website && (
+              <>
+                <div class="font-semibold">Website:</div>
+                <a
+                  href={user.website}
+                  target="_blank"
+                  class="line-clamp-1 flex w-full justify-start text-magenta-500 underline dark:text-turquoise-400"
+                >
+                  {user.website}
+                </a>
+              </>
+            )}
+            {user.email && user.visible_email && (
+              <>
+                <div class="font-semibold">Email:</div>
+                <div class="flex w-full justify-start break-all">
+                  {user.email}
+                </div>
+              </>
+            )}
+            <div class="font-semibold">Cards Created:</div>
+            <div class="flex w-full justify-start">
+              {user.total_cards_created.toLocaleString()}
+            </div>
+            <div class="font-semibold">Cumulative Rating:</div>
+            <div class="flex w-full justify-start">
+              {(
+                user.total_upvotes_received - user.total_downvotes_received
+              ).toLocaleString()}
+            </div>
+            <div class="font-semibold">Votes Cast:</div>
+            <div class="flex w-full justify-start">
+              {user.total_votes_cast.toLocaleString()}
+            </div>
+            <div class="font-semibold">Date Created:</div>
+            <div class="flex w-full justify-start">
+              {new Date(user.created_at).toLocaleDateString()}
+            </div>
+          </div>
+          <div class="mb-4 mt-4 flex flex-col border-t border-neutral-500 pt-4 text-xl">
+            <CollectionUserPageView user={user} client:load />
+          </div>
+          <div class="mb-4 mt-4 flex flex-col border-t border-neutral-500 pt-4 text-xl">
+            <span>Cards Created by</span>{" "}
+            <span class="break-all font-bold">
+              {user.username || user.email}
+            </span>
+          </div>
+          <div class="flex w-full flex-col space-y-4">
+            {user.cards.map((card) => (
+              <div class="w-full">
+                <CardMetadataDisplay card={card} client:load />
+              </div>
+            ))}
+          </div>
+          <div class="mx-auto my-12 flex items-center justify-center space-x-2">
+            <PaginationController
+              query="/user/${user.id}"
+              page={page}
+              totalPages={Math.ceil(user.total_cards_created / 25)}
+            />
+          </div>
+        </>
+      )
+    }
+  </div>
+  <div class="flex-1"></div>
+  <Footer />
 </SearchLayout>
