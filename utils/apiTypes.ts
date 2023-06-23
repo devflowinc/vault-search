@@ -58,8 +58,6 @@ export type CardMetadataWithVotes = Exclude<CardMetadata, 'author'> & {
 	vote_by_current_user: boolean | null
 }
 
-export type CardCollections = {}
-
 const isCardMetadataWithVotes = (card: unknown): card is CardMetadataWithVotes => {
 	if (typeof card !== 'object' || card === null) return false
 

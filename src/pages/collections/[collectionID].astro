@@ -5,11 +5,18 @@ import SearchLayout from '../../layouts/SearchLayout.astro'
 import type { CardMetadataWithVotes } from '../../../utils/apiTypes'
 import { CollectionPage } from '../../components/CollectionPage'
 import { Show } from 'solid-js'
+import type { CardCollectionDTO } from '../../../utils/apiTypes'
 
 const { collectionID } = Astro.params
 const apiHost = import.meta.env.API_HOST
-let collectionCards: { metadata: CardMetadataWithVotes[]; status: number } = {
-	metadata: [],
+let collectionCards: {
+	metadata: { card_metadata: CardMetadataWithVotes[]; collection: CardCollectionDTO }
+	status: number
+} = {
+	metadata: {
+		card_metadata: [],
+		collection: { id: '', name: '', description: '', is_public: false }
+	},
 	status: 0
 }
 
@@ -39,7 +46,11 @@ try {
 			</div>
 		</div>
 	</div>
-	<CollectionPage collectionID={collectionID} defaultResultCards={collectionCards} client:load />
+	<CollectionPage
+		collectionID={collectionID}
+		defaultCollectionCards={collectionCards}
+		client:load
+	/>
 
 	<Footer />
 </SearchLayout>
