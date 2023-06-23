@@ -58,6 +58,8 @@ export type CardMetadataWithVotes = Exclude<CardMetadata, 'author'> & {
 	vote_by_current_user: boolean | null
 }
 
+export type CardCollections = {}
+
 const isCardMetadataWithVotes = (card: unknown): card is CardMetadataWithVotes => {
 	if (typeof card !== 'object' || card === null) return false
 
@@ -82,6 +84,28 @@ const isCardMetadataWithVotes = (card: unknown): card is CardMetadataWithVotes =
 		typeof (card as CardMetadataWithVotes).created_at === 'string' &&
 		card.hasOwnProperty('updated_at') &&
 		typeof (card as CardMetadataWithVotes).updated_at === 'string'
+	)
+}
+
+export interface CardCollectionDTO {
+	id: string
+	name: string
+	description: string
+	is_public: boolean
+}
+
+export const isCardCollectionDTO = (collection: unknown): collection is CardCollectionDTO => {
+	if (typeof collection !== 'object' || collection === null) return false
+
+	return (
+		collection.hasOwnProperty('id') &&
+		typeof (collection as CardCollectionDTO).id === 'string' &&
+		collection.hasOwnProperty('name') &&
+		typeof (collection as CardCollectionDTO).name === 'string' &&
+		collection.hasOwnProperty('description') &&
+		typeof (collection as CardCollectionDTO).description === 'string' &&
+		collection.hasOwnProperty('is_public') &&
+		typeof (collection as CardCollectionDTO).is_public === 'boolean'
 	)
 }
 

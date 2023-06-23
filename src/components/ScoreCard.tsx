@@ -8,7 +8,11 @@ import {
 	RiSystemArrowUpCircleLine
 } from 'solid-icons/ri'
 
-const ScoreCard = (props: { card: ScoreCardDTO; setShowModal: Setter<boolean> }) => {
+const ScoreCard = (props: {
+	card: ScoreCardDTO
+	collection?: boolean
+	setShowModal: Setter<boolean>
+}) => {
 	const api_host = import.meta.env.PUBLIC_API_HOST
 
 	const initialVoteTotal = props.card.metadata.total_upvotes - props.card.metadata.total_downvotes
@@ -128,7 +132,7 @@ const ScoreCard = (props: { card: ScoreCardDTO; setShowModal: Setter<boolean> })
 						</div>
 					</Show>
 					<div class="grid w-fit auto-cols-min grid-cols-[1fr,3fr] gap-x-2 text-neutral-800 dark:text-neutral-200">
-						<Show when={props.card.score != 0}>
+						<Show when={props.card.score != 0 && !props.collection}>
 							<span class="font-semibold">Similarity: </span>
 							<span>{props.card.score}</span>
 						</Show>
@@ -154,7 +158,7 @@ const ScoreCard = (props: { card: ScoreCardDTO; setShowModal: Setter<boolean> })
 					</p>
 				</div>
 			</div>
-			<Show when={props.card.score != 0}>
+			<Show when={props.card.score != 0 || props.collection}>
 				<button class="ml-2 font-semibold" onClick={() => setExpanded((prev) => !prev)}>
 					{expanded() ? (
 						<div class="flex flex-row items-center">

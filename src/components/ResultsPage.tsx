@@ -2,12 +2,11 @@ import { Show, createEffect, createSignal } from 'solid-js'
 import type { CardsWithTotalPagesDTO, ScoreCardDTO } from '../../utils/apiTypes'
 import ScoreCard from './ScoreCard'
 import {
-	BiRegularChevronLeft,
-	BiRegularChevronRight,
 	BiRegularLogIn,
 	BiRegularXCircle
 } from 'solid-icons/bi'
 import { FullScreenModal } from './Atoms/FullScreenModal'
+import { PaginationController } from './Atoms/PaginationController'
 
 export interface Filters {
 	dataTypes: string[]
@@ -21,27 +20,9 @@ export interface ResultsPageProps {
 	searchType: String
 }
 
-const createArrayWithCenteredRange = (center: number, range: number) => {
-	const array = []
-	const indicesBeforeCenter = Math.floor(range / 2)
-
-	if (center === Math.floor(range / 2) + 1) {
-		for (let j = 1; j <= range; j++) {
-			array.push(j)
-		}
-	} else {
-		let currentValue = Math.max(1, center - indicesBeforeCenter)
-
-		for (let j = 0; j < range; j++) {
-			array.push(currentValue)
-			currentValue++
-		}
-	}
-
-	return array
-}
-
 const ResultsPage = (props: ResultsPageProps) => {
+	const dataTypeFilters = encodeURIComponent(props.filters.dataTypes.join(','))
+	const linkFilters = encodeURIComponent(props.filters.links.join(','))
 	const apiHost = import.meta.env.PUBLIC_API_HOST
 	const initialResultCards = props.defaultResultCards.score_cards
 	const totalPages = props.defaultResultCards.total_card_pages
@@ -96,68 +77,16 @@ const ResultsPage = (props: ResultsPageProps) => {
 				</div>
 			</div>
 			<div class="mx-auto my-12 flex items-center space-x-2">
-				<Show when={props.page != 1}>
-					<button
-						onClick={() => {
-							const dataTypeFilters = encodeURIComponent(props.filters.dataTypes.join(','))
-							const linkFilters = encodeURIComponent(props.filters.links.join(','))
-
-							window.location.href =
-								`/search?q=${props.query}` +
-								(dataTypeFilters ? `&datatypes=${dataTypeFilters}` : '') +
-								(linkFilters ? `&links=${linkFilters}` : '') +
-								(props.searchType == 'fulltextsearch' ? `&searchType=fulltextsearch` : '') +
-								`&page=${props.page - 1}`
-						}}
-					>
-						<BiRegularChevronLeft class="h-8 w-8 text-neutral-400 dark:text-neutral-500" />
-					</button>
-				</Show>
-				{createArrayWithCenteredRange(
-					// Center on the current page, unless the current page is the last or second to last page
-					totalPages - props.page > 1 ? props.page : totalPages - 2,
-					// Show 5 pages, unless there are less than 5 total pages
-					Math.min(totalPages, 5)
-				).map((n) => (
-					<button
-						classList={{
-							'flex h-8 w-8 items-center justify-center rounded-full focus:bg-neutral-400/70 dark:focus:bg-neutral-500/80':
-								true,
-							'bg-neutral-400/70 dark:bg-neutral-500/80': n === props.page,
-							'bg-neutral-200 dark:bg-neutral-700': n !== props.page
-						}}
-						onClick={() => {
-							const dataTypeFilters = encodeURIComponent(props.filters.dataTypes.join(','))
-							const linkFilters = encodeURIComponent(props.filters.links.join(','))
-
-							window.location.href =
-								`/search?q=${props.query}` +
-								(dataTypeFilters ? `&datatypes=${dataTypeFilters}` : '') +
-								(linkFilters ? `&links=${linkFilters}` : '') +
-								(props.searchType == 'fulltextsearch' ? `&searchType=fulltextsearch` : '') +
-								`&page=${n}`
-						}}
-					>
-						{n}
-					</button>
-				))}
-				<Show when={props.page < totalPages}>
-					<button
-						onClick={() => {
-							const dataTypeFilters = encodeURIComponent(props.filters.dataTypes.join(','))
-							const linkFilters = encodeURIComponent(props.filters.links.join(','))
-
-							window.location.href =
-								`/search?q=${props.query}` +
-								(dataTypeFilters ? `&datatypes=${dataTypeFilters}` : '') +
-								(linkFilters ? `&links=${linkFilters}` : '') +
-								(props.searchType == 'fulltextsearch' ? `&searchType=fulltextsearch` : '') +
-								`&page=${props.page + 1}`
-						}}
-					>
-						<BiRegularChevronRight class="h-8 w-8 text-neutral-400 dark:text-neutral-500" />
-					</button>
-				</Show>
+				<PaginationController
+					query={
+						`/search?q=${props.query}` +
+						(dataTypeFilters ? `&datatypes=${dataTypeFilters}` : '') +
+						(linkFilters ? `&links=${linkFilters}` : '') +
+						(props.searchType == 'fulltextsearch' ? `&searchType=fulltextsearch` : '')
+					}
+					page={totalPages}
+					totalPages={props.page}
+				/>
 			</div>
 			<Show when={showNeedLoginModal()}>
 				<FullScreenModal isOpen={showNeedLoginModal} setIsOpen={setShowNeedLoginModal}>
