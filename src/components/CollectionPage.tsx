@@ -145,8 +145,9 @@ export const CollectionPage = (props: CollectionPageProps) => {
         >
           <div class="min-w-[250px] sm:min-w-[300px]">
             <BiRegularXCircle class="mx-auto h-8 w-8 !text-red-500" />
-            <div class="mb-4 text-xl font-bold">
-              Cannot view this collection without an account
+            <div class="mb-4 text-center text-xl font-bold">
+              Cannot view this collection or add it to a collection without an
+              account
             </div>
             <div class="mx-auto flex w-fit flex-col space-y-3">
               <a

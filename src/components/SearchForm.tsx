@@ -122,7 +122,7 @@ const filterLinkComboboxSections: ComboboxSection[] = [
 const SearchForm = (props: {
   query?: string;
   filters: Filters;
-  searchType: string;
+  searchType: String;
 }) => {
   const initialQuery = props.query ?? "";
 

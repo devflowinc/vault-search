@@ -19,6 +19,7 @@ const SearchForm = () => {
   const [errorFields, setErrorFields] = createSignal<string[]>([]);
   const [isSubmitting, setIsSubmitting] = createSignal(false);
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);
+  const [_private, setPrivate] = createSignal(false);
 
   const submitEvidence = (e: Event) => {
     e.preventDefault();
@@ -51,41 +52,26 @@ const SearchForm = () => {
         content: cardTextContentValue,
         card_html: cardHTMLContentValue,
         link: evidenceLinkValue,
+        private: _private(),
       }),
     }).then((response) => {
-      const searchQuery = encodeURIComponent(
-        cardTextContentValue.length > 3800
-          ? cardTextContentValue.slice(0, 3800)
-          : cardTextContentValue,
-      );
-      const newHref = `/search?q=${searchQuery}`;
-
-      if (response.status === 204) {
-        window.location.href = newHref;
-        return;
+      if (response.ok) {
+        response.json().then((data) => {
+          console.log(data.duplicate);
+          if (data.duplicate) {
+            window.location.href = `/card/${data.card_metadata.id}?collisions=${data.duplicate}`;
+            return;
+          }
+          window.location.href = `/card/${data.card_metadata.id}`;
+          return;
+        });
       }
+
       if (response.status === 401) {
         setShowNeedLoginModal(true);
         setIsSubmitting(false);
         return;
       }
-
-      void response.json().then((data) => {
-        if (isActixApiDefaultError(data)) {
-          setErrorFields(["cardContent"]);
-          const newErrorText =
-            data.message === "Card already exists" ? (
-              <a class="underline" href={newHref}>
-                Content with same meaning already exists, view it here
-              </a>
-            ) : (
-              data.message
-            );
-          setErrorText(newErrorText);
-          setIsSubmitting(false);
-          return;
-        }
-      });
     });
     if (errorFields().includes("cardContent")) {
       (window as any).tinymce.activeEditor.focus();
@@ -166,7 +152,15 @@ const SearchForm = () => {
 
           <textarea id="search-query-textarea" />
         </div>
-        <div class="flex flex-row space-x-2">
+        <label>
+          <span class="mr-2 items-center align-middle">Private?</span>
+          <input
+            type="checkbox"
+            onChange={(e) => setPrivate(e.target.checked)}
+            class="h-4 w-4 rounded-sm	border-gray-300 bg-neutral-500 align-middle accent-turquoise focus:ring-neutral-200 dark:border-neutral-700 dark:focus:ring-neutral-600"
+          />
+        </label>
+        <div class="flex flex-row items-center space-x-2">
           <button
             class="w-fit rounded bg-neutral-100 p-2 hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
             type="submit"

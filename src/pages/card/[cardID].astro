@@ -6,6 +6,10 @@ import { SingleCardPage } from "../../components/SingleCardPage";
 import type { CardMetadataWithVotes } from "../../../utils/apiTypes";
 
 const { cardID } = Astro.params;
+const requestParams = Astro.request.url.split("?")[1];
+const params = new URLSearchParams(requestParams);
+const collisions = params.get("collisions") || "";
+
 const apiHost = import.meta.env.API_HOST;
 let specificCards: unknown;
 
@@ -43,6 +47,7 @@ try {
       metadata: CardMetadataWithVotes;
       status: number;
     }}
+    collisions={collisions}
     client:load
   />
   <Footer />

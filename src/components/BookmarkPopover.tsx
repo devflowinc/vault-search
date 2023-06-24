@@ -106,11 +106,11 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                             checked={cardCollections()?.some(
                               (c) => c.collection_id == collection.id,
                             )}
-                            onChange={(e: Event) => {
+                            onChange={(e) => {
                               void fetch(
                                 `${apiHost}/card_collection/${collection.id}`,
                                 {
-                                  method: e.currentTarget?.checked
+                                  method: e.currentTarget.checked
                                     ? "POST"
                                     : "DELETE",
                                   headers: {
@@ -124,7 +124,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                               ).then((response) => {
                                 if (!response.ok) {
                                   e.currentTarget.checked =
-                                    !e.currentTarget?.checked;
+                                    !e.currentTarget.checked;
                                 }
                               });
                               setState(true);
@@ -146,7 +146,6 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                       onCreate={() => {
                         const title = collectionFormTitle();
                         if (title.trim() == "") return;
-
                         void fetch(`${apiHost}/card_collection`, {
                           method: "POST",
                           headers: {
