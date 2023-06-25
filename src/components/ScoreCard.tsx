@@ -86,41 +86,43 @@ const ScoreCard = (props: ScoreCardProps) => {
       <div class="flex w-full">
         <div class="flex w-full items-start">
           <div class="flex flex-col items-center pr-2">
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                setUserVote((prev) => {
-                  const new_val = prev === 1 ? 0 : 1;
-                  createVote(prev, new_val);
-                  return new_val;
-                });
-              }}
-            >
-              <Show when={userVote() === 1}>
-                <RiSystemArrowUpCircleFill class="h-8 w-8 !text-turquoise-500" />
-              </Show>
-              <Show when={userVote() != 1}>
-                <RiSystemArrowUpCircleLine class="h-8 w-8" />
-              </Show>
-            </button>
-            <span class="my-1">{totalVote() + userVote()}</span>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                setUserVote((prev) => {
-                  const new_val = prev === -1 ? 0 : -1;
-                  createVote(prev, new_val);
-                  return new_val;
-                });
-              }}
-            >
-              <Show when={userVote() === -1}>
-                <RiSystemArrowDownCircleFill class="h-8 w-8 !text-turquoise-500" />
-              </Show>
-              <Show when={userVote() != -1}>
-                <RiSystemArrowDownCircleLine class="h-8 w-8" />
-              </Show>
-            </button>
+            <Show when={!props.card.metadata.private}>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setUserVote((prev) => {
+                    const new_val = prev === 1 ? 0 : 1;
+                    createVote(prev, new_val);
+                    return new_val;
+                  });
+                }}
+              >
+                <Show when={userVote() === 1}>
+                  <RiSystemArrowUpCircleFill class="h-8 w-8 !text-turquoise-500" />
+                </Show>
+                <Show when={userVote() != 1}>
+                  <RiSystemArrowUpCircleLine class="h-8 w-8" />
+                </Show>
+              </button>
+              <span class="my-1">{totalVote() + userVote()}</span>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setUserVote((prev) => {
+                    const new_val = prev === -1 ? 0 : -1;
+                    createVote(prev, new_val);
+                    return new_val;
+                  });
+                }}
+              >
+                <Show when={userVote() === -1}>
+                  <RiSystemArrowDownCircleFill class="h-8 w-8 !text-turquoise-500" />
+                </Show>
+                <Show when={userVote() != -1}>
+                  <RiSystemArrowDownCircleLine class="h-8 w-8" />
+                </Show>
+              </button>
+            </Show>
           </div>
           <div class="flex w-full flex-col">
             <Show when={props.card.metadata.link}>
