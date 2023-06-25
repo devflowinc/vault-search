@@ -55,9 +55,12 @@ const SearchForm = () => {
         private: _private(),
       }),
     }).then((response) => {
-      if (!response.ok) {
+      if (response.status === 401) {
+        setShowNeedLoginModal(true);
+        setIsSubmitting(false);
         return;
       }
+        
     response.json().then((data) => {
       if (data.duplicate) {
         window.location.href = `/card/${data.card_metadata.id}?collisions=${data.duplicate}`;
@@ -67,11 +70,7 @@ const SearchForm = () => {
       return;
     });
 
-      if (response.status === 401) {
-        setShowNeedLoginModal(true);
-        setIsSubmitting(false);
-        return;
-      }
+      
     });
     if (errorFields().includes("cardContent")) {
       (window as any).tinymce.activeEditor.focus();
