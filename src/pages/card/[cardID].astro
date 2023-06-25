@@ -20,7 +20,7 @@ try {
   const specificCardJson = await specificCard?.json();
   specificCards = { metadata: specificCardJson, status: specificCard.status };
 } catch (e) {
-  console.error(e);
+  specificCards = { metadata: {}, status: 404 };
 }
 ---
 
