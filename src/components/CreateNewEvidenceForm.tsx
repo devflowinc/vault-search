@@ -55,17 +55,17 @@ const SearchForm = () => {
         private: _private(),
       }),
     }).then((response) => {
-      if (response.ok) {
-        response.json().then((data) => {
-          console.log(data.duplicate);
-          if (data.duplicate) {
-            window.location.href = `/card/${data.card_metadata.id}?collisions=${data.duplicate}`;
-            return;
-          }
-          window.location.href = `/card/${data.card_metadata.id}`;
-          return;
-        });
+      if (!response.ok) {
+        return;
       }
+    response.json().then((data) => {
+      if (data.duplicate) {
+        window.location.href = `/card/${data.card_metadata.id}?collisions=${data.duplicate}`;
+        return;
+      }
+      window.location.href = `/card/${data.card_metadata.id}`;
+      return;
+    });
 
       if (response.status === 401) {
         setShowNeedLoginModal(true);
