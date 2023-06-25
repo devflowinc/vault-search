@@ -20,7 +20,7 @@ export interface SingleCardPageProps {
 export const SingleCardPage = (props: SingleCardPageProps) => {
   const apiHost = import.meta.env.PUBLIC_API_HOST;
   const ScoreDTOCard: ScoreCardDTO = {
-    metadata: props.defaultResultCards.metadata,
+    metadata: props.defaultResultCards?.metadata,
     score: 0,
   };
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);
@@ -30,6 +30,9 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
   const [fetching, setFetching] = createSignal(true);
   if (props.defaultResultCards.status == 401) {
     setError("You are not authorized to view this card.");
+  }
+  if (props.defaultResultCards.status == 404) {
+    setError("This card could not be found.");
   }
   const [cardCollections, setCardCollections] = createSignal<
     CardCollectionDTO[]
@@ -60,7 +63,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
           setFetching(false);
         });
       }
-      if (response.status == 403) {
+      if (response.status == 403 || response.status == 404) {
         setFetching(false);
       }
       if (response.status == 401) {

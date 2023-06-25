@@ -46,6 +46,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
   if (props.defaultCollectionCards.status == 401) {
     setError("You are not authorized to view this collection.");
   }
+
   const fetchCardCollections = () => {
     void fetch(`${apiHost}/card_collection`, {
       method: "GET",
