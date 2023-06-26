@@ -12,6 +12,7 @@ import type {
 import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
+import { FiEdit3 } from "solid-icons/fi";
 
 export interface CollectionPageProps {
   collectionID: string | undefined;
@@ -40,9 +41,10 @@ export const CollectionPage = (props: CollectionPageProps) => {
   const [cardCollections, setCardCollections] = createSignal<
     CardCollectionDTO[]
   >([]);
-
   const [error, setError] = createSignal("");
   const [fetching, setFetching] = createSignal(true);
+  const [editing, setEditing] = createSignal(false);
+
   if (props.defaultCollectionCards.status == 401) {
     setError("You are not authorized to view this collection.");
   }
@@ -88,24 +90,120 @@ export const CollectionPage = (props: CollectionPageProps) => {
     });
     fetchCardCollections();
   });
+
+  const updateCollection = () => {
+    const body = {
+      collection_id: collectionInfo().id,
+      name: collectionInfo().name,
+      description: collectionInfo().description,
+      is_public: collectionInfo().is_public,
+    };
+    void fetch(`${apiHost}/card_collection`, {
+      method: "PUT",
+      credentials: "include",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((response) => {
+      if (response.ok) {
+        setEditing(false);
+      }
+      if (response.status == 403) {
+        setFetching(false);
+      }
+      if (response.status == 401) {
+        setShowNeedLoginModal(true);
+      }
+    });
+  };
+
   return (
     <>
       <div class=" flex w-full flex-col items-center space-y-2">
         <Show when={error().length == 0 && !fetching()}>
-          <div class="flex gap-x-2 ">
-            <h1 class="my-8 line-clamp-1  break-all text-center text-lg font-bold min-[320px]:text-xl sm:text-4xl">
-              Collection:
-            </h1>
-            <h1 class="my-8 line-clamp-1 break-all text-center text-lg min-[320px]:text-xl sm:text-4xl">
-              {collectionInfo().name}
-            </h1>
-          </div>
-          <Show when={collectionInfo().description.length > 0}>
+          <Show
+            when={cardCollections().some(
+              (collection) => collection.id == collectionInfo()?.id,
+            )}
+          >
+            <div class="pointer-events-none relative flex w-full items-end justify-end px-3 md:absolute md:mt-10 md:w-[70%]">
+              <Show when={!editing()}>
+                <button
+                  class="!pointer-events-auto relative items-end justify-end rounded-md bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+                  onClick={() => setEditing(!editing())}
+                >
+                  Edit details
+                </button>
+              </Show>
+              <Show when={editing()}>
+                <button
+                  class="!pointer-events-auto relative items-end justify-end rounded-md bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+                  onClick={() => updateCollection()}
+                >
+                  Save details
+                </button>
+              </Show>
+            </div>
+          </Show>
+
+          <Show when={!editing()}>
+            <div class="flex items-center gap-x-2">
+              <h1 class="mt-8 text-center text-lg font-bold min-[320px]:text-lg sm:text-3xl">
+                Collection:
+              </h1>
+              <h1 class="mt-8 line-clamp-1 break-all text-center text-lg min-[320px]:text-xl sm:text-3xl">
+                {collectionInfo().name}
+              </h1>
+            </div>
+          </Show>
+          <Show when={collectionInfo().description.length > 0 && !editing()}>
             <div class="mx-auto flex max-w-[300px] justify-items-center gap-x-2 md:max-w-fit">
-              <div class="text-md text-center font-semibold">Description:</div>
-              <div class="break- flex w-full justify-start text-center">
+              <div class="text-center text-lg font-semibold">Description:</div>
+              <div class="line-clamp-1 flex w-full justify-start text-center text-lg">
                 {collectionInfo().description}
               </div>
+            </div>
+          </Show>
+          <Show when={editing()}>
+            <div class="vertical-align-left mt-8 grid	auto-rows-max grid-cols-[1fr,3fr] gap-y-2">
+              <h1 class="text-md min-[320px]:text-md sm:text-md mt-10 text-left font-bold">
+                Name:
+              </h1>
+              <input
+                type="text"
+                class="mt-10 max-h-fit w-full rounded-md bg-neutral-100 px-2 py-1 dark:bg-neutral-700"
+                value={collectionInfo().name}
+                onInput={(e) => {
+                  setCollectionInfo({
+                    ...collectionInfo(),
+                    name: e.target.value,
+                  });
+                }}
+              />
+              <div class="text-md mr-2 font-semibold">Description:</div>
+              <textarea
+                class="w-full justify-start rounded-md bg-neutral-100 px-2 py-1 dark:bg-neutral-700"
+                value={collectionInfo().description}
+                onInput={(e) => {
+                  setCollectionInfo({
+                    ...collectionInfo(),
+                    description: e.target.value,
+                  });
+                }}
+              />
+              <span class="text-md font-semibold">Private?: </span>
+              <input
+                type="checkbox"
+                checked={!collectionInfo().is_public}
+                onChange={(e) => {
+                  setCollectionInfo({
+                    ...collectionInfo(),
+                    is_public: !e.target.checked,
+                  });
+                }}
+                class="mt-1 h-4 w-4 items-center justify-start rounded-sm	border-gray-300 bg-neutral-500 align-middle accent-turquoise focus:ring-neutral-200 dark:border-neutral-700 dark:focus:ring-neutral-600"
+              />
             </div>
           </Show>
         </Show>
