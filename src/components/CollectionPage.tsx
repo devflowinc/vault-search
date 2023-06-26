@@ -43,9 +43,9 @@ export const CollectionPage = (props: CollectionPageProps) => {
   >([]);
   const [error, setError] = createSignal("");
   const [fetching, setFetching] = createSignal(true);
+  const [fetchingCollections, setFetchingCollections] = createSignal(false);
   const [editing, setEditing] = createSignal(false);
-
-  if (props.defaultCollectionCards.status == 401) {
+  if (props.defaultCollectionCards.status == 403) {
     setError("You are not authorized to view this collection.");
   }
 
@@ -92,6 +92,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
   });
 
   const updateCollection = () => {
+    setFetchingCollections(true);
     const body = {
       collection_id: collectionInfo().id,
       name: collectionInfo().name,
@@ -106,6 +107,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
         "Content-Type": "application/json",
       },
     }).then((response) => {
+      setFetchingCollections(false);
       if (response.ok) {
         setEditing(false);
       }
@@ -130,7 +132,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
             <div class="pointer-events-none relative flex w-full items-end justify-end px-3 md:absolute md:mt-10 md:w-[70%]">
               <Show when={!editing()}>
                 <button
-                  class="!pointer-events-auto relative items-end justify-end rounded-md bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+                  class="!pointer-events-auto relative items-end justify-end rounded-md  bg-magenta p-2 text-center"
                   onClick={() => setEditing(!editing())}
                 >
                   Edit details
@@ -138,7 +140,11 @@ export const CollectionPage = (props: CollectionPageProps) => {
               </Show>
               <Show when={editing()}>
                 <button
-                  class="!pointer-events-auto relative items-end justify-end rounded-md bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
+                  classList={{
+                    "!pointer-events-auto relative items-end justify-end rounded-md p-2 text-center bg-magenta":
+                      true,
+                    "animate-pulse": fetchingCollections(),
+                  }}
                   onClick={() => updateCollection()}
                 >
                   Save details
@@ -149,16 +155,16 @@ export const CollectionPage = (props: CollectionPageProps) => {
 
           <Show when={!editing()}>
             <div class="flex items-center gap-x-2">
-              <h1 class="mt-8 text-center text-lg font-bold min-[320px]:text-lg sm:text-3xl">
+              <h1 class="mb-4 mt-8 text-center text-lg font-bold min-[320px]:text-lg sm:text-3xl">
                 Collection:
               </h1>
-              <h1 class="mt-8 line-clamp-1 break-all text-center text-lg min-[320px]:text-xl sm:text-3xl">
+              <h1 class="mb-4 mt-8 line-clamp-1 break-all text-center text-lg min-[320px]:text-xl sm:text-3xl">
                 {collectionInfo().name}
               </h1>
             </div>
           </Show>
           <Show when={collectionInfo().description.length > 0 && !editing()}>
-            <div class="mx-auto flex max-w-[300px] justify-items-center gap-x-2 md:max-w-fit">
+            <div class="mx-auto mb-4 flex max-w-[300px] justify-items-center gap-x-2 md:max-w-fit">
               <div class="text-center text-lg font-semibold">Description:</div>
               <div class="line-clamp-1 flex w-full justify-start text-center text-lg">
                 {collectionInfo().description}
