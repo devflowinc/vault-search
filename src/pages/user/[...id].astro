@@ -11,8 +11,8 @@ import { PaginationController } from "../../components/Atoms/PaginationControlle
 import { CollectionUserPageView } from "../../components/CollectionUserPageView";
 
 const apiHost = import.meta.env.API_HOST;
-const { id } = Astro.params;
-
+let { id } = Astro.params;
+id = id?.split("&")[0];
 const requestParams = Astro.request.url.split("?")[1];
 const params = new URLSearchParams(requestParams);
 const page = Number(params.get("page")) || 1;
@@ -129,9 +129,10 @@ try {
           </div>
           <div class="mx-auto my-12 flex items-center justify-center space-x-2">
             <PaginationController
-              query="/user/${user.id}"
+              query={`/user/${user.id}`}
               page={page}
               totalPages={Math.ceil(user.total_cards_created / 25)}
+              client:load
             />
           </div>
         </>

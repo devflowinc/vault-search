@@ -16,7 +16,7 @@ export const CollectionUserPageView = (props: {
   const [collections, setCollections] = createSignal<CardCollectionDTO[]>([]);
 
   createEffect(() => {
-    void fetch(`${api_host}/card_collection`, {
+    void fetch(`${api_host}/user/collections/${props.user.id}`, {
       method: "GET",
       credentials: "include",
     }).then((response) => {
