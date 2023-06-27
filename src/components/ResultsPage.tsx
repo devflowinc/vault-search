@@ -122,6 +122,7 @@ const ResultsPage = (props: ResultsPageProps) => {
               ? `&searchType=fulltextsearch`
               : "")
           }
+          prefix="&"
           page={props.page}
           totalPages={totalPages}
         />

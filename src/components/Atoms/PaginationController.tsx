@@ -23,6 +23,7 @@ const createArrayWithCenteredRange = (center: number, range: number) => {
 
 interface PaginationControllerProps {
   query: string;
+  prefix: string;
   page: number;
   totalPages: number;
 }
@@ -33,7 +34,8 @@ export const PaginationController = (props: PaginationControllerProps) => {
       <Show when={props.page != 1}>
         <button
           onClick={() => {
-            window.location.href = props.query + `&page=${props.page - 1}`;
+            window.location.href =
+              props.query + props.prefix + `page=${props.page - 1}`;
           }}
         >
           <BiRegularChevronLeft class="h-8 w-8 text-neutral-400 dark:text-neutral-500" />
@@ -53,7 +55,7 @@ export const PaginationController = (props: PaginationControllerProps) => {
             "bg-neutral-200 dark:bg-neutral-700": n !== props.page,
           }}
           onClick={() => {
-            window.location.href = props.query + `&page=${n}`;
+            window.location.href = props.query + props.prefix + `page=${n}`;
           }}
         >
           {n}
@@ -62,7 +64,8 @@ export const PaginationController = (props: PaginationControllerProps) => {
       <Show when={props.page < props.totalPages}>
         <button
           onClick={() => {
-            window.location.href = props.query + `&page=${props.page + 1}`;
+            window.location.href =
+              props.query + props.prefix + `page=${props.page + 1}`;
           }}
         >
           <BiRegularChevronRight class="h-8 w-8 text-neutral-400 dark:text-neutral-500" />
