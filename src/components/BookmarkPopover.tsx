@@ -14,12 +14,12 @@ import { RiSystemAddFill } from "solid-icons/ri";
 import type {
   CardBookmarksDTO,
   CardCollectionDTO,
-  ScoreCardDTO,
+  CardMetadata,
 } from "../../utils/apiTypes";
 import InputRowsForm from "./Atoms/InputRowsForm";
 
 export interface BookmarkPopoverProps {
-  card: ScoreCardDTO;
+  card: CardMetadata;
   cardCollections: CardCollectionDTO[];
   fetchCardCollections: () => void;
   setLoginModal: Setter<boolean>;
@@ -37,7 +37,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
 
   const fetchCollections = () => {
     void fetch(
-      `${apiHost}/card_collection/bookmark/${props.card.metadata.id}`,
+      `${apiHost}/card_collection/bookmark/${props.card.id}`,
       {
         method: "GET",
         credentials: "include",
@@ -82,7 +82,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
           >
             <PopoverPanel
               unmount={false}
-              class="absolute w-screen max-w-xs -translate-x-[300px]"
+              class="absolute w-screen max-w-xs -translate-x-[300px] z-10"
               onMouseEnter={() => setUsingPanel(true)}
               onMouseLeave={() => setUsingPanel(false)}
               onClick={() => setState(true)}

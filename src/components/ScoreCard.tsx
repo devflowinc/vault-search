@@ -40,8 +40,8 @@ const ScoreCard = (props: ScoreCardProps) => {
     setUserVote(props.card.metadata.vote_by_current_user ? 1 : -1);
     setTotalVote(
       props.card.metadata.total_upvotes -
-        props.card.metadata.total_downvotes -
-        (props.card.metadata.vote_by_current_user ? 1 : -1),
+      props.card.metadata.total_downvotes -
+      (props.card.metadata.vote_by_current_user ? 1 : -1),
     );
   });
 
@@ -142,7 +142,7 @@ const ScoreCard = (props: ScoreCardProps) => {
                   target="_blank"
                   href={
                     "https://oc.arguflow.com/" +
-                      props.card.metadata.oc_file_path ?? " "
+                    props.card.metadata.oc_file_path ?? " "
                   }
                 >
                   {props.card.metadata.oc_file_path?.split("/").pop() ??
@@ -183,7 +183,7 @@ const ScoreCard = (props: ScoreCardProps) => {
         <div>
           <BookmarkPopover
             cardCollections={props.cardCollections}
-            card={props.card}
+            card={props.card.metadata}
             fetchCardCollections={props.fetchCardCollections}
             setLoginModal={props.setShowModal}
           />

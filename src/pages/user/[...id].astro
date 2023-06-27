@@ -123,7 +123,7 @@ try {
           <div class="flex w-full flex-col space-y-4">
             {user.cards.map((card) => (
               <div class="w-full">
-                <CardMetadataDisplay card={card} client:load />
+                <CardMetadataDisplay user={user} card={card} client:load />
               </div>
             ))}
           </div>
