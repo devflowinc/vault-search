@@ -12,7 +12,6 @@ import type {
 import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
-import { FiEdit3 } from "solid-icons/fi";
 
 export interface CollectionPageProps {
   collectionID: string | undefined;
@@ -27,7 +26,7 @@ export interface CollectionPageProps {
 export const CollectionPage = (props: CollectionPageProps) => {
   const apiHost: string = import.meta.env.PUBLIC_API_HOST;
   const ScoreDTOCards: ScoreCardDTO[] = [];
-  if (props.defaultCollectionCards.metadata.bookmarks?.length > 0)
+  if (props.defaultCollectionCards.metadata.bookmarks.length > 0)
     props.defaultCollectionCards.metadata.bookmarks.forEach((card) => {
       ScoreDTOCards.push({ metadata: card, score: 2 });
     });
@@ -126,7 +125,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
         <Show when={error().length == 0 && !fetching()}>
           <Show
             when={cardCollections().some(
-              (collection) => collection.id == collectionInfo()?.id,
+              (collection) => collection.id == collectionInfo().id,
             )}
           >
             <div class="pointer-events-none relative flex w-full items-end justify-end px-3 md:absolute md:mt-10 md:w-[70%]">

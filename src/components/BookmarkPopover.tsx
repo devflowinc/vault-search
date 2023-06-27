@@ -56,6 +56,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
   createEffect(() => {
     fetchCollections();
   });
+
   return (
     <Popover defaultOpen={false} class="relative">
       {({ isOpen, setState }) => (
