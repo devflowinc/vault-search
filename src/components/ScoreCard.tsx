@@ -14,6 +14,7 @@ import {
   RiSystemArrowUpCircleLine,
 } from "solid-icons/ri";
 import BookmarkPopover from "./BookmarkPopover";
+import { VsFileSymlinkFile } from "solid-icons/vs";
 
 export interface ScoreCardProps {
   cardCollections: CardCollectionDTO[];
@@ -182,7 +183,15 @@ const ScoreCard = (props: ScoreCardProps) => {
             </p>
           </div>
         </div>
-        <div>
+        <div class="flex gap-x-1">
+          <VsFileSymlinkFile
+            class="h-5 w-5 cursor-pointer"
+            onClick={() => {
+              navigator.clipboard.writeText(
+                "https://vault.arguflow.com/card/" + props.card.metadata.id,
+              );
+            }}
+          />
           <BookmarkPopover
             cardCollections={props.cardCollections}
             card={props.card}
