@@ -1,13 +1,10 @@
 ---
-import SearchLayout from "../layouts/SearchLayout.astro";
-import CreateNewEvidenceForm from "../components/CreateNewEvidenceForm";
-import RegisterOrUserProfile from "../components/RegisterOrUserProfile";
 import Footer from "../components/Footer.astro";
+import RegisterOrUserProfile from "../components/RegisterOrUserProfile";
+import { UploadFile } from "../components/UploadFile";
+import SearchLayout from "../layouts/SearchLayout.astro";
 ---
 
-<head>
-  <script src="/tinymce/tinymce.min.js" :inline></script>
-</head>
 <SearchLayout>
   <div
     class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4"
@@ -18,15 +15,8 @@ import Footer from "../components/Footer.astro";
         Arguflow<span class="text-magenta">Vault</span>
       </div>
     </a>
-    <div class="flex w-full items-center justify-end space-x-4">
-      <a href="/upload" class="min-[420px]:text-xl">Upload Files</a>
-      <a
-        href="https://blog.arguflow.com"
-        target="_blank"
-        class="min-[420px]:text-xl"
-      >
-        Blog</a
-      >
+    <div class="flex w-full items-center justify-end space-x-1 sm:space-x-4">
+      <a href="/create" class="min-[420px]:text-lg"> Create Evidence</a>
       <div>
         <RegisterOrUserProfile client:only="solid-js" />
       </div>
@@ -35,10 +25,10 @@ import Footer from "../components/Footer.astro";
   <div class="mt-4 flex w-full flex-col items-center space-y-4 px-4 sm:mt-12">
     <a class="flex w-full items-center justify-center" href="/">
       <img class="w-12" src="/logo_transparent.png" alt="Logo" />
-      <h1 class="text-4xl">Create New Evidence Card</h1>
+      <h1 class="text-4xl">Upload New Evidence File</h1>
     </a>
     <div class="w-full max-w-4xl px-4 sm:px-8 md:px-20">
-      <CreateNewEvidenceForm client:only />
+      <UploadFile client:load />
     </div>
   </div>
   <div class="flex-1"></div>
