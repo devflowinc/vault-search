@@ -41,7 +41,7 @@ export const CollectionUserPageView = (props: {
               <button
                 class="text-md mt-1 flex w-fit items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-700"
                 onClick={(_) =>
-                  (window.location.href = `/collections/${collection.id}`)
+                  (window.location.href = `/collection/${collection.id}`)
                 }
               >
                 <BiSolidFolder classList={{ "mr-1": true }} />

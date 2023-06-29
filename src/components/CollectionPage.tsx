@@ -124,15 +124,25 @@ export const CollectionPage = (props: CollectionPageProps) => {
     <>
       <div class=" flex w-full flex-col items-center space-y-2">
         <Show when={error().length == 0 && !fetching()}>
-          <Show
-            when={cardCollections().some(
-              (collection) => collection.id == collectionInfo()?.id,
-            )}
-          >
-            <div class="pointer-events-none relative flex w-full items-end justify-end px-3 md:absolute md:mt-10 md:w-[70%]">
+          <div class="flex max-w-6xl items-center gap-x-2">
+            <Show when={!editing()}>
+              <div class="flex items-center gap-x-2">
+                <h1 class="mb-4 mt-8 text-center text-lg font-bold min-[320px]:text-lg sm:text-3xl">
+                  Collection:
+                </h1>
+                <h1 class="mb-4 mt-8 line-clamp-1 break-all text-center text-lg min-[320px]:text-xl sm:text-3xl">
+                  {collectionInfo().name}
+                </h1>
+              </div>
+            </Show>
+            <Show
+              when={cardCollections().some(
+                (collection) => collection.id == collectionInfo()?.id,
+              )}
+            >
               <Show when={!editing()}>
                 <button
-                  class="!pointer-events-auto relative items-end justify-end rounded-md  bg-magenta p-2 text-center"
+                  class="!pointer-events-auto relative mr-2 mt-2 line-clamp-1 max-h-10 min-w-fit items-end justify-end  rounded-md bg-magenta p-2 text-center"
                   onClick={() => setEditing(!editing())}
                 >
                   Edit details
@@ -141,7 +151,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
               <Show when={editing()}>
                 <button
                   classList={{
-                    "!pointer-events-auto relative items-end justify-end rounded-md p-2 text-center bg-magenta":
+                    "!pointer-events-auto relative max-h-10 mt-2 mr-2 items-end justify-end rounded-md p-2 text-center bg-magenta":
                       true,
                     "animate-pulse": fetchingCollections(),
                   }}
@@ -150,19 +160,8 @@ export const CollectionPage = (props: CollectionPageProps) => {
                   Save details
                 </button>
               </Show>
-            </div>
-          </Show>
-
-          <Show when={!editing()}>
-            <div class="flex items-center gap-x-2">
-              <h1 class="mb-4 mt-8 text-center text-lg font-bold min-[320px]:text-lg sm:text-3xl">
-                Collection:
-              </h1>
-              <h1 class="mb-4 mt-8 line-clamp-1 break-all text-center text-lg min-[320px]:text-xl sm:text-3xl">
-                {collectionInfo().name}
-              </h1>
-            </div>
-          </Show>
+            </Show>
+          </div>
           <Show when={collectionInfo().description.length > 0 && !editing()}>
             <div class="mx-auto mb-4 flex max-w-[300px] justify-items-center gap-x-2 md:max-w-fit">
               <div class="text-center text-lg font-semibold">Description:</div>
