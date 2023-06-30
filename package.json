@@ -20,6 +20,7 @@
     "prettier": "^2.8.8",
     "prettier-plugin-astro": "^0.9.0",
     "prettier-plugin-tailwindcss": "^0.3.0",
+    "sanitize-html": "^2.11.0",
     "solid-headless": "^0.13.1",
     "solid-icons": "^1.0.4",
     "solid-js": "^1.4.3",
@@ -30,13 +31,13 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "eslint": "^8.0.1",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-solid": "^0.12.1",
     "eslint-config-prettier": "^8.8.0",
     "eslint-config-standard-with-typescript": "^35.0.0",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-solid": "^0.12.1",
     "typescript": "*"
   }
 }
