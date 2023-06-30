@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { For, Setter, createEffect, createSignal } from "solid-js";
 import {
   Menu,
@@ -26,7 +23,7 @@ export interface BookmarkPopoverProps {
 }
 
 const BookmarkPopover = (props: BookmarkPopoverProps) => {
-  const apiHost = import.meta.env.PUBLIC_API_HOST;
+  const apiHost = import.meta.env.PUBLIC_API_HOST as string;
 
   const [refetchingCardCollections, setRefetchingCardCollections] =
     createSignal(false);
