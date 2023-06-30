@@ -23,7 +23,7 @@ export const UploadFile = () => {
   const handleDirectUpload = (e: Event & { target: HTMLInputElement }) => {
     e.preventDefault();
     e.stopPropagation();
-    setFile((e.target?.files as FileList)[0]);
+    setFile(e.target.files![0]);
   };
   const submitEvidence = async (e: Event) => {
     if (!file()) {
@@ -41,7 +41,7 @@ export const UploadFile = () => {
         reader.onload = () => resolve(reader.result);
         reader.onerror = reject;
       });
-    let base64File = await toBase64(file() as File);
+    let base64File = await toBase64(file()!);
     base64File = (base64File as string)
       .toString()
       .split(",")[1]

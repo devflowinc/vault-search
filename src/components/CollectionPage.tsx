@@ -27,7 +27,7 @@ export interface CollectionPageProps {
 export const CollectionPage = (props: CollectionPageProps) => {
   const apiHost: string = import.meta.env.PUBLIC_API_HOST;
   const ScoreDTOCards: ScoreCardDTO[] = [];
-  if (props.defaultCollectionCards.metadata.bookmarks?.length > 0)
+  if (props.defaultCollectionCards.metadata.bookmarks.length > 0)
     props.defaultCollectionCards.metadata.bookmarks.forEach((card) => {
       ScoreDTOCards.push({ metadata: card, score: 2 });
     });
@@ -137,7 +137,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
             </Show>
             <Show
               when={cardCollections().some(
-                (collection) => collection.id == collectionInfo()?.id,
+                (collection) => collection.id == collectionInfo().id,
               )}
             >
               <Show when={!editing()}>

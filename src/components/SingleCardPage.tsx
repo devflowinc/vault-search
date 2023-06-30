@@ -15,12 +15,12 @@ import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
 export interface SingleCardPageProps {
   cardID: string | undefined;
   defaultResultCards: { metadata: CardMetadataWithVotes; status: number };
-  collisions: String;
+  collisions: string;
 }
 export const SingleCardPage = (props: SingleCardPageProps) => {
   const apiHost = import.meta.env.PUBLIC_API_HOST;
   const ScoreDTOCard: ScoreCardDTO = {
-    metadata: props.defaultResultCards?.metadata,
+    metadata: props.defaultResultCards.metadata,
     score: 0,
   };
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);

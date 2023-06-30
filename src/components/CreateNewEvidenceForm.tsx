@@ -60,17 +60,15 @@ const SearchForm = () => {
         setIsSubmitting(false);
         return;
       }
-        
-    response.json().then((data) => {
-      if (data.duplicate) {
-        window.location.href = `/card/${data.card_metadata.id}?collisions=${data.duplicate}`;
-        return;
-      }
-      window.location.href = `/card/${data.card_metadata.id}`;
-      return;
-    });
 
-      
+      response.json().then((data) => {
+        if (data.duplicate) {
+          window.location.href = `/card/${data.card_metadata.id}?collisions=${data.duplicate}`;
+          return;
+        }
+        window.location.href = `/card/${data.card_metadata.id}`;
+        return;
+      });
     });
     if (errorFields().includes("cardContent")) {
       (window as any).tinymce.activeEditor.focus();

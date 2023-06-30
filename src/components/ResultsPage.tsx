@@ -22,7 +22,7 @@ export interface ResultsPageProps {
   page: number;
   defaultResultCards: CardsWithTotalPagesDTO;
   filters: Filters;
-  searchType: String;
+  searchType: string;
 }
 
 const ResultsPage = (props: ResultsPageProps) => {
