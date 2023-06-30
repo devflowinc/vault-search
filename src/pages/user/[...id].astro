@@ -4,11 +4,10 @@ import {
   isUserDTOWithVotesAndCards,
 } from "../../../utils/apiTypes";
 import Footer from "../../components/Footer.astro";
-import RegisterOrUserProfile from "../../components/RegisterOrUserProfile";
 import SearchLayout from "../../layouts/SearchLayout.astro";
 import { UserCardDisplay } from "../../components/UserCardDisplay";
 
-const apiHost = import.meta.env.API_HOST;
+const apiHost = import.meta.env.API_HOST as string;
 let { id } = Astro.params;
 id = id?.split("&")[0];
 const requestParams = Astro.request.url.split("?")[1];
@@ -17,7 +16,7 @@ const page = Number(params.get("page")) || 1;
 
 let user: UserDTOWithVotesAndCards | null = null;
 try {
-  const queryResult = await fetch(`${apiHost}/user/${id}/${page}`, {
+  const queryResult = await fetch(`${apiHost}/user/${id ?? ""}/${page}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -28,6 +27,7 @@ try {
     console.error("Error fetching user", queryResult);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const maybeUser = await queryResult.json();
   if (isUserDTOWithVotesAndCards(maybeUser)) {
     user = maybeUser;
@@ -44,12 +44,12 @@ try {
     <h1
       class="my-8 line-clamp-1 break-all text-center text-lg font-bold min-[320px]:text-xl sm:text-4xl"
     >
-      {user ? user.username || user.email : "User not found"}
+      {user ? user.username ?? user.email : "User not found"}
     </h1>
     {
       user && (
         <>
-          <UserCardDisplay id={id as string} page={page} client:load />
+          <UserCardDisplay id={id ?? ""} page={page} client:load />
         </>
       )
     }
