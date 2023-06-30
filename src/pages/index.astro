@@ -9,6 +9,7 @@ import {
   type UserDTOWithScore,
 } from "../../utils/apiTypes";
 import type { Filters } from "../components/ResultsPage";
+import HomeLayout from "../layouts/HomeLayout.astro";
 const apiHost = import.meta.env.API_HOST;
 
 const requestParams = Astro.request.url.split("?")[1];
@@ -43,18 +44,7 @@ try {
 }
 ---
 
-<SearchLayout>
-  <div
-    class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-end space-x-4 px-4"
-  >
-    <a href="/upload" class="text-xl">Upload Files</a>
-    <a href="https://blog.arguflow.com" target="_blank" class="text-xl">
-      Blog</a
-    >
-    <div>
-      <RegisterOrUserProfile client:only="solid-js" />
-    </div>
-  </div>
+<HomeLayout>
   <div class="space-y mt-12 flex w-full flex-col items-center">
     <a class="flex w-full items-center justify-center" href="/">
       <img class="w-12" src="/logo_transparent.png" alt="Logo" />
@@ -66,8 +56,8 @@ try {
       Discover More with <a
         href="https://en.wikipedia.org/wiki/Semantic_search"
         class="text-turquoise-500 underline dark:text-acid-500"
-        >Semantic Search</a
-      >: Find Meaningful Results, Not Just Exact Matches
+        >Semantic Search
+      </a>: Find Meaningful Results, Not Just Exact Matches
     </div>
     <div class="mt-8 w-full max-w-4xl px-4 sm:px-8 md:px-20">
       <SearchForm filters={filters} searchType={searchType} client:load />
@@ -156,4 +146,4 @@ try {
   </div>
   <div class="flex-1"></div>
   <Footer />
-</SearchLayout>
+</HomeLayout>
