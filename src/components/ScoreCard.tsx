@@ -46,7 +46,7 @@ const ScoreCard = (props: ScoreCardProps) => {
     setUserVote(userVote);
     const newTotalVote =
       props.card.metadata.total_upvotes -
-      props.card.metadata.total_downvotes +
+      props.card.metadata.total_downvotes -
       userVote;
     setTotalVote(newTotalVote);
   });
