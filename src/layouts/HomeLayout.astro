@@ -1,5 +1,5 @@
 ---
-import { Navbar } from "../components/Atoms/Navbar";
+import { HomeNavbar } from "../components/Atoms/HomeNavbar";
 import RegisterOrUserProfile from "../components/RegisterOrUserProfile";
 ---
 
@@ -109,7 +109,7 @@ import RegisterOrUserProfile from "../components/RegisterOrUserProfile";
     <div
       class="flex min-h-screen flex-col bg-white dark:bg-shark-500 dark:text-white"
     >
-      <Navbar client:load />
+      <HomeNavbar client:load />
       <slot />
     </div>
   </body>

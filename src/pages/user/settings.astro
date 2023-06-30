@@ -6,24 +6,7 @@ import SearchLayout from "../../layouts/SearchLayout.astro";
 ---
 
 <SearchLayout>
-  <div
-    class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4"
-  >
-    <a class="flex w-full items-center" href="/">
-      <img class="w-12" src="/logo_transparent.png" alt="Logo" />
-      <div class="text-2xl sm:text-4xl">
-        Arguflow<span class="text-magenta">Vault</span>
-      </div>
-    </a>
-    <div class="flex w-full items-center justify-end space-x-4">
-      <a href="https://blog.arguflow.com" target="_blank" class="text-xl">
-        Blog
-      </a>
-      <div>
-        <RegisterOrUserProfile client:only="solid-js" />
-      </div>
-    </div>
-  </div>
+
   <div class="mx-auto w-full max-w-6xl px-4">
     <h1 class="mb-4 mt-8 text-center text-4xl font-bold">Edit your profile</h1>
     <EditUserForm client:load />

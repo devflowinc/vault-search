@@ -126,7 +126,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
         <Show when={error().length == 0 && !fetching()}>
           <div class="flex max-w-6xl items-center gap-x-2">
             <Show when={!editing()}>
-              <div class="flex items-center gap-x-2">
+              <div class="mx-2 flex items-center gap-x-2">
                 <h1 class="mb-4 mt-8 text-center text-lg font-bold min-[320px]:text-lg sm:text-3xl">
                   Collection:
                 </h1>
