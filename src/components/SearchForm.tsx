@@ -1,5 +1,4 @@
 import { BiRegularSearch, BiRegularX } from "solid-icons/bi";
-import { VsTriangleDown } from "solid-icons/vs";
 import { For, Show, createEffect, createSignal } from "solid-js";
 import {
   Combobox,
@@ -126,7 +125,7 @@ const SearchForm = (props: {
     { name: "Semantic", isSelected: true, route: "search" },
   ]);
   // eslint-disable-next-line solid/reactivity
-  const [textareaInput, setTextareaInput] = createSignal(props.query);
+  const [textareaInput, setTextareaInput] = createSignal(props.query ?? "");
 
   const [filterDataTypes, setFilterDataTypes] = createSignal<ComboboxSection[]>(
     filterDataTypeComboboxSections,
@@ -253,7 +252,7 @@ const SearchForm = (props: {
         <div class="flex space-x-2">
           <div class="pr-0. flex w-full justify-center space-x-2 rounded-md bg-neutral-100 px-4 py-1 pr-[10px] dark:bg-neutral-700 ">
             <Show when={!props.query}>
-              <BiRegularSearch class="mt-1 h-6 w-6" />
+              <BiRegularSearch class="mt-1 h-6 w-6 fill-current" />
             </Show>
             <textarea
               id="search-query-textarea"
@@ -271,7 +270,7 @@ const SearchForm = (props: {
               }}
               rows="1"
             >
-              {textareaInput() ?? props.query}
+              {textareaInput()}
             </textarea>
             <Show when={textareaInput()}>
               <button
@@ -288,7 +287,7 @@ const SearchForm = (props: {
                   );
                 }}
               >
-                <BiRegularX class="h-7 w-7" />
+                <BiRegularX class="h-7 w-7 fill-current" />
               </button>
             </Show>
             <Show when={props.query}>
@@ -299,7 +298,7 @@ const SearchForm = (props: {
                 }}
                 type="submit"
               >
-                <BiRegularSearch class="mt-1 h-6 w-6" />
+                <BiRegularSearch class="mt-1 h-6 w-6 fill-current" />
               </button>
             </Show>
           </div>
@@ -311,9 +310,21 @@ const SearchForm = (props: {
                 <PopoverButton
                   aria-label="Toggle filters"
                   type="button"
-                  class="flex items-center space-x-1 text-sm"
+                  class="flex items-center space-x-1 text-sm "
                 >
-                  <span>Filters</span> <VsTriangleDown class="h-3.5 w-3.5" />
+                  <span>Filters</span>{" "}
+                  <svg
+                    fill="currentColor"
+                    stroke-width="0"
+                    style={{ overflow: "visible", color: "currentColor" }}
+                    viewBox="0 0 16 16"
+                    class="h-3.5 w-3.5 "
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M2 5.56L2.413 5h11.194l.393.54L8.373 11h-.827L2 5.56z" />
+                  </svg>
                 </PopoverButton>
                 <Transition
                   show={isOpen()}
@@ -360,10 +371,21 @@ const SearchForm = (props: {
                 <PopoverButton
                   aria-label="Toggle filters"
                   type="button"
-                  class="flex items-center space-x-1 text-sm"
+                  class="flex items-center space-x-1 text-sm text-neutral-800 dark:text-white"
                 >
                   <span>Search Type</span>{" "}
-                  <VsTriangleDown class="h-3.5 w-3.5" />
+                  <svg
+                    fill="currentColor"
+                    stroke-width="0"
+                    style={{ overflow: "visible", color: "currentColor" }}
+                    viewBox="0 0 16 16"
+                    class="h-3.5 w-3.5 "
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M2 5.56L2.413 5h11.194l.393.54L8.373 11h-.827L2 5.56z" />
+                  </svg>
                 </PopoverButton>
                 <Transition
                   show={isOpen()}

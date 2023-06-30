@@ -104,10 +104,10 @@ const ScoreCard = (props: ScoreCardProps) => {
                 }}
               >
                 <Show when={userVote() === 1}>
-                  <RiArrowsArrowUpCircleFill class="h-8 w-8 !text-turquoise-500" />
+                  <RiArrowsArrowUpCircleFill class="h-8 w-8 fill-current !text-turquoise-500" />
                 </Show>
                 <Show when={userVote() != 1}>
-                  <RiArrowsArrowUpCircleLine class="h-8 w-8" />
+                  <RiArrowsArrowUpCircleLine class="h-8 w-8 fill-current" />
                 </Show>
               </button>
               <span class="my-1">{totalVote() + userVote()}</span>
@@ -122,10 +122,10 @@ const ScoreCard = (props: ScoreCardProps) => {
                 }}
               >
                 <Show when={userVote() === -1}>
-                  <RiArrowsArrowDownCircleFill class="h-8 w-8 !text-turquoise-500" />
+                  <RiArrowsArrowDownCircleFill class="h-8 w-8 fill-current !text-turquoise-500" />
                 </Show>
                 <Show when={userVote() != -1}>
-                  <RiArrowsArrowDownCircleLine class="h-8 w-8" />
+                  <RiArrowsArrowDownCircleLine class="h-8 w-8 fill-current" />
                 </Show>
               </button>
             </Show>
@@ -204,7 +204,7 @@ const ScoreCard = (props: ScoreCardProps) => {
         </div>
         <div class="flex gap-x-1">
           <VsFileSymlinkFile
-            class="h-5 w-5 cursor-pointer"
+            class="cursor-pointe h-5 w-5 fill-current"
             onClick={() => {
               void navigator.clipboard.writeText(
                 "https://vault.arguflow.com/card/" + props.card.metadata.id,
@@ -226,11 +226,13 @@ const ScoreCard = (props: ScoreCardProps) => {
         >
           {expanded() ? (
             <div class="flex flex-row items-center">
-              <div>Show Less</div> <BiRegularChevronUp class="h-8 w-8" />
+              <div>Show Less</div>{" "}
+              <BiRegularChevronUp class="h-8 w-8 fill-current" />
             </div>
           ) : (
             <div class="flex flex-row items-center">
-              <div>Show More</div> <BiRegularChevronDown class="h-8 w-8" />
+              <div>Show More</div>{" "}
+              <BiRegularChevronDown class="h-8 w-8 fill-current" />
             </div>
           )}
         </button>

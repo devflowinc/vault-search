@@ -139,7 +139,7 @@ export const Combobox = (props: ComboboxProps) => {
         {filteredSectionsWithIsSelected()[0].sectionName}{" "}
       </div>
       <div class="flex w-fit items-center space-x-2 rounded bg-white px-2 focus:outline-black dark:bg-neutral-600 dark:focus:outline-white">
-        <BiRegularSearchAlt class="h-5 w-5 text-neutral-500 dark:text-neutral-400" />
+        <BiRegularSearchAlt class="h-5 w-5 fill-current text-neutral-500 dark:text-neutral-400" />
         <input
           class="w-full bg-transparent focus:outline-none"
           type="text"
@@ -193,7 +193,7 @@ export const Combobox = (props: ComboboxProps) => {
                           </div>
                           {option.isSelected && (
                             <span>
-                              <FaSolidCheck class="text-xl" />
+                              <FaSolidCheck class="fill-current text-xl" />
                             </span>
                           )}
                           {hoverOverCustom() &&
@@ -202,7 +202,7 @@ export const Combobox = (props: ComboboxProps) => {
                               <span
                                 onClick={(e) => removeCustomItem(e, option)}
                               >
-                                <VsClose class="text-xl" />
+                                <VsClose class="fill-current text-xl" />
                               </span>
                             )}
                         </button>

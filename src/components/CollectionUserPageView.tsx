@@ -45,7 +45,7 @@ export const CollectionUserPageView = (props: {
                     return (window.location.href = `/collection/${collection.id}`);
                   }}
                 >
-                  <BiSolidFolder classList={{ "mr-1": true }} />
+                  <BiSolidFolder classList={{ "mr-1  fill-current": true }} />
                   {collection.name}
                 </button>
               )}

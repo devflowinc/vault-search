@@ -25,16 +25,16 @@ try {
 <div class="flex w-full flex-col items-center space-y-2 py-4">
   <div class="flex w-full justify-center space-x-3">
     <a href="https://twitter.com/arguflowai" target="_blank">
-      <BiLogosTwitter size={30} />
+      <BiLogosTwitter size={30} class="fill-current" client:only />
     </a>
     <a href="https://twitch.tv/arguflow" target="_blank">
-      <BiLogosTwitch size={30} />
+      <BiLogosTwitch size={30} class="fill-current" client:only />
     </a>
     <a href="https://www.youtube.com/@arguflow">
-      <BiLogosYoutube size={30} />
+      <BiLogosYoutube size={30} class="fill-current" client:only />
     </a>
     <a href="https://github.com/orgs/arguflow/repositories" target="_blank">
-      <BiLogosGithub size={30} />
+      <BiLogosGithub size={30} class="fill-current" client:only />
     </a>
   </div>
   <Show when={total_cards > 0}>
