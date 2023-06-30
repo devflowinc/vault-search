@@ -15,6 +15,7 @@ import {
 } from "solid-icons/ri";
 import BookmarkPopover from "./BookmarkPopover";
 import { VsFileSymlinkFile } from "solid-icons/vs";
+import sanitizeHtml from "sanitize-html";
 
 export interface ScoreCardProps {
   cardCollections: CardCollectionDTO[];
@@ -188,7 +189,9 @@ const ScoreCard = (props: ScoreCardProps) => {
                 classList={{
                   "line-clamp-4 gradient-mask-b-0": !expanded(),
                 }}
-                id="card-content"
+                innerHTML={sanitizeHtml(
+                  props.card.metadata?.card_html as string,
+                )}
               />
             </Show>
           </div>
