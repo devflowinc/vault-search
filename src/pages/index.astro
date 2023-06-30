@@ -1,5 +1,4 @@
 ---
-import { For } from "solid-js";
 import SearchForm from "../components/SearchForm";
 import Footer from "../components/Footer.astro";
 import {
@@ -101,46 +100,45 @@ try {
             </tr>
           </thead>
           <tbody class="divide-y divide-neutral-300 dark:divide-neutral-600">
-            <For each={top_users_with_pages.users}>
-              {
-                (user_with_score) => (
-                  <tr>
-                    <td class="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 dark:text-neutral-100 sm:w-auto sm:max-w-none sm:pl-0">
-                      <a
-                        href={`/user/${user_with_score.id}`}
-                        class="line-clamp-1 break-all text-turquoise-500 underline dark:text-acid-500"
-                      >
-                        {user_with_score.username ?? user_with_score.email}
-                      </a>
-                      <dl class="font-normal lg:hidden">
-                        <dt class="sr-only sm:hidden">Website</dt>
-                        <dd class="mt-1 line-clamp-1 truncate break-all text-neutral-800 dark:text-neutral-100 sm:hidden">
-                          <a
-                            target="_blank"
-                            class="underline"
-                            href={user_with_score.website}
-                          >
-                            {user_with_score.website}
-                          </a>
-                        </dd>
-                      </dl>
-                    </td>
-                    <td class="hidden px-3 py-4 text-sm text-neutral-800 dark:text-neutral-100 sm:table-cell">
-                      <a
-                        target="_blank"
-                        class="line-clamp-1 break-all  underline"
-                        href={user_with_score.website}
-                      >
-                        {user_with_score.website}
-                      </a>
-                    </td>
-                    <td class="line-clamp-1 break-all px-3 py-4 text-sm text-neutral-800 dark:text-neutral-100">
-                      {user_with_score.score}
-                    </td>
-                  </tr>
-                )
-              }
-            </For>
+            {
+              // eslint-disable-next-line solid/prefer-for
+              top_users_with_pages.users.map((user_with_score) => (
+                <tr>
+                  <td class="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 dark:text-neutral-100 sm:w-auto sm:max-w-none sm:pl-0">
+                    <a
+                      href={`/user/${user_with_score.id}`}
+                      class="line-clamp-1 break-all text-turquoise-500 underline dark:text-acid-500"
+                    >
+                      {user_with_score.username ?? user_with_score.email}
+                    </a>
+                    <dl class="font-normal lg:hidden">
+                      <dt class="sr-only sm:hidden">Website</dt>
+                      <dd class="mt-1 line-clamp-1 truncate break-all text-neutral-800 dark:text-neutral-100 sm:hidden">
+                        <a
+                          target="_blank"
+                          class="underline"
+                          href={user_with_score.website}
+                        >
+                          {user_with_score.website}
+                        </a>
+                      </dd>
+                    </dl>
+                  </td>
+                  <td class="hidden px-3 py-4 text-sm text-neutral-800 dark:text-neutral-100 sm:table-cell">
+                    <a
+                      target="_blank"
+                      class="line-clamp-1 break-all  underline"
+                      href={user_with_score.website}
+                    >
+                      {user_with_score.website}
+                    </a>
+                  </td>
+                  <td class="line-clamp-1 break-all px-3 py-4 text-sm text-neutral-800 dark:text-neutral-100">
+                    {user_with_score.score}
+                  </td>
+                </tr>
+              ))
+            }
           </tbody>
         </table>
       </div>
