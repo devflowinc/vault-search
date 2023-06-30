@@ -98,7 +98,7 @@ const RegisterOrUserProfile = () => {
                   aria-label="Toggle user actions menu"
                   classList={{}}
                 >
-                  <BiRegularUser class="h-6 w-6" />
+                  <BiRegularUser class="h-6 w-6 fill-current" />
                 </PopoverButton>
                 <Transition
                   show={isOpen()}
@@ -120,7 +120,7 @@ const RegisterOrUserProfile = () => {
                         class="flex space-x-2 rounded-md px-2 py-1 hover:cursor-pointer focus:bg-neutral-100 focus:outline-none dark:hover:bg-neutral-600 dark:hover:bg-none dark:focus:bg-neutral-600"
                         href={`/user/${currentUser()?.id ?? ""}`}
                       >
-                        <AiOutlineProfile class="h-6 w-6" />
+                        <AiOutlineProfile class="h-6 w-6 fill-current" />
                         <div class="text-md font-medium">Profile</div>
                       </MenuItem>
                       <MenuItem
@@ -128,7 +128,7 @@ const RegisterOrUserProfile = () => {
                         class="flex space-x-2 rounded-md px-2 py-1 hover:cursor-pointer focus:bg-neutral-100 focus:outline-none dark:hover:bg-neutral-600 dark:hover:bg-none dark:focus:bg-neutral-600"
                         href="/user/settings"
                       >
-                        <IoSettingsOutline class="h-6 w-6" />
+                        <IoSettingsOutline class="h-6 w-6 fill-current" />
                         <div class="text-md font-medium">Settings</div>
                       </MenuItem>
                       <MenuItem
@@ -136,7 +136,7 @@ const RegisterOrUserProfile = () => {
                         class="flex space-x-2 rounded-md px-2 py-1 hover:cursor-pointer focus:bg-neutral-100 focus:outline-none dark:hover:bg-neutral-600 dark:hover:bg-none dark:focus:bg-neutral-600"
                         onClick={logout}
                       >
-                        <BiRegularLogOut class="h-6 w-6" />
+                        <BiRegularLogOut class="h-6 w-6 fill-current" />
                         <div class="text-md font-medium">Logout</div>
                       </MenuItem>
                     </Menu>

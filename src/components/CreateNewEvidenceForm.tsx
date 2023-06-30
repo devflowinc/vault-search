@@ -59,14 +59,15 @@ const SearchForm = () => {
       void response.json().then((data) => {
         if (!response.ok) {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          if (data.duplicate) {
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
-            window.location.href = `/card/${data.card_metadata.id}?collisions=${data.duplicate}`;
-            return;
-          }
           isActixApiDefaultError(data) && setErrorText(data.message);
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        if (data.duplicate) {
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
+          window.location.href = `/card/${data.card_metadata.id}?collisions=${data.duplicate}`;
+          return;
+        }
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
         window.location.href = `/card/${data.card_metadata.id}`;
         return;
@@ -181,7 +182,7 @@ const SearchForm = () => {
           setIsOpen={setShowNeedLoginModal}
         >
           <div class="min-w-[250px] sm:min-w-[300px]">
-            <BiRegularXCircle class="mx-auto h-8 w-8 !text-red-500" />
+            <BiRegularXCircle class="mx-auto h-8 w-8 fill-current  !text-red-500" />
             <div class="mb-4 text-xl font-bold">
               Cannot add evidence without an account
             </div>
@@ -191,7 +192,7 @@ const SearchForm = () => {
                 href="/auth/register"
               >
                 Register
-                <BiRegularLogIn class="h-6 w-6" />
+                <BiRegularLogIn class="h-6 w-6  fill-current" />
               </a>
             </div>
           </div>

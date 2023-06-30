@@ -132,7 +132,7 @@ const ResultsPage = (props: ResultsPageProps) => {
           setIsOpen={setShowNeedLoginModal}
         >
           <div class="min-w-[250px] sm:min-w-[300px]">
-            <BiRegularXCircle class="mx-auto h-8 w-8 !text-red-500" />
+            <BiRegularXCircle class="mx-auto h-8 w-8 fill-current !text-red-500" />
             <div class="mb-4 text-center text-xl font-bold">
               Cannot vote or use collections without an account
             </div>
@@ -142,7 +142,7 @@ const ResultsPage = (props: ResultsPageProps) => {
                 href="/auth/register"
               >
                 Register
-                <BiRegularLogIn class="h-6 w-6" />
+                <BiRegularLogIn class="h-6 w-6 fill-current" />
               </a>
             </div>
           </div>

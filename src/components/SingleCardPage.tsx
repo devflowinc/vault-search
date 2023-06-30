@@ -101,7 +101,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
           setIsOpen={setShowNeedLoginModal}
         >
           <div class="min-w-[250px] sm:min-w-[300px]">
-            <BiRegularXCircle class="mx-auto h-8 w-8 !text-red-500" />
+            <BiRegularXCircle class="mx-auto h-8 w-8 fill-current !text-red-500" />
             <div class="mb-4 text-xl font-bold">
               Cannot view this card without an account
             </div>
@@ -111,7 +111,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
                 href="/auth/register"
               >
                 Register
-                <BiRegularLogIn class="h-6 w-6" />
+                <BiRegularLogIn class="h-6 w-6 fill-current" />
               </a>
             </div>
           </div>

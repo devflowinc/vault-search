@@ -77,7 +77,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
               fetchCollections();
             }}
           >
-            <RiSystemAddFill class="h-5 w-5" />
+            <RiSystemAddFill class="h-5 w-5 fill-current" />
           </PopoverButton>
           <Transition
             show={isOpen() || usingPanel()}
@@ -195,7 +195,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                     }}
                     class="flex w-full space-x-2 bg-neutral-100 p-2 dark:bg-neutral-500/80"
                   >
-                    <RiSystemAddFill class="h-5 w-5" />
+                    <RiSystemAddFill class="h-5 w-5  fill-current" />
                     <p> New Collection </p>
                   </MenuItem>
                 )}

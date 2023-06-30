@@ -59,11 +59,13 @@ const CardMetadataDisplay = (props: { card: CardMetadataWithVotes }) => {
       >
         {expanded() ? (
           <div class="flex flex-row items-center">
-            <div>Show Less</div> <BiRegularChevronUp class="h-8 w-8" />
+            <div>Show Less</div>{" "}
+            <BiRegularChevronUp class="h-8 w-8  fill-current" />
           </div>
         ) : (
           <div class="flex flex-row items-center">
-            <div>Show More</div> <BiRegularChevronDown class="h-8 w-8" />
+            <div>Show More</div>{" "}
+            <BiRegularChevronDown class="h-8 w-8  fill-current" />
           </div>
         )}
       </button>

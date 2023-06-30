@@ -38,7 +38,7 @@ export const PaginationController = (props: PaginationControllerProps) => {
               props.query + props.prefix + `page=${props.page - 1}`;
           }}
         >
-          <BiRegularChevronLeft class="h-8 w-8 text-neutral-400 dark:text-neutral-500" />
+          <BiRegularChevronLeft class="h-8 w-8 fill-current text-neutral-400 dark:text-neutral-500" />
         </button>
       </Show>
       {createArrayWithCenteredRange(
@@ -68,7 +68,7 @@ export const PaginationController = (props: PaginationControllerProps) => {
               props.query + props.prefix + `page=${props.page + 1}`;
           }}
         >
-          <BiRegularChevronRight class="h-8 w-8 text-neutral-400 dark:text-neutral-500" />
+          <BiRegularChevronRight class="h-8 w-8 fill-current text-neutral-400 dark:text-neutral-500" />
         </button>
       </Show>
     </>
