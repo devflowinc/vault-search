@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Show, createEffect, createSignal, For } from "solid-js";
 import type {
   CardCollectionDTO,
@@ -30,7 +26,7 @@ const ResultsPage = (props: ResultsPageProps) => {
   const dataTypeFilters = encodeURIComponent(props.filters.dataTypes.join(","));
   // eslint-disable-next-line solid/reactivity
   const linkFilters = encodeURIComponent(props.filters.links.join(","));
-  const apiHost = import.meta.env.PUBLIC_API_HOST;
+  const apiHost = import.meta.env.PUBLIC_API_HOST as string;
   const initialResultCards = props.defaultResultCards.score_cards;
   const totalPages = props.defaultResultCards.total_card_pages;
 
@@ -73,6 +69,7 @@ const ResultsPage = (props: ResultsPageProps) => {
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           setResultCards(data.score_cards);
         });
       }

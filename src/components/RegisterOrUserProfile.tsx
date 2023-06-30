@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   Menu,
   MenuItem,
@@ -15,7 +13,7 @@ import { createEffect, createSignal } from "solid-js";
 import { isUserDTO, type UserDTO } from "../../utils/apiTypes";
 
 const RegisterOrUserProfile = () => {
-  const apiHost = import.meta.env.PUBLIC_API_HOST;
+  const apiHost = import.meta.env.PUBLIC_API_HOST as string;
 
   const [isLoadingUser, setIsLoadingUser] = createSignal(true);
   const [currentUser, setCurrentUser] = createSignal<UserDTO | null>(null);
@@ -120,7 +118,7 @@ const RegisterOrUserProfile = () => {
                       <MenuItem
                         as="a"
                         class="flex space-x-2 rounded-md px-2 py-1 hover:cursor-pointer focus:bg-neutral-100 focus:outline-none dark:hover:bg-neutral-600 dark:hover:bg-none dark:focus:bg-neutral-600"
-                        href={`/user/${currentUser()?.id}`}
+                        href={`/user/${currentUser()?.id ?? ""}`}
                       >
                         <AiOutlineProfile class="h-6 w-6" />
                         <div class="text-md font-medium">Profile</div>

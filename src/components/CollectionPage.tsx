@@ -1,8 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Show, createEffect, createSignal, For } from "solid-js";
 import type {
   CardCollectionDTO,
@@ -24,7 +19,7 @@ export interface CollectionPageProps {
   };
 }
 export const CollectionPage = (props: CollectionPageProps) => {
-  const apiHost: string = import.meta.env.PUBLIC_API_HOST;
+  const apiHost: string = import.meta.env.PUBLIC_API_HOST as string;
   const ScoreDTOCards: ScoreCardDTO[] = [];
   if (props.defaultCollectionCards.metadata.bookmarks.length > 0)
     props.defaultCollectionCards.metadata.bookmarks.forEach((card) => {
@@ -63,7 +58,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
 
   createEffect(() => {
     setFetching(true);
-    void fetch(`${apiHost}/card_collection/${props.collectionID}`, {
+    void fetch(`${apiHost}/card_collection/${props.collectionID ?? ""}`, {
       method: "GET",
       credentials: "include",
     }).then((response) => {
@@ -71,9 +66,11 @@ export const CollectionPage = (props: CollectionPageProps) => {
         void response.json().then((data) => {
           //take the data and convert it to ScoreCardDTO
           const ScoreDTOCards: ScoreCardDTO[] = [];
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
           data.bookmarks.forEach((card: CardMetadataWithVotes) => {
             ScoreDTOCards.push({ metadata: card, score: 2 });
           });
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           setCollectionInfo(data.collection);
           setConvertedCard(ScoreDTOCards);
           setError("");

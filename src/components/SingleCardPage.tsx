@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Show, createEffect, createSignal } from "solid-js";
 import type {
   CardCollectionDTO,
@@ -18,7 +14,7 @@ export interface SingleCardPageProps {
   collisions: string;
 }
 export const SingleCardPage = (props: SingleCardPageProps) => {
-  const apiHost = import.meta.env.PUBLIC_API_HOST;
+  const apiHost = import.meta.env.PUBLIC_API_HOST as string;
   const ScoreDTOCard: ScoreCardDTO = {
     metadata: props.defaultResultCards.metadata,
     score: 0,
@@ -52,12 +48,13 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
 
   createEffect(() => {
     setFetching(true);
-    void fetch(`${apiHost}/card/${props.cardID}`, {
+    void fetch(`${apiHost}/card/${props.cardID ?? ""}`, {
       method: "GET",
       credentials: "include",
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           setConvertedCard({ metadata: data, score: 0 });
           setError("");
           setFetching(false);

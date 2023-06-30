@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { BiRegularSearch, BiRegularX } from "solid-icons/bi";
 import { VsTriangleDown } from "solid-icons/vs";
 import { For, Show, createEffect, createSignal } from "solid-js";
@@ -138,14 +135,18 @@ const SearchForm = (props: {
   const [filterLinks, setFilterLinks] = createSignal<ComboboxSection[]>(
     filterLinkComboboxSections,
   );
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const customDataTypeFilters = JSON.parse(
     localStorage.getItem("customDatasetFilters") ?? "[]",
   );
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const customLinkFilters = JSON.parse(
     localStorage.getItem("customLinksFilters") ?? "[]",
   );
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   if (Object.keys(customDataTypeFilters).length > 0) {
     setFilterDataTypes((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       customDataTypeFilters.custom = true;
       const newComboboxItems = [
         ...prev[0].comboboxItems,
@@ -159,8 +160,10 @@ const SearchForm = (props: {
       ];
     });
   }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   if (Object.keys(customLinkFilters).length > 0) {
     setFilterLinks((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       customLinkFilters.custom = true;
       const newComboboxItems = [...prev[0].comboboxItems, customLinkFilters];
       return [

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-plus-operands */
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { Show, createSignal } from "solid-js";
 import type { CardMetadataWithVotes } from "../../utils/apiTypes";
 import { BiRegularChevronDown, BiRegularChevronUp } from "solid-icons/bi";
@@ -28,9 +26,9 @@ const CardMetadataDisplay = (props: { card: CardMetadataWithVotes }) => {
               <a
                 class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
                 target="_blank"
-                href={
-                  "https://oc.arguflow.com/" + props.card.oc_file_path ?? ""
-                }
+                href={`https://oc.arguflow.com/${
+                  props.card.oc_file_path ?? ""
+                }`}
               >
                 {props.card.oc_file_path?.split("/").pop() ??
                   props.card.oc_file_path}
