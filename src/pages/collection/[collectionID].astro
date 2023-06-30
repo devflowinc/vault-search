@@ -1,14 +1,12 @@
 ---
 import Footer from "../../components/Footer.astro";
-import RegisterOrUserProfile from "../../components/RegisterOrUserProfile";
 import SearchLayout from "../../layouts/SearchLayout.astro";
 import type { CardMetadataWithVotes } from "../../../utils/apiTypes";
 import { CollectionPage } from "../../components/CollectionPage";
-import { Show } from "solid-js";
 import type { CardCollectionDTO } from "../../../utils/apiTypes";
 
 const { collectionID } = Astro.params;
-const apiHost = import.meta.env.API_HOST;
+const apiHost = import.meta.env.API_HOST as string;
 let collectionCards: {
   metadata: {
     bookmarks: CardMetadataWithVotes[];
@@ -25,13 +23,15 @@ let collectionCards: {
 
 try {
   const collectionCard = await fetch(
-    `${apiHost}/card_collection/${collectionID}`,
+    `${apiHost}/card_collection/${collectionID ?? ""}`,
     {
       method: "GET",
     },
   );
-  const collectionCardJson = await collectionCard?.json();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const collectionCardJson = await collectionCard.json();
   collectionCards = {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     metadata: collectionCardJson,
     status: collectionCard.status,
   };

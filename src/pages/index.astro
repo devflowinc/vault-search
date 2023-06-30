@@ -1,25 +1,23 @@
 ---
-import SearchLayout from "../layouts/SearchLayout.astro";
+import { For } from "solid-js";
 import SearchForm from "../components/SearchForm";
-import RegisterOrUserProfile from "../components/RegisterOrUserProfile";
 import Footer from "../components/Footer.astro";
 import {
   isUserDTOWithScore,
   UsersWithTotalPagesDTO,
-  type UserDTOWithScore,
 } from "../../utils/apiTypes";
 import type { Filters } from "../components/ResultsPage";
 import HomeLayout from "../layouts/HomeLayout.astro";
-const apiHost = import.meta.env.API_HOST;
+const apiHost = import.meta.env.API_HOST as string;
 
 const requestParams = Astro.request.url.split("?")[1];
 const params = new URLSearchParams(requestParams);
 const page = Number(params.get("page")) || 1;
 const filters: Filters = {
-  dataTypes: params.get("datatypes")?.split(",") || [],
-  links: params.get("links")?.split(",") || [],
+  dataTypes: params.get("datatypes")?.split(",") ?? [],
+  links: params.get("links")?.split(",") ?? [],
 };
-const searchType: String = params.get("searchType") || "search";
+const searchType: string = params.get("searchType") ?? "search";
 
 let top_users_with_pages: UsersWithTotalPagesDTO = {
   total_user_pages: 1,
@@ -27,7 +25,9 @@ let top_users_with_pages: UsersWithTotalPagesDTO = {
 };
 try {
   const top_users_response = await fetch(`${apiHost}/top_users/${page}`);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const top_users_and_cards_result = await top_users_response.json();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   const top_users_result = top_users_and_cards_result?.users;
 
   if (
@@ -101,44 +101,46 @@ try {
             </tr>
           </thead>
           <tbody class="divide-y divide-neutral-300 dark:divide-neutral-600">
-            {
-              top_users_with_pages.users.map((user_with_score) => (
-                <tr>
-                  <td class="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 dark:text-neutral-100 sm:w-auto sm:max-w-none sm:pl-0">
-                    <a
-                      href={`/user/${user_with_score.id}`}
-                      class="line-clamp-1 break-all text-turquoise-500 underline dark:text-acid-500"
-                    >
-                      {user_with_score.username ?? user_with_score.email}
-                    </a>
-                    <dl class="font-normal lg:hidden">
-                      <dt class="sr-only sm:hidden">Website</dt>
-                      <dd class="mt-1 line-clamp-1 truncate break-all text-neutral-800 dark:text-neutral-100 sm:hidden">
-                        <a
-                          target="_blank"
-                          class="underline"
-                          href={user_with_score.website}
-                        >
-                          {user_with_score.website}
-                        </a>
-                      </dd>
-                    </dl>
-                  </td>
-                  <td class="hidden px-3 py-4 text-sm text-neutral-800 dark:text-neutral-100 sm:table-cell">
-                    <a
-                      target="_blank"
-                      class="line-clamp-1 break-all  underline"
-                      href={user_with_score.website}
-                    >
-                      {user_with_score.website}
-                    </a>
-                  </td>
-                  <td class="line-clamp-1 break-all px-3 py-4 text-sm text-neutral-800 dark:text-neutral-100">
-                    {user_with_score.score}
-                  </td>
-                </tr>
-              ))
-            }
+            <For each={top_users_with_pages.users}>
+              {
+                (user_with_score) => (
+                  <tr>
+                    <td class="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-neutral-900 dark:text-neutral-100 sm:w-auto sm:max-w-none sm:pl-0">
+                      <a
+                        href={`/user/${user_with_score.id}`}
+                        class="line-clamp-1 break-all text-turquoise-500 underline dark:text-acid-500"
+                      >
+                        {user_with_score.username ?? user_with_score.email}
+                      </a>
+                      <dl class="font-normal lg:hidden">
+                        <dt class="sr-only sm:hidden">Website</dt>
+                        <dd class="mt-1 line-clamp-1 truncate break-all text-neutral-800 dark:text-neutral-100 sm:hidden">
+                          <a
+                            target="_blank"
+                            class="underline"
+                            href={user_with_score.website}
+                          >
+                            {user_with_score.website}
+                          </a>
+                        </dd>
+                      </dl>
+                    </td>
+                    <td class="hidden px-3 py-4 text-sm text-neutral-800 dark:text-neutral-100 sm:table-cell">
+                      <a
+                        target="_blank"
+                        class="line-clamp-1 break-all  underline"
+                        href={user_with_score.website}
+                      >
+                        {user_with_score.website}
+                      </a>
+                    </td>
+                    <td class="line-clamp-1 break-all px-3 py-4 text-sm text-neutral-800 dark:text-neutral-100">
+                      {user_with_score.score}
+                    </td>
+                  </tr>
+                )
+              }
+            </For>
           </tbody>
         </table>
       </div>
