@@ -83,7 +83,7 @@ const ScoreCard = (props: ScoreCardProps) => {
   };
 
   return (
-    <div class="flex w-full flex-col items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-700">
+    <div class="flex w-full flex-col items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800">
       <div class="flex w-full">
         <div class="flex w-full items-start">
           <div class="flex flex-col items-center pr-2">
@@ -174,13 +174,23 @@ const ScoreCard = (props: ScoreCardProps) => {
               </span>
             </div>
             <div class="mb-1 h-1 w-full border-b border-neutral-300 dark:border-neutral-600" />
-            <p
-              classList={{
-                "line-clamp-4 gradient-mask-b-0": !expanded(),
-              }}
-            >
-              {props.card.metadata.content.toString()}
-            </p>
+            <Show when={props.card.metadata.card_html == null}>
+              <p
+                classList={{
+                  "line-clamp-4 gradient-mask-b-0": !expanded(),
+                }}
+              >
+                {props.card.metadata.content.toString()}
+              </p>
+            </Show>
+            <Show when={props.card.metadata.card_html != null}>
+              <div
+                classList={{
+                  "line-clamp-4 gradient-mask-b-0": !expanded(),
+                }}
+                id="card-content"
+              />
+            </Show>
           </div>
         </div>
         <div class="flex gap-x-1">

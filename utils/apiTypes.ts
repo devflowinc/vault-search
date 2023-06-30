@@ -1,29 +1,7 @@
-export interface CardDTO {
-  id: string;
-  content: string;
-  score: number;
-  link: string | null;
-}
-
-export const isCardDTO = (card: unknown): card is CardDTO => {
-  if (typeof card !== "object" || card === null) return false;
-
-  return (
-    card.hasOwnProperty("id") &&
-    typeof (card as CardDTO).id === "string" &&
-    card.hasOwnProperty("content") &&
-    typeof (card as CardDTO).content === "string" &&
-    card.hasOwnProperty("score") &&
-    typeof (card as CardDTO).score === "number" &&
-    card.hasOwnProperty("link") &&
-    (typeof (card as CardDTO).link === "string" ||
-      typeof (card as CardDTO).link === null)
-  );
-};
-
 export interface CardMetadata {
   id: string;
   content: string;
+  card_html?: string;
   link: string | null;
   author_id: string;
   qdrant_point_id: string;
