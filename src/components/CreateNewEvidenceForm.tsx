@@ -1,17 +1,11 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
 import { JSX, Show, createSignal, onMount } from "solid-js";
-import { isActixApiDefaultError } from "../../utils/apiTypes";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import type { TinyMCE } from "../../public/tinymce/tinymce";
+import { isActixApiDefaultError } from "../../utils/apiTypes";
 
 const SearchForm = () => {
-  const apiHost = import.meta.env.PUBLIC_API_HOST;
+  const apiHost = import.meta.env.PUBLIC_API_HOST as string;
   const [evidenceLink, setEvidenceLink] = createSignal("");
   const [errorText, setErrorText] = createSignal<
     string | number | boolean | Node | JSX.ArrayElement | null | undefined
@@ -23,11 +17,12 @@ const SearchForm = () => {
 
   const submitEvidence = (e: Event) => {
     e.preventDefault();
-    const cardHTMLContentValue = (
-      window as any
-    ).tinymce.activeEditor.getContent();
+    const cardHTMLContentValue =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+      (window as any).tinymce.activeEditor.getContent() as unknown as string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     const cardTextContentValue = (window as any).tinyMCE.activeEditor.getBody()
-      .textContent;
+      .textContent as unknown as string;
     const evidenceLinkValue = evidenceLink();
     if (!cardTextContentValue || !evidenceLinkValue) {
       const errors: string[] = [];
@@ -61,16 +56,24 @@ const SearchForm = () => {
         return;
       }
 
-      response.json().then((data) => {
-        if (data.duplicate) {
-          window.location.href = `/card/${data.card_metadata.id}?collisions=${data.duplicate}`;
-          return;
+      void response.json().then((data) => {
+        if (!response.ok) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          if (data.duplicate) {
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
+            window.location.href = `/card/${data.card_metadata.id}?collisions=${data.duplicate}`;
+            return;
+          }
+          isActixApiDefaultError(data) && setErrorText(data.message);
         }
+
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
         window.location.href = `/card/${data.card_metadata.id}`;
         return;
       });
     });
     if (errorFields().includes("cardContent")) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
       (window as any).tinymce.activeEditor.focus();
     }
   };
@@ -117,7 +120,9 @@ const SearchForm = () => {
       entity_encoding: "raw",
       entities: "160,nbsp,38,amp,60,lt,62,gt",
     };
-    const tinyMCE: TinyMCE = (window as any).tinymce;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+    const tinyMCE: TinyMCE = (window as any).tinymce as TinyMCE;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
     void tinyMCE.init(options as any);
   });
 

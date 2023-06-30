@@ -65,10 +65,11 @@ export const Combobox = (props: ComboboxProps) => {
 
   const onSelect = (option: ComboboxItem) => {
     if (option.name === "+ Add custom filter") {
+      const newName = inputValue();
       props.setComboboxSections((prev) => {
         const newComboboxItems = [
           ...prev[0].comboboxItems,
-          { name: inputValue(), custom: true },
+          { name: newName, custom: true },
         ];
         return [
           {
@@ -78,7 +79,7 @@ export const Combobox = (props: ComboboxProps) => {
         ];
       });
       props.setSelectedComboboxItems((prev) => {
-        return [...prev, { name: inputValue() }];
+        return [...prev, { name: newName }];
       });
       localStorage.setItem(
         `custom${props.comboboxSections()[0].name.replace(" ", "")}Filters`,

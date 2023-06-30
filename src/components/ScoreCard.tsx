@@ -1,17 +1,11 @@
-/* eslint-disable @typescript-eslint/restrict-plus-operands */
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Setter, Show, createEffect, createSignal } from "solid-js";
 import type { CardCollectionDTO, ScoreCardDTO } from "../../utils/apiTypes";
 import { BiRegularChevronDown, BiRegularChevronUp } from "solid-icons/bi";
 import {
-  RiSystemArrowDownCircleFill,
-  RiSystemArrowDownCircleLine,
-  RiSystemArrowUpCircleFill,
-  RiSystemArrowUpCircleLine,
+  RiArrowsArrowDownCircleFill,
+  RiArrowsArrowDownCircleLine,
+  RiArrowsArrowUpCircleFill,
+  RiArrowsArrowUpCircleLine,
 } from "solid-icons/ri";
 import BookmarkPopover from "./BookmarkPopover";
 import { VsFileSymlinkFile } from "solid-icons/vs";
@@ -26,25 +20,35 @@ export interface ScoreCardProps {
 }
 
 const ScoreCard = (props: ScoreCardProps) => {
-  const api_host = import.meta.env.PUBLIC_API_HOST;
+  const api_host = import.meta.env.PUBLIC_API_HOST as string;
 
-  const initialVoteTotal =
-    props.card.metadata.total_upvotes - props.card.metadata.total_downvotes;
-
+  // eslint-disable-next-line solid/reactivity
   const [expanded, setExpanded] = createSignal(props.card.score === 0);
   const [userVote, setUserVote] = createSignal(0);
-  const [totalVote, setTotalVote] = createSignal(initialVoteTotal);
+  const [totalVote, setTotalVote] = createSignal(
+    // eslint-disable-next-line solid/reactivity
+    props.card.metadata.total_upvotes - props.card.metadata.total_downvotes,
+  );
+  const [showPropsModal, setShowPropsModal] = createSignal(false);
+
+  createEffect(() => {
+    if (!showPropsModal()) return;
+
+    props.setShowModal(true);
+    setShowPropsModal(false);
+  });
 
   createEffect(() => {
     if (props.card.metadata.vote_by_current_user === null) {
       return;
     }
-    setUserVote(props.card.metadata.vote_by_current_user ? 1 : -1);
-    setTotalVote(
+    const userVote = props.card.metadata.vote_by_current_user ? 1 : -1;
+    setUserVote(userVote);
+    const newTotalVote =
       props.card.metadata.total_upvotes -
-        props.card.metadata.total_downvotes -
-        (props.card.metadata.vote_by_current_user ? 1 : -1),
-    );
+      props.card.metadata.total_downvotes +
+      userVote;
+    setTotalVote(newTotalVote);
   });
 
   const deleteVote = (prev_vote: number) => {
@@ -54,7 +58,7 @@ const ScoreCard = (props: ScoreCardProps) => {
     }).then((response) => {
       if (!response.ok) {
         setUserVote(prev_vote);
-        if (response.status === 401) props.setShowModal(true);
+        if (response.status === 401) setShowPropsModal(true);
       }
     });
   };
@@ -78,7 +82,7 @@ const ScoreCard = (props: ScoreCardProps) => {
     }).then((response) => {
       if (!response.ok) {
         setUserVote(prev_vote);
-        if (response.status === 401) props.setShowModal(true);
+        if (response.status === 401) setShowPropsModal(true);
       }
     });
   };
@@ -100,10 +104,10 @@ const ScoreCard = (props: ScoreCardProps) => {
                 }}
               >
                 <Show when={userVote() === 1}>
-                  <RiSystemArrowUpCircleFill class="h-8 w-8 !text-turquoise-500" />
+                  <RiArrowsArrowUpCircleFill class="h-8 w-8 !text-turquoise-500" />
                 </Show>
                 <Show when={userVote() != 1}>
-                  <RiSystemArrowUpCircleLine class="h-8 w-8" />
+                  <RiArrowsArrowUpCircleLine class="h-8 w-8" />
                 </Show>
               </button>
               <span class="my-1">{totalVote() + userVote()}</span>
@@ -118,10 +122,10 @@ const ScoreCard = (props: ScoreCardProps) => {
                 }}
               >
                 <Show when={userVote() === -1}>
-                  <RiSystemArrowDownCircleFill class="h-8 w-8 !text-turquoise-500" />
+                  <RiArrowsArrowDownCircleFill class="h-8 w-8 !text-turquoise-500" />
                 </Show>
                 <Show when={userVote() != -1}>
-                  <RiSystemArrowDownCircleLine class="h-8 w-8" />
+                  <RiArrowsArrowDownCircleLine class="h-8 w-8" />
                 </Show>
               </button>
             </Show>
@@ -144,10 +148,9 @@ const ScoreCard = (props: ScoreCardProps) => {
                 <a
                   class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
                   target="_blank"
-                  href={
-                    "https://oc.arguflow.com/" +
-                      props.card.metadata.oc_file_path ?? " "
-                  }
+                  href={`https://oc.arguflow.com/${
+                    props.card.metadata.oc_file_path ?? ""
+                  }`}
                 >
                   {props.card.metadata.oc_file_path?.split("/").pop() ??
                     props.card.metadata.oc_file_path}
@@ -162,7 +165,7 @@ const ScoreCard = (props: ScoreCardProps) => {
               <Show when={props.card.metadata.author}>
                 <span class="font-semibold">Author: </span>
                 <a
-                  href={`/user/${props.card.metadata.author?.id}`}
+                  href={`/user/${props.card.metadata.author?.id ?? ""}`}
                   class="line-clamp-1 break-all underline"
                 >
                   {props.card.metadata.author?.username ??
@@ -189,8 +192,11 @@ const ScoreCard = (props: ScoreCardProps) => {
                 classList={{
                   "line-clamp-4 gradient-mask-b-0": !expanded(),
                 }}
+                // eslint-disable-next-line solid/no-innerhtml
                 innerHTML={sanitizeHtml(
-                  props.card.metadata?.card_html as string,
+                  props.card.metadata.card_html !== undefined
+                    ? props.card.metadata.card_html
+                    : "",
                 )}
               />
             </Show>
@@ -200,7 +206,7 @@ const ScoreCard = (props: ScoreCardProps) => {
           <VsFileSymlinkFile
             class="h-5 w-5 cursor-pointer"
             onClick={() => {
-              navigator.clipboard.writeText(
+              void navigator.clipboard.writeText(
                 "https://vault.arguflow.com/card/" + props.card.metadata.id,
               );
             }}

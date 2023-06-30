@@ -124,13 +124,12 @@ const SearchForm = (props: {
   filters: Filters;
   searchType: string;
 }) => {
-  const initialQuery = props.query ?? "";
-
   const [searchTypes, setSearchTypes] = createSignal([
     { name: "Full Text", isSelected: false, route: "fulltextsearch" },
     { name: "Semantic", isSelected: true, route: "search" },
   ]);
-  const [textareaInput, setTextareaInput] = createSignal(initialQuery);
+  // eslint-disable-next-line solid/reactivity
+  const [textareaInput, setTextareaInput] = createSignal(props.query);
 
   const [filterDataTypes, setFilterDataTypes] = createSignal<ComboboxSection[]>(
     filterDataTypeComboboxSections,
@@ -173,13 +172,17 @@ const SearchForm = (props: {
     });
   }
 
+  // eslint-disable-next-line solid/reactivity
   const initialDataTypeFilters = filterDataTypes().flatMap((section) =>
     section.comboboxItems.filter((item) =>
+      // eslint-disable-next-line solid/reactivity
       props.filters.dataTypes.includes(item.name),
     ),
   );
+  // eslint-disable-next-line solid/reactivity
   const initialLinkFilters = filterLinks().flatMap((section) =>
     section.comboboxItems.filter((item) =>
+      // eslint-disable-next-line solid/reactivity
       props.filters.links.includes(item.name),
     ),
   );
@@ -197,6 +200,7 @@ const SearchForm = (props: {
   const onSubmit = (e: Event) => {
     e.preventDefault();
     const textAreaValue = textareaInput();
+    if (!textAreaValue) return;
     const searchQuery = encodeURIComponent(
       textAreaValue.length > 3800
         ? textAreaValue.slice(0, 3800)
@@ -264,7 +268,7 @@ const SearchForm = (props: {
               }}
               rows="1"
             >
-              {textareaInput() || props.query}
+              {textareaInput() ?? props.query}
             </textarea>
             <Show when={textareaInput()}>
               <button

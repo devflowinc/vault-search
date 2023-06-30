@@ -6,9 +6,10 @@ import {
 import { BsCloudUpload } from "solid-icons/bs";
 import { Show, createSignal } from "solid-js";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
+import { indirectHasOwnProperty } from "../../utils/apiTypes";
 
 export const UploadFile = () => {
-  const apiHost = import.meta.env.PUBLIC_API_HOST;
+  const apiHost = import.meta.env.PUBLIC_API_HOST as string;
   const [file, setFile] = createSignal<File | undefined>();
   const [_private, setPrivate] = createSignal(false);
   const [isSubmitting, setIsSubmitting] = createSignal(false);
@@ -23,7 +24,7 @@ export const UploadFile = () => {
   const handleDirectUpload = (e: Event & { target: HTMLInputElement }) => {
     e.preventDefault();
     e.stopPropagation();
-    setFile(e.target.files![0]);
+    setFile(e.target.files ? e.target.files[0] : undefined);
   };
   const submitEvidence = async (e: Event) => {
     if (!file()) {
@@ -41,7 +42,7 @@ export const UploadFile = () => {
         reader.onload = () => resolve(reader.result);
         reader.onerror = reject;
       });
-    let base64File = await toBase64(file()!);
+    let base64File = await toBase64(file() ?? new File([], ""));
     base64File = (base64File as string)
       .toString()
       .split(",")[1]
@@ -69,10 +70,20 @@ export const UploadFile = () => {
         setIsSubmitting(false);
         return;
       }
-      response.json().then((data) => {
+      void response.json().then((data) => {
         setIsSubmitting(false);
-        console.log(data.collection_id);
-        window.location.href = `/collection/${data.collection_id}`;
+
+        if (
+          typeof data !== "object" ||
+          !indirectHasOwnProperty(data, "collection_id")
+        ) {
+          setErrorText("Something went wrong. Please try again.");
+          return;
+        }
+
+        const typedData = data as { collection_id: string };
+
+        window.location.href = `/collection/${typedData.collection_id || ""}`;
       });
     });
   };
@@ -130,7 +141,7 @@ export const UploadFile = () => {
             class="w-fit rounded bg-neutral-100 p-2 hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
             type="submit"
             disabled={isSubmitting()}
-            onClick={submitEvidence}
+            onClick={void submitEvidence}
           >
             <Show when={!isSubmitting()}>Submit New Evidence</Show>
             <Show when={isSubmitting()}>
