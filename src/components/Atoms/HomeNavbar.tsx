@@ -34,6 +34,7 @@ export const HomeNavbar = () => {
               aria-controls="mobile-menu"
               aria-expanded={isOpen()}
               onClick={(e) => {
+                e.preventDefault();
                 setIsOpen(!isOpen());
               }}
             >

@@ -28,6 +28,8 @@ export interface BookmarkPopoverProps {
 const BookmarkPopover = (props: BookmarkPopoverProps) => {
   const apiHost = import.meta.env.PUBLIC_API_HOST;
 
+  const [refetchingCardCollections, setRefetchingCardCollections] =
+    createSignal(false);
   const [showCollectionForm, setShowCollectionForm] = createSignal(false);
   const [notLoggedIn, setNotLoggedIn] = createSignal(false);
   const [collectionFormTitle, setCollectionFormTitle] = createSignal("");
@@ -53,9 +55,18 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
       }
     });
   };
+
   createEffect(() => {
     fetchCollections();
   });
+
+  createEffect(() => {
+    if (!refetchingCardCollections()) return;
+
+    props.fetchCardCollections();
+    setRefetchingCardCollections(false);
+  });
+
   return (
     <Popover defaultOpen={false} class="relative">
       {({ isOpen, setState }) => (
@@ -158,7 +169,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                             is_public: true,
                           }),
                         }).then(() => {
-                          props.fetchCardCollections();
+                          setRefetchingCardCollections(true);
                           setShowCollectionForm(false);
                           setCollectionFormTitle("");
                           setState(true);

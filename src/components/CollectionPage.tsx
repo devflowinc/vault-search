@@ -12,7 +12,6 @@ import type {
 import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
-import { FiEdit3 } from "solid-icons/fi";
 
 export interface CollectionPageProps {
   collectionID: string | undefined;

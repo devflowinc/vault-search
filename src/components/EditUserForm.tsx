@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { Transition } from "solid-headless";
 import { Show, createEffect, createSignal } from "solid-js";
 import {
@@ -9,7 +7,7 @@ import {
 } from "../../utils/apiTypes";
 
 const SearchForm = () => {
-  const apiHost = import.meta.env.PUBLIC_API_HOST;
+  const apiHost = import.meta.env.PUBLIC_API_HOST as string;
 
   const [currentUser, setCurrentUser] = createSignal<UserDTO | null>(null);
   const [username, setUsername] = createSignal("");
@@ -34,27 +32,31 @@ const SearchForm = () => {
         visible_email: !hideEmail(),
       }),
     }).then((response) => {
-      if (!response.ok) {
-        void response.json().then((data) => {
-          if (isActixApiDefaultError(data)) {
-            setErrorText(data.message);
-            const newErrorFields: string[] = [];
-            data.message.toLowerCase().includes("username") &&
-              newErrorFields.push("username");
-            data.message.toLowerCase().includes("website") &&
-              newErrorFields.push("website");
-            data.message.toLowerCase().includes("email") &&
-              newErrorFields.push("hideEmail");
-            setErrorFields(newErrorFields);
-            setIsSubmitting(false);
-          }
-        });
+      if (response.ok) {
+        setErrorText("");
+        setErrorFields([]);
+        setIsSubmitting(false);
         return;
       }
-      setErrorText("");
-      setErrorFields([]);
-      setIsSubmitting(false);
-      window.location.href = `/user/${currentUser()?.id}`;
+
+      void response.json().then((data) => {
+        if (!isActixApiDefaultError(data)) {
+          setErrorText("An unknown error occurred.");
+          setIsSubmitting(false);
+          return;
+        }
+
+        setErrorText(data.message);
+        const newErrorFields: string[] = [];
+        data.message.toLowerCase().includes("username") &&
+          newErrorFields.push("username");
+        data.message.toLowerCase().includes("website") &&
+          newErrorFields.push("website");
+        data.message.toLowerCase().includes("email") &&
+          newErrorFields.push("hideEmail");
+        setErrorFields(newErrorFields);
+        setIsSubmitting(false);
+      });
     });
   };
 

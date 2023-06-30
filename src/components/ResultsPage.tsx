@@ -26,7 +26,9 @@ export interface ResultsPageProps {
 }
 
 const ResultsPage = (props: ResultsPageProps) => {
+  // eslint-disable-next-line solid/reactivity
   const dataTypeFilters = encodeURIComponent(props.filters.dataTypes.join(","));
+  // eslint-disable-next-line solid/reactivity
   const linkFilters = encodeURIComponent(props.filters.links.join(","));
   const apiHost = import.meta.env.PUBLIC_API_HOST;
   const initialResultCards = props.defaultResultCards.score_cards;

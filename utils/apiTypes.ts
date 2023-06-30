@@ -10,21 +10,25 @@ export interface CardMetadata {
   oc_file_path: string | null;
 }
 
+export const indirectHasOwnProperty = (obj: unknown, prop: string): boolean => {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+};
+
 export const isCardMetadata = (card: unknown): card is CardMetadata => {
   if (typeof card !== "object" || card === null) return false;
 
   return (
-    card.hasOwnProperty("id") &&
+    indirectHasOwnProperty(card, "id") &&
     typeof (card as CardMetadata).id === "string" &&
-    card.hasOwnProperty("content") &&
+    indirectHasOwnProperty(card, "content") &&
     typeof (card as CardMetadata).content === "string" &&
-    card.hasOwnProperty("qdrant_point_id") &&
+    indirectHasOwnProperty(card, "qdrant_point_id") &&
     typeof (card as CardMetadata).qdrant_point_id === "string" &&
-    card.hasOwnProperty("created_at") &&
+    indirectHasOwnProperty(card, "created_at") &&
     typeof (card as CardMetadata).created_at === "string" &&
-    card.hasOwnProperty("updated_at") &&
+    indirectHasOwnProperty(card, "updated_at") &&
     typeof (card as CardMetadata).updated_at === "string" &&
-    card.hasOwnProperty("oc_file_path") &&
+    indirectHasOwnProperty(card, "oc_file_path") &&
     (typeof (card as CardMetadata).oc_file_path === "string" ||
       (card as CardMetadata).oc_file_path === null)
   );
@@ -44,26 +48,26 @@ const isCardMetadataWithVotes = (
   if (typeof card !== "object" || card === null) return false;
 
   return (
-    card.hasOwnProperty("id") &&
+    indirectHasOwnProperty(card, "id") &&
     typeof (card as CardMetadataWithVotes).id === "string" &&
-    card.hasOwnProperty("author") &&
+    indirectHasOwnProperty(card, "author") &&
     (isUserDTO((card as CardMetadataWithVotes).author) ||
       (card as CardMetadataWithVotes).author === null) &&
-    card.hasOwnProperty("content") &&
+    indirectHasOwnProperty(card, "content") &&
     typeof (card as CardMetadataWithVotes).content === "string" &&
-    card.hasOwnProperty("qdrant_point_id") &&
+    indirectHasOwnProperty(card, "qdrant_point_id") &&
     typeof (card as CardMetadataWithVotes).qdrant_point_id === "string" &&
-    card.hasOwnProperty("total_upvotes") &&
+    indirectHasOwnProperty(card, "total_upvotes") &&
     typeof (card as CardMetadataWithVotes).total_upvotes === "number" &&
-    card.hasOwnProperty("total_downvotes") &&
+    indirectHasOwnProperty(card, "total_downvotes") &&
     typeof (card as CardMetadataWithVotes).total_downvotes === "number" &&
-    card.hasOwnProperty("vote_by_current_user") &&
+    indirectHasOwnProperty(card, "vote_by_current_user") &&
     (typeof (card as CardMetadataWithVotes).vote_by_current_user ===
       "boolean" ||
       (card as CardMetadataWithVotes).vote_by_current_user === null) &&
-    card.hasOwnProperty("created_at") &&
+    indirectHasOwnProperty(card, "created_at") &&
     typeof (card as CardMetadataWithVotes).created_at === "string" &&
-    card.hasOwnProperty("updated_at") &&
+    indirectHasOwnProperty(card, "updated_at") &&
     typeof (card as CardMetadataWithVotes).updated_at === "string"
   );
 };
@@ -95,9 +99,9 @@ export const isScoreCardDTO = (card: unknown): card is ScoreCardDTO => {
   if (typeof card !== "object" || card === null) return false;
 
   return (
-    card.hasOwnProperty("metadata") &&
+    indirectHasOwnProperty(card, "metadata") &&
     isCardMetadataWithVotes((card as ScoreCardDTO).metadata) &&
-    card.hasOwnProperty("score") &&
+    indirectHasOwnProperty(card, "score") &&
     typeof (card as ScoreCardDTO).score === "number"
   );
 };
@@ -161,18 +165,18 @@ export const isUserDTO = (user: unknown): user is UserDTO => {
   if (typeof user !== "object" || user === null) return false;
 
   return (
-    user.hasOwnProperty("id") &&
+    indirectHasOwnProperty(user, "id") &&
     typeof (user as UserDTO).id === "string" &&
-    user.hasOwnProperty("email") &&
+    indirectHasOwnProperty(user, "email") &&
     (typeof (user as UserDTO).email === "string" ||
       (user as UserDTO).email === null) &&
-    user.hasOwnProperty("username") &&
+    indirectHasOwnProperty(user, "username") &&
     (typeof (user as UserDTO).username === "string" ||
       (user as UserDTO).username === null) &&
-    user.hasOwnProperty("website") &&
+    indirectHasOwnProperty(user, "website") &&
     (typeof (user as UserDTO).website === "string" ||
       (user as UserDTO).website === null) &&
-    user.hasOwnProperty("visible_email") &&
+    indirectHasOwnProperty(user, "visible_email") &&
     typeof (user as UserDTO).visible_email === "boolean"
   );
 };
@@ -196,26 +200,26 @@ export const isUserDTOWithVotesAndCards = (
     (user as UserDTOWithVotesAndCards).cards.every((card) =>
       isCardMetadata(card),
     ) &&
-    user.hasOwnProperty("created_at") &&
+    indirectHasOwnProperty(user, "created_at") &&
     typeof (user as UserDTOWithVotesAndCards).created_at === "string" &&
-    user.hasOwnProperty("total_cards_created") &&
+    indirectHasOwnProperty(user, "total_cards_created") &&
     typeof (user as UserDTOWithVotesAndCards).total_cards_created ===
       "number" &&
-    user.hasOwnProperty("total_upvotes_received") &&
+    indirectHasOwnProperty(user, "total_upvotes_received") &&
     typeof (user as UserDTOWithVotesAndCards).total_upvotes_received ===
       "number" &&
-    user.hasOwnProperty("total_downvotes_received") &&
+    indirectHasOwnProperty(user, "total_downvotes_received") &&
     typeof (user as UserDTOWithVotesAndCards).total_downvotes_received ===
       "number" &&
-    user.hasOwnProperty("total_votes_cast") &&
+    indirectHasOwnProperty(user, "total_votes_cast") &&
     typeof (user as UserDTOWithVotesAndCards).total_votes_cast === "number"
   );
 };
 
-export type UsersWithTotalPagesDTO = {
+export interface UsersWithTotalPagesDTO {
   users: UserDTOWithScore[];
   total_user_pages: number;
-};
+}
 export type UserDTOWithScore = UserDTO & {
   created_at: string;
   score: number;
@@ -226,9 +230,9 @@ export const isUserDTOWithScore = (user: unknown): user is UserDTOWithScore => {
 
   return (
     isUserDTO(user) &&
-    user.hasOwnProperty("created_at") &&
+    indirectHasOwnProperty(user, "created_at") &&
     typeof (user as UserDTOWithScore).created_at === "string" &&
-    user.hasOwnProperty("score") &&
+    indirectHasOwnProperty(user, "score") &&
     typeof (user as UserDTOWithScore).score === "number"
   );
 };
@@ -246,13 +250,13 @@ export const isCardCollectionDTO = (
   if (typeof collection !== "object" || collection === null) return false;
 
   return (
-    collection.hasOwnProperty("id") &&
+    indirectHasOwnProperty(collection, "id") &&
     typeof (collection as CardCollectionDTO).id === "string" &&
-    collection.hasOwnProperty("name") &&
+    indirectHasOwnProperty(collection, "name") &&
     typeof (collection as CardCollectionDTO).name === "string" &&
-    collection.hasOwnProperty("description") &&
+    indirectHasOwnProperty(collection, "description") &&
     typeof (collection as CardCollectionDTO).description === "string" &&
-    collection.hasOwnProperty("is_public") &&
+    indirectHasOwnProperty(collection, "is_public") &&
     typeof (collection as CardCollectionDTO).is_public === "boolean"
   );
 };
