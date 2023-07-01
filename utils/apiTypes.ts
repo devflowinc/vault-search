@@ -266,3 +266,27 @@ export interface CardCollectionBookmarkDTO {
   bookmarks: CardMetadataWithVotes[];
   collection: CardCollectionDTO;
 }
+
+export interface CreateCardDTO {
+  message?: string;
+  card_metadata: CardMetadataWithVotes;
+  duplicate: boolean;
+}
+
+export interface CardCountDTO {
+  total_count: number;
+}
+
+export interface SingleCardDTO {
+  metadata: CardMetadataWithVotes;
+  status: number;
+}
+
+export interface CardCollectionBookmarksDTO {
+  bookmarks: CardMetadataWithVotes[];
+  collection: CardCollectionDTO;
+}
+export interface CardCollectionBookmarksWithStatusDTO {
+  metadata: CardCollectionBookmarksDTO;
+  status: number;
+}

@@ -92,13 +92,11 @@ export const CollectionPage = (props: CollectionPageProps) => {
           //take the data and convert it to ScoreCardDTO
           const collectionBookmarks = data as CardCollectionBookmarkDTO;
           const ScoreDTOCards: ScoreCardDTO[] = [];
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
           collectionBookmarks.bookmarks.forEach(
             (card: CardMetadataWithVotes) => {
               ScoreDTOCards.push({ metadata: card, score: 2 });
             },
           );
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           setCollectionInfo(collectionBookmarks.collection);
           setConvertedCard(ScoreDTOCards);
           setError("");
