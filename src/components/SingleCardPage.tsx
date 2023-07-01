@@ -9,6 +9,7 @@ import {
 import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
+import { ConfirmModal } from "./Atoms/ConfirmModal";
 
 export interface SingleCardPageProps {
   cardID: string | undefined;
@@ -31,6 +32,12 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
     CardCollectionDTO[]
   >([]);
   const [user, setUser] = createSignal<UserDTO | undefined>();
+
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
+    createSignal(false);
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const [onDelete, setOnDelete] = createSignal(() => {});
 
   if (props.defaultResultCards.status == 401) {
     setError("You are not authorized to view this card.");
@@ -113,6 +120,8 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
               setShowModal={setShowNeedLoginModal}
               cardCollections={cardCollections()}
               fetchCardCollections={fetchCardCollections}
+              setOnDelete={setOnDelete}
+              setShowConfirmModal={setShowConfirmDeleteModal}
             />
           </Show>
           <Show when={error().length > 0 && !fetching()}>
@@ -144,6 +153,11 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
           </div>
         </FullScreenModal>
       </Show>
+      <ConfirmModal
+        showConfirmModal={showConfirmDeleteModal}
+        setShowConfirmModal={setShowConfirmDeleteModal}
+        onConfirm={onDelete}
+      />
     </>
   );
 };

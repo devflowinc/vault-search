@@ -10,6 +10,7 @@ import ScoreCard from "./ScoreCard";
 import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import { PaginationController } from "./Atoms/PaginationController";
+import { ConfirmModal } from "./Atoms/ConfirmModal";
 
 export interface Filters {
   dataTypes: string[];
@@ -40,6 +41,12 @@ const ResultsPage = (props: ResultsPageProps) => {
   const [resultCards, setResultCards] =
     createSignal<ScoreCardDTO[]>(initialResultCards);
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);
+
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
+    createSignal(false);
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const [onDelete, setOnDelete] = createSignal(() => {});
 
   // Fetch the card collections for the auth'ed user
   const fetchCardCollections = () => {
@@ -124,6 +131,8 @@ const ResultsPage = (props: ResultsPageProps) => {
                   card={card}
                   setShowModal={setShowNeedLoginModal}
                   fetchCardCollections={fetchCardCollections}
+                  setOnDelete={setOnDelete}
+                  setShowConfirmModal={setShowConfirmDeleteModal}
                 />
               </div>
             )}
@@ -167,6 +176,11 @@ const ResultsPage = (props: ResultsPageProps) => {
           </div>
         </FullScreenModal>
       </Show>
+      <ConfirmModal
+        showConfirmModal={showConfirmDeleteModal}
+        setShowConfirmModal={setShowConfirmDeleteModal}
+        onConfirm={onDelete}
+      />
     </>
   );
 };

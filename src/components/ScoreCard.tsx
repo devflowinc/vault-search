@@ -19,6 +19,8 @@ export interface ScoreCardProps {
   card: ScoreCardDTO;
   setShowModal: Setter<boolean>;
   fetchCardCollections: () => void;
+  setOnDelete: Setter<() => void>;
+  setShowConfirmModal: Setter<boolean>;
 }
 
 const ScoreCard = (props: ScoreCardProps) => {
@@ -94,21 +96,25 @@ const ScoreCard = (props: ScoreCardProps) => {
   const deleteCard = () => {
     if (props.signedInUserId !== props.card.metadata.author?.id) return;
 
-    if (!confirm("Are you sure you want to delete this card?")) return;
-
-    setDeleting(true);
-
-    void fetch(`${api_host}/card/${props.card.metadata.id}`, {
-      method: "DELETE",
-      credentials: "include",
-    }).then((response) => {
-      setDeleting(false);
-      if (response.ok) {
-        setDeleted(true);
-        return;
-      }
-      alert("Failed to delete card");
+    props.setOnDelete(() => {
+      // eslint-disable-next-line solid/reactivity
+      return () => {
+        setDeleting(true);
+        void fetch(`${api_host}/card/${props.card.metadata.id}`, {
+          method: "DELETE",
+          credentials: "include",
+        }).then((response) => {
+          setDeleting(false);
+          if (response.ok) {
+            setDeleted(true);
+            return;
+          }
+          alert("Failed to delete card");
+        });
+      };
     });
+
+    props.setShowConfirmModal(true);
   };
 
   return (
@@ -173,8 +179,9 @@ const ScoreCard = (props: ScoreCardProps) => {
                   <a
                     class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
                     target="_blank"
-                    href={`https://oc.arguflow.com/${props.card.metadata.oc_file_path ?? ""
-                      }`}
+                    href={`https://oc.arguflow.com/${
+                      props.card.metadata.oc_file_path ?? ""
+                    }`}
                   >
                     {props.card.metadata.oc_file_path?.split("/").pop() ??
                       props.card.metadata.oc_file_path}

@@ -49,8 +49,9 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
                 <a
                   class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
                   target="_blank"
-                  href={`https://oc.arguflow.com/${props.card.oc_file_path ?? ""
-                    }`}
+                  href={`https://oc.arguflow.com/${
+                    props.card.oc_file_path ?? ""
+                  }`}
                 >
                   {props.card.oc_file_path?.split("/").pop() ??
                     props.card.oc_file_path}
@@ -85,6 +86,7 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
                   if (props.signedInUserId !== props.viewingUserId) return;
 
                   props.setOnDelete(() => {
+                    // eslint-disable-next-line solid/reactivity
                     return () => {
                       setDeleting(true);
                       void fetch(`${api_host}/card/${props.card.id}`, {
