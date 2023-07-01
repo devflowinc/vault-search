@@ -203,14 +203,9 @@ const ScoreCard = (props: ScoreCardProps) => {
           </div>
         </div>
         <div class="flex gap-x-1">
-          <VsFileSymlinkFile
-            class="cursor-pointe h-5 w-5 fill-current"
-            onClick={() => {
-              void navigator.clipboard.writeText(
-                "https://vault.arguflow.com/card/" + props.card.metadata.id,
-              );
-            }}
-          />
+          <a href={`/card/${props.card.metadata.id}`}>
+            <VsFileSymlinkFile class="cursor-pointe h-5 w-5 fill-current" />
+          </a>
           <BookmarkPopover
             cardCollections={props.cardCollections}
             card={props.card}
