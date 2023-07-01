@@ -134,7 +134,7 @@ const ScoreCard = (props: ScoreCardProps) => {
           <div class="flex w-full flex-col">
             <Show when={props.card.metadata.link}>
               <a
-                class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
+                class="line-clamp-1 w-fit break-all text-magenta-500 underline dark:text-turquoise-400"
                 target="_blank"
                 href={props.card.metadata.link ?? ""}
               >
