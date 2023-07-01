@@ -60,6 +60,7 @@ const SearchForm = () => {
         if (!response.ok) {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           isActixApiDefaultError(data) && setErrorText(data.message);
+          setIsSubmitting(false);
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access

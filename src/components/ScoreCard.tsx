@@ -10,6 +10,7 @@ import {
 import BookmarkPopover from "./BookmarkPopover";
 import { VsFileSymlinkFile } from "solid-icons/vs";
 import sanitizeHtml from "sanitize-html";
+import { FiLock, FiTrash } from "solid-icons/fi";
 
 export interface ScoreCardProps {
   signedInUserId?: string;
@@ -31,6 +32,8 @@ const ScoreCard = (props: ScoreCardProps) => {
     props.card.metadata.total_upvotes - props.card.metadata.total_downvotes,
   );
   const [showPropsModal, setShowPropsModal] = createSignal(false);
+  const [deleting, setDeleting] = createSignal(false);
+  const [deleted, setDeleted] = createSignal(false);
 
   createEffect(() => {
     if (!showPropsModal()) return;
@@ -88,150 +91,192 @@ const ScoreCard = (props: ScoreCardProps) => {
     });
   };
 
+  const deleteCard = () => {
+    console.log(
+      "delete card",
+      props.signedInUserId == props.card.metadata.author?.id,
+    );
+    if (props.signedInUserId !== props.card.metadata.author?.id) return;
+
+    if (!confirm("Are you sure you want to delete this card?")) return;
+
+    setDeleting(true);
+
+    void fetch(`${api_host}/card/${props.card.metadata.id}`, {
+      method: "DELETE",
+      credentials: "include",
+    }).then((response) => {
+      setDeleting(false);
+      if (response.ok) {
+        setDeleted(true);
+        return;
+      }
+      alert("Failed to delete card");
+    });
+  };
+
   return (
-    <div class="flex w-full flex-col items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800">
-      <div class="flex w-full space-x-2">
-        <div class="flex w-full items-start">
-          <div class="flex flex-col items-center pr-2">
-            <Show when={!props.card.metadata.private}>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  setUserVote((prev) => {
-                    const new_val = prev === 1 ? 0 : 1;
-                    createVote(prev, new_val);
-                    return new_val;
-                  });
-                }}
-              >
-                <Show when={userVote() === 1}>
-                  <RiArrowsArrowUpCircleFill class="h-8 w-8 fill-current !text-turquoise-500" />
-                </Show>
-                <Show when={userVote() != 1}>
-                  <RiArrowsArrowUpCircleLine class="h-8 w-8 fill-current" />
-                </Show>
-              </button>
-              <span class="my-1">{totalVote() + userVote()}</span>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  setUserVote((prev) => {
-                    const new_val = prev === -1 ? 0 : -1;
-                    createVote(prev, new_val);
-                    return new_val;
-                  });
-                }}
-              >
-                <Show when={userVote() === -1}>
-                  <RiArrowsArrowDownCircleFill class="h-8 w-8 fill-current !text-turquoise-500" />
-                </Show>
-                <Show when={userVote() != -1}>
-                  <RiArrowsArrowDownCircleLine class="h-8 w-8 fill-current" />
-                </Show>
-              </button>
-            </Show>
-          </div>
-          <div class="flex w-full flex-col">
-            <Show when={props.card.metadata.link}>
-              <a
-                class="line-clamp-1 w-fit break-all text-magenta-500 underline dark:text-turquoise-400"
-                target="_blank"
-                href={props.card.metadata.link ?? ""}
-              >
-                {props.card.metadata.link}
-              </a>
-            </Show>
-            <Show when={props.card.metadata.oc_file_path}>
-              <div class="flex space-x-2">
-                <span class="font-semibold text-neutral-800 dark:text-neutral-200">
-                  Brief:{" "}
-                </span>
+    <Show when={!deleted()}>
+      <div class="flex w-full flex-col items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800">
+        <div class="flex w-full">
+          <div class="flex w-full items-start">
+            <div class="flex flex-col items-center pr-2">
+              <Show when={!props.card.metadata.private}>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setUserVote((prev) => {
+                      const new_val = prev === 1 ? 0 : 1;
+                      createVote(prev, new_val);
+                      return new_val;
+                    });
+                  }}
+                >
+                  <Show when={userVote() === 1}>
+                    <RiArrowsArrowUpCircleFill class="h-8 w-8 fill-current !text-turquoise-500" />
+                  </Show>
+                  <Show when={userVote() != 1}>
+                    <RiArrowsArrowUpCircleLine class="h-8 w-8 fill-current" />
+                  </Show>
+                </button>
+                <span class="my-1">{totalVote() + userVote()}</span>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setUserVote((prev) => {
+                      const new_val = prev === -1 ? 0 : -1;
+                      createVote(prev, new_val);
+                      return new_val;
+                    });
+                  }}
+                >
+                  <Show when={userVote() === -1}>
+                    <RiArrowsArrowDownCircleFill class="h-8 w-8 fill-current !text-turquoise-500" />
+                  </Show>
+                  <Show when={userVote() != -1}>
+                    <RiArrowsArrowDownCircleLine class="h-8 w-8 fill-current" />
+                  </Show>
+                </button>
+              </Show>
+            </div>
+            <div class="flex w-full flex-col">
+              <Show when={props.card.metadata.link}>
                 <a
-                  class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
+                  class="line-clamp-1 w-fit break-all text-magenta-500 underline dark:text-turquoise-400"
                   target="_blank"
-                  href={`https://oc.arguflow.com/${
-                    props.card.metadata.oc_file_path ?? ""
-                  }`}
+                  href={props.card.metadata.link ?? ""}
                 >
-                  {props.card.metadata.oc_file_path?.split("/").pop() ??
-                    props.card.metadata.oc_file_path}
+                  {props.card.metadata.link}
                 </a>
+              </Show>
+              <Show when={props.card.metadata.oc_file_path}>
+                <div class="flex space-x-2">
+                  <span class="font-semibold text-neutral-800 dark:text-neutral-200">
+                    Brief:{" "}
+                  </span>
+                  <a
+                    class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
+                    target="_blank"
+                    href={`https://oc.arguflow.com/${
+                      props.card.metadata.oc_file_path ?? ""
+                    }`}
+                  >
+                    {props.card.metadata.oc_file_path?.split("/").pop() ??
+                      props.card.metadata.oc_file_path}
+                  </a>
+                </div>
+              </Show>
+              <div class="grid w-fit auto-cols-min grid-cols-[1fr,3fr] gap-x-2 text-neutral-800 dark:text-neutral-200">
+                <Show when={props.card.score != 0 && !props.collection}>
+                  <span class="font-semibold">Similarity: </span>
+                  <span>{props.card.score}</span>
+                </Show>
+                <Show when={props.card.metadata.author}>
+                  <span class="font-semibold">Author: </span>
+                  <a
+                    href={`/user/${props.card.metadata.author?.id ?? ""}`}
+                    class="line-clamp-1 break-all underline"
+                  >
+                    {props.card.metadata.author?.username ??
+                      props.card.metadata.author?.email}
+                  </a>
+                </Show>
+                <span class="font-semibold">Created: </span>
+                <span>
+                  {new Date(
+                    props.card.metadata.created_at,
+                  ).toLocaleDateString()}
+                </span>
               </div>
-            </Show>
-            <div class="grid w-fit auto-cols-min grid-cols-[1fr,3fr] gap-x-2 text-neutral-800 dark:text-neutral-200">
-              <Show when={props.card.score != 0 && !props.collection}>
-                <span class="font-semibold">Similarity: </span>
-                <span>{props.card.score}</span>
-              </Show>
-              <Show when={props.card.metadata.author}>
-                <span class="font-semibold">Author: </span>
-                <a
-                  href={`/user/${props.card.metadata.author?.id ?? ""}`}
-                  class="line-clamp-1 break-all underline"
-                >
-                  {props.card.metadata.author?.username ??
-                    props.card.metadata.author?.email}
-                </a>
-              </Show>
-              <span class="font-semibold">Created: </span>
-              <span>
-                {new Date(props.card.metadata.created_at).toLocaleDateString()}
-              </span>
             </div>
           </div>
+          <div class="flex h-fit items-center gap-x-1">
+            <Show when={props.card.metadata.private}>
+              <FiLock class="h-5 w-5 text-green-500" />
+            </Show>
+            <Show when={props.signedInUserId == props.card.metadata.author?.id}>
+              <button
+                classList={{
+                  "h-fit text-red-700 dark:text-red-400": true,
+                  "animate-pulse": deleting(),
+                }}
+                onClick={() => deleteCard()}
+              >
+                <FiTrash class="h-5 w-5" />
+              </button>
+            </Show>
+            <a href={`/card/${props.card.metadata.id}`}>
+              <VsFileSymlinkFile class="h-5 w-5 fill-current" />
+            </a>
+            <BookmarkPopover
+              cardCollections={props.cardCollections}
+              cardMetadata={props.card.metadata}
+              fetchCardCollections={props.fetchCardCollections}
+              setLoginModal={props.setShowModal}
+            />
+          </div>
         </div>
-        <div class="flex gap-x-1">
-          <a href={`/card/${props.card.metadata.id}`}>
-            <VsFileSymlinkFile class="cursor-pointe h-5 w-5 fill-current" />
-          </a>
-          <BookmarkPopover
-            cardCollections={props.cardCollections}
-            cardMetadata={props.card.metadata}
-            fetchCardCollections={props.fetchCardCollections}
-            setLoginModal={props.setShowModal}
+        <div class="mb-1 h-1 w-full border-b border-neutral-300 dark:border-neutral-600" />
+        <Show when={props.card.metadata.card_html == null}>
+          <p
+            classList={{
+              "line-clamp-4 gradient-mask-b-0": !expanded(),
+            }}
+          >
+            {props.card.metadata.content.toString()}
+          </p>
+        </Show>
+        <Show when={props.card.metadata.card_html != null}>
+          <div
+            classList={{
+              "line-clamp-4 gradient-mask-b-0": !expanded(),
+            }}
+            // eslint-disable-next-line solid/no-innerhtml
+            innerHTML={sanitizeHtml(
+              props.card.metadata.card_html !== undefined
+                ? props.card.metadata.card_html
+                : "",
+            )}
           />
-        </div>
-      </div>
-      <div class="mb-1 h-1 w-full border-b border-neutral-300 dark:border-neutral-600" />
-      <Show when={props.card.metadata.card_html == null}>
-        <p
-          classList={{
-            "line-clamp-4 gradient-mask-b-0": !expanded(),
-          }}
+        </Show>
+        <button
+          class="ml-2 font-semibold"
+          onClick={() => setExpanded((prev) => !prev)}
         >
-          {props.card.metadata.content.toString()}
-        </p>
-      </Show>
-      <Show when={props.card.metadata.card_html != null}>
-        <div
-          classList={{
-            "line-clamp-4 gradient-mask-b-0": !expanded(),
-          }}
-          // eslint-disable-next-line solid/no-innerhtml
-          innerHTML={sanitizeHtml(
-            props.card.metadata.card_html !== undefined
-              ? props.card.metadata.card_html
-              : "",
+          {expanded() ? (
+            <div class="flex flex-row items-center">
+              <div>Show Less</div>{" "}
+              <BiRegularChevronUp class="h-8 w-8 fill-current" />
+            </div>
+          ) : (
+            <div class="flex flex-row items-center">
+              <div>Show More</div>{" "}
+              <BiRegularChevronDown class="h-8 w-8 fill-current" />
+            </div>
           )}
-        />
-      </Show>
-      <button
-        class="ml-2 font-semibold"
-        onClick={() => setExpanded((prev) => !prev)}
-      >
-        {expanded() ? (
-          <div class="flex flex-row items-center">
-            <div>Show Less</div>{" "}
-            <BiRegularChevronUp class="h-8 w-8 fill-current" />
-          </div>
-        ) : (
-          <div class="flex flex-row items-center">
-            <div>Show More</div>{" "}
-            <BiRegularChevronDown class="h-8 w-8 fill-current" />
-          </div>
-        )}
-      </button>
-    </div>
+        </button>
+      </div>
+    </Show>
   );
 };
 
