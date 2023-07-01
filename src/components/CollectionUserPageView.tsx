@@ -30,22 +30,19 @@ export const CollectionUserPageView = (props: {
   return (
     <Show when={props.user !== undefined}>
       <div>
-        <span>Collections Created by</span>{" "}
-        <span class="break-all font-bold">
-          {props.user?.username ?? props.user?.email}
-        </span>
+        <span>Collections:</span>
         <div class="flex flex-wrap gap-x-2">
           {
             <For each={collections()}>
               {(collection) => (
                 <button
-                  class="text-md mt-1 flex w-fit items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-700"
+                  class="mt-1 flex w-fit items-center rounded-md bg-neutral-200 p-2 text-base dark:bg-neutral-700"
                   onClick={(e) => {
                     e.preventDefault();
                     return (window.location.href = `/collection/${collection.id}`);
                   }}
                 >
-                  <BiSolidFolder classList={{ "mr-1  fill-current": true }} />
+                  <BiSolidFolder class="mr-1 fill-current" />
                   {collection.name}
                 </button>
               )}
