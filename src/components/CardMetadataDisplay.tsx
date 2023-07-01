@@ -15,7 +15,9 @@ export interface CardMetadataDisplayProps {
   card: CardMetadataWithVotes;
   cardCollections: CardCollectionDTO[];
   setShowModal: Setter<boolean>;
+  setShowConfirmModal: Setter<boolean>;
   fetchCardCollections: () => void;
+  setOnDelete: Setter<() => void>;
 }
 
 const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
@@ -24,26 +26,6 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
   const [expanded, setExpanded] = createSignal(false);
   const [deleting, setDeleting] = createSignal(false);
   const [deleted, setDeleted] = createSignal(false);
-
-  const deleteCard = () => {
-    if (props.signedInUserId !== props.viewingUserId) return;
-
-    if (!confirm("Are you sure you want to delete this card?")) return;
-
-    setDeleting(true);
-
-    void fetch(`${api_host}/card/${props.card.id}`, {
-      method: "DELETE",
-      credentials: "include",
-    }).then((response) => {
-      setDeleting(false);
-      if (response.ok) {
-        setDeleted(true);
-        return;
-      }
-      alert("Failed to delete card");
-    });
-  };
 
   return (
     <Show when={!deleted()}>
@@ -67,9 +49,8 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
                 <a
                   class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
                   target="_blank"
-                  href={`https://oc.arguflow.com/${
-                    props.card.oc_file_path ?? ""
-                  }`}
+                  href={`https://oc.arguflow.com/${props.card.oc_file_path ?? ""
+                    }`}
                 >
                   {props.card.oc_file_path?.split("/").pop() ??
                     props.card.oc_file_path}
@@ -95,16 +76,38 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
             </Show>
             <Show when={props.signedInUserId == props.viewingUserId}>
               <button
+                title="Delete"
                 classList={{
                   "h-fit text-red-700 dark:text-red-400": true,
                   "animate-pulse": deleting(),
                 }}
-                onClick={() => deleteCard()}
+                onClick={() => {
+                  if (props.signedInUserId !== props.viewingUserId) return;
+
+                  props.setOnDelete(() => {
+                    return () => {
+                      setDeleting(true);
+                      void fetch(`${api_host}/card/${props.card.id}`, {
+                        method: "DELETE",
+                        credentials: "include",
+                      }).then((response) => {
+                        setDeleting(false);
+                        if (response.ok) {
+                          setDeleted(true);
+                          return;
+                        }
+                        alert("Failed to delete card");
+                      });
+                    };
+                  });
+
+                  props.setShowConfirmModal(true);
+                }}
               >
                 <FiTrash class="h-5 w-5" />
               </button>
             </Show>
-            <a href={`/card/${props.card.id}`}>
+            <a title="Open" href={`/card/${props.card.id}`}>
               <VsFileSymlinkFile class="cursor-pointe h-5 w-5 fill-current" />
             </a>
             <BookmarkPopover

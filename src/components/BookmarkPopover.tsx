@@ -66,6 +66,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
         <div>
           <div class="flex items-center">
             <PopoverButton
+              title="Bookmark"
               onClick={() => {
                 if (notLoggedIn()) {
                   props.setLoginModal(true);

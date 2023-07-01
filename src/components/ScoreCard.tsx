@@ -92,10 +92,6 @@ const ScoreCard = (props: ScoreCardProps) => {
   };
 
   const deleteCard = () => {
-    console.log(
-      "delete card",
-      props.signedInUserId == props.card.metadata.author?.id,
-    );
     if (props.signedInUserId !== props.card.metadata.author?.id) return;
 
     if (!confirm("Are you sure you want to delete this card?")) return;
@@ -177,9 +173,8 @@ const ScoreCard = (props: ScoreCardProps) => {
                   <a
                     class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
                     target="_blank"
-                    href={`https://oc.arguflow.com/${
-                      props.card.metadata.oc_file_path ?? ""
-                    }`}
+                    href={`https://oc.arguflow.com/${props.card.metadata.oc_file_path ?? ""
+                      }`}
                   >
                     {props.card.metadata.oc_file_path?.split("/").pop() ??
                       props.card.metadata.oc_file_path}
@@ -220,12 +215,13 @@ const ScoreCard = (props: ScoreCardProps) => {
                   "h-fit text-red-700 dark:text-red-400": true,
                   "animate-pulse": deleting(),
                 }}
+                title="Delete"
                 onClick={() => deleteCard()}
               >
                 <FiTrash class="h-5 w-5" />
               </button>
             </Show>
-            <a href={`/card/${props.card.metadata.id}`}>
+            <a title="Open" href={`/card/${props.card.metadata.id}`}>
               <VsFileSymlinkFile class="h-5 w-5 fill-current" />
             </a>
             <BookmarkPopover

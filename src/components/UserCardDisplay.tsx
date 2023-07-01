@@ -14,9 +14,12 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
 
   const [user, setUser] = createSignal<UserDTOWithVotesAndCards>();
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);
+  const [showConfirmModal, setShowConfirmModal] = createSignal(false);
   const [cardCollections, setCardCollections] = createSignal<
     CardCollectionDTO[]
   >([]);
+
+  const [onDelete, setOnDelete] = createSignal<() => void>(() => { });
 
   // Fetch the card collections for the auth'ed user
   const fetchCardCollections = () => {
@@ -107,12 +110,14 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
               {(card) => (
                 <div class="w-full">
                   <CardMetadataDisplay
+                    setShowConfirmModal={setShowConfirmModal}
                     signedInUserId={user()?.id}
                     viewingUserId={props.id}
                     card={card}
                     setShowModal={setShowNeedLoginModal}
                     cardCollections={cardCollections()}
                     fetchCardCollections={fetchCardCollections}
+                    setOnDelete={setOnDelete}
                   />
                 </div>
               )}
@@ -146,6 +151,37 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
                 Register
                 <BiRegularLogIn class="h-6 w-6 fill-current" />
               </a>
+            </div>
+          </div>
+        </FullScreenModal>
+      </Show>
+      <Show when={showConfirmModal()}>
+        <FullScreenModal
+          isOpen={showConfirmModal}
+          setIsOpen={setShowConfirmModal}
+        >
+          <div class="min-w-[250px] sm:min-w-[300px]">
+            <BiRegularXCircle class="mx-auto h-8 w-8 fill-current !text-red-500" />
+            <div class="mb-4 text-xl font-bold">
+              Are you sure you want to delete this card?
+            </div>
+            <div class="mx-auto flex w-fit space-x-3">
+              <button
+                class="flex items-center space-x-2 rounded-md bg-magenta-500 p-2 text-white"
+                onClick={() => {
+                  setShowConfirmModal(false);
+                  onDelete()();
+                }}
+              >
+                Delete
+                <BiRegularLogIn class="h-6 w-6 fill-current" />
+              </button>
+              <button
+                class="flex space-x-2 rounded-md bg-neutral-500 p-2 text-white"
+                onClick={() => setShowConfirmModal(false)}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </FullScreenModal>
