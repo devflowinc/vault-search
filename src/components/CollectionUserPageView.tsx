@@ -21,7 +21,7 @@ export const CollectionUserPageView = (props: {
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          setCollections(data);
+          setCollections(data as CardCollectionDTO[]);
         });
       }
     });

@@ -5,6 +5,7 @@ import {
   type CardMetadataWithVotes,
   type ScoreCardDTO,
   type UserDTO,
+  type CardCollectionBookmarkDTO,
 } from "../../utils/apiTypes";
 import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
@@ -74,7 +75,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          setCardCollections(data);
+          setCardCollections(data as CardCollectionDTO[]);
         });
       }
     });
@@ -89,13 +90,16 @@ export const CollectionPage = (props: CollectionPageProps) => {
       if (response.ok) {
         void response.json().then((data) => {
           //take the data and convert it to ScoreCardDTO
+          const collectionBookmarks = data as CardCollectionBookmarkDTO;
           const ScoreDTOCards: ScoreCardDTO[] = [];
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-          data.bookmarks.forEach((card: CardMetadataWithVotes) => {
-            ScoreDTOCards.push({ metadata: card, score: 2 });
-          });
+          collectionBookmarks.bookmarks.forEach(
+            (card: CardMetadataWithVotes) => {
+              ScoreDTOCards.push({ metadata: card, score: 2 });
+            },
+          );
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          setCollectionInfo(data.collection);
+          setCollectionInfo(collectionBookmarks.collection);
           setConvertedCard(ScoreDTOCards);
           setError("");
           setFetching(false);

@@ -47,7 +47,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          setCardCollections(data);
+          setCardCollections(data as CardCollectionDTO[]);
         });
       }
     });
@@ -80,7 +80,10 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
       if (response.ok) {
         void response.json().then((data) => {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          setConvertedCard({ metadata: data, score: 0 });
+          setConvertedCard({
+            metadata: data as CardMetadataWithVotes,
+            score: 0,
+          });
           setError("");
           setFetching(false);
         });

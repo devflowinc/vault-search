@@ -239,6 +239,7 @@ export const isUserDTOWithScore = (user: unknown): user is UserDTOWithScore => {
 
 export interface CardCollectionDTO {
   id: string;
+  author_id: string;
   name: string;
   description: string;
   is_public: boolean;
@@ -260,3 +261,8 @@ export const isCardCollectionDTO = (
     typeof (collection as CardCollectionDTO).is_public === "boolean"
   );
 };
+
+export interface CardCollectionBookmarkDTO {
+  bookmarks: CardMetadataWithVotes[];
+  collection: CardCollectionDTO;
+}

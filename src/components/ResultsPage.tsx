@@ -49,7 +49,7 @@ const ResultsPage = (props: ResultsPageProps) => {
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          setCardCollections(data);
+          setCardCollections(data as CardCollectionDTO[]);
         });
       }
     });

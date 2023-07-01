@@ -43,7 +43,7 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          setUser(data);
+          setUser(data as UserDTOWithVotesAndCards);
         });
       }
     });
