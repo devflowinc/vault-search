@@ -1,10 +1,7 @@
 ---
 import SearchForm from "../components/SearchForm";
 import Footer from "../components/Footer.astro";
-import {
-  isUserDTOWithScore,
-  UsersWithTotalPagesDTO,
-} from "../../utils/apiTypes";
+import type { UsersWithTotalPagesDTO } from "../../utils/apiTypes";
 import type { Filters } from "../components/ResultsPage";
 import HomeLayout from "../layouts/HomeLayout.astro";
 const apiHost = import.meta.env.API_HOST as string;
@@ -26,18 +23,8 @@ try {
   const top_users_response = await fetch(`${apiHost}/top_users/${page}`);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const top_users_and_cards_result = await top_users_response.json();
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-  const top_users_result = top_users_and_cards_result?.users;
 
-  if (
-    top_users_result &&
-    Array.isArray(top_users_result) &&
-    top_users_result.every((user_with_score) =>
-      isUserDTOWithScore(user_with_score),
-    )
-  ) {
-    top_users_with_pages = top_users_and_cards_result as UsersWithTotalPagesDTO;
-  }
+  top_users_with_pages = top_users_and_cards_result as UsersWithTotalPagesDTO;
 } catch (e) {
   console.error(e);
 }

@@ -79,7 +79,6 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           setConvertedCard({
             metadata: data as CardMetadataWithVotes,
             score: 0,

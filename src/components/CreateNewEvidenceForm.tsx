@@ -2,7 +2,7 @@ import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
 import { JSX, Show, createSignal, onMount } from "solid-js";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import type { TinyMCE } from "../../public/tinymce/tinymce";
-import { isActixApiDefaultError } from "../../utils/apiTypes";
+import { CreateCardDTO, isActixApiDefaultError } from "../../utils/apiTypes";
 
 const SearchForm = () => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
@@ -57,20 +57,20 @@ const SearchForm = () => {
       }
 
       void response.json().then((data) => {
+        const cardReturnData = data as CreateCardDTO;
         if (!response.ok) {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           isActixApiDefaultError(data) && setErrorText(data.message);
           setIsSubmitting(false);
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        if (data.duplicate) {
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
-          window.location.href = `/card/${data.card_metadata.id}?collisions=${data.duplicate}`;
+        if (cardReturnData.duplicate) {
+          window.location.href = `/card/${
+            cardReturnData.card_metadata.id
+          }?collisions=${String(cardReturnData.duplicate)}`;
           return;
         }
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
-        window.location.href = `/card/${data.card_metadata.id}`;
+        window.location.href = `/card/${cardReturnData.card_metadata.id}`;
         return;
       });
     });

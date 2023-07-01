@@ -1,22 +1,24 @@
 ---
 import Footer from "../../components/Footer.astro";
 import SearchLayout from "../../layouts/SearchLayout.astro";
-import type { CardMetadataWithVotes } from "../../../utils/apiTypes";
 import { CollectionPage } from "../../components/CollectionPage";
-import type { CardCollectionDTO } from "../../../utils/apiTypes";
+import type {
+  CardCollectionBookmarksDTO,
+  CardCollectionBookmarksWithStatusDTO,
+} from "../../../utils/apiTypes";
 
 const { collectionID } = Astro.params;
 const apiHost = import.meta.env.API_HOST as string;
-let collectionCards: {
-  metadata: {
-    bookmarks: CardMetadataWithVotes[];
-    collection: CardCollectionDTO;
-  };
-  status: number;
-} = {
+let collectionCards: CardCollectionBookmarksWithStatusDTO = {
   metadata: {
     bookmarks: [],
-    collection: { id: "", name: "", description: "", is_public: false },
+    collection: {
+      id: "",
+      name: "",
+      description: "",
+      is_public: false,
+      author_id: "",
+    },
   },
   status: 0,
 };
@@ -35,9 +37,9 @@ try {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const collectionCardJson = await collectionCardResponse.json();
+  const collectionCardJson: CardCollectionBookmarksDTO =
+    await collectionCardResponse.json();
   collectionCards = {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     metadata: collectionCardJson,
     status: collectionCardResponse.status,
   };
