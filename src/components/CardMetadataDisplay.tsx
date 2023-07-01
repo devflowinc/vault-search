@@ -27,6 +27,30 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
   const [deleting, setDeleting] = createSignal(false);
   const [deleted, setDeleted] = createSignal(false);
 
+  const onDelete = () => {
+    if (props.signedInUserId !== props.viewingUserId) return;
+
+    props.setOnDelete(() => {
+      // eslint-disable-next-line solid/reactivity
+      return () => {
+        setDeleting(true);
+        void fetch(`${api_host}/card/${props.card.id}`, {
+          method: "DELETE",
+          credentials: "include",
+        }).then((response) => {
+          setDeleting(false);
+          if (response.ok) {
+            setDeleted(true);
+            return;
+          }
+          alert("Failed to delete card");
+        });
+      };
+    });
+
+    props.setShowConfirmModal(true);
+  };
+
   return (
     <Show when={!deleted()}>
       <div class="flex w-full flex-col items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800">
@@ -82,29 +106,7 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
                   "h-fit text-red-700 dark:text-red-400": true,
                   "animate-pulse": deleting(),
                 }}
-                onClick={() => {
-                  if (props.signedInUserId !== props.viewingUserId) return;
-
-                  props.setOnDelete(() => {
-                    // eslint-disable-next-line solid/reactivity
-                    return () => {
-                      setDeleting(true);
-                      void fetch(`${api_host}/card/${props.card.id}`, {
-                        method: "DELETE",
-                        credentials: "include",
-                      }).then((response) => {
-                        setDeleting(false);
-                        if (response.ok) {
-                          setDeleted(true);
-                          return;
-                        }
-                        alert("Failed to delete card");
-                      });
-                    };
-                  });
-
-                  props.setShowConfirmModal(true);
-                }}
+                onClick={() => onDelete()}
               >
                 <FiTrash class="h-5 w-5" />
               </button>
