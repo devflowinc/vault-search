@@ -265,6 +265,7 @@ export const isCardCollectionDTO = (
 export interface CardCollectionBookmarkDTO {
   bookmarks: CardMetadataWithVotes[];
   collection: CardCollectionDTO;
+  total_pages: number;
 }
 
 export interface CreateCardDTO {
@@ -287,6 +288,6 @@ export interface CardCollectionBookmarksDTO {
   collection: CardCollectionDTO;
 }
 export interface CardCollectionBookmarksWithStatusDTO {
-  metadata: CardCollectionBookmarksDTO;
+  metadata: CardCollectionBookmarkDTO;
   status: number;
 }
