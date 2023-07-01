@@ -1,6 +1,7 @@
 import { Show, createSignal } from "solid-js";
 import type { CardMetadataWithVotes } from "../../utils/apiTypes";
 import { BiRegularChevronDown, BiRegularChevronUp } from "solid-icons/bi";
+import sanitizeHtml from "sanitize-html";
 
 const CardMetadataDisplay = (props: { card: CardMetadataWithVotes }) => {
   const [expanded, setExpanded] = createSignal(false);
@@ -44,13 +45,26 @@ const CardMetadataDisplay = (props: { card: CardMetadataWithVotes }) => {
             <span>{props.card.total_upvotes - props.card.total_downvotes}</span>
           </div>
           <div class="mb-1 h-1 w-full border-b border-neutral-300 dark:border-neutral-600" />
-          <p
-            classList={{
-              "line-clamp-4 gradient-mask-b-0": !expanded(),
-            }}
-          >
-            {props.card.content}
-          </p>
+          <Show when={props.card.card_html == null}>
+            <p
+              classList={{
+                "line-clamp-4 gradient-mask-b-0": !expanded(),
+              }}
+            >
+              {props.card.content.toString()}
+            </p>
+          </Show>
+          <Show when={props.card.card_html != null}>
+            <div
+              classList={{
+                "line-clamp-4 gradient-mask-b-0": !expanded(),
+              }}
+              // eslint-disable-next-line solid/no-innerhtml
+              innerHTML={sanitizeHtml(
+                props.card.card_html !== undefined ? props.card.card_html : "",
+              )}
+            />
+          </Show>
         </div>
       </div>
       <button
