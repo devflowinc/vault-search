@@ -36,7 +36,7 @@ export const CollectionUserPageView = (props: {
             <For each={collections()}>
               {(collection) => (
                 <button
-                  class="mt-1 flex w-fit items-center rounded-md bg-neutral-200 p-2 text-base dark:bg-neutral-700"
+                  class="mt-1 flex w-fit items-center rounded-md bg-neutral-200 p-2 text-base dark:bg-neutral-800"
                   onClick={(e) => {
                     e.preventDefault();
                     return (window.location.href = `/collection/${collection.id}`);
