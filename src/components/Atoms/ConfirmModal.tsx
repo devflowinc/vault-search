@@ -1,6 +1,7 @@
 import { Accessor, Setter, Show } from "solid-js";
 import { FullScreenModal } from "./FullScreenModal";
-import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
+import { BiRegularXCircle } from "solid-icons/bi";
+import { FiTrash } from "solid-icons/fi";
 
 interface ConfirmModalProps {
   showConfirmModal: Accessor<boolean>;
@@ -29,7 +30,7 @@ export const ConfirmModal = (props: ConfirmModalProps) => {
               }}
             >
               Delete
-              <BiRegularLogIn class="h-6 w-6 fill-current" />
+              <FiTrash class="h-5 w-5" />
             </button>
             <button
               class="flex space-x-2 rounded-md bg-neutral-500 p-2 text-white"
