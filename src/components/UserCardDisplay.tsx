@@ -9,21 +9,10 @@ import { CollectionUserPageView } from "./CollectionUserPageView";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
 
-const [user, setUser] = createSignal<UserDTOWithVotesAndCards>();
-
-export const UserCardAmountDisplay = () => {
-  return (
-    <div class="flex w-full justify-start">
-      <Show when={user() != null}>
-        {user()?.total_cards_created.toLocaleString()}
-      </Show>
-    </div>
-  );
-};
-
 export const UserCardDisplay = (props: { id: string; page: number }) => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
 
+  const [user, setUser] = createSignal<UserDTOWithVotesAndCards>();
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);
   const [cardCollections, setCardCollections] = createSignal<
     CardCollectionDTO[]
@@ -85,7 +74,11 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
             </>
           )}
           <div class="font-semibold">Cards Created:</div>
-          <UserCardAmountDisplay />
+          <div class="flex w-full justify-start">
+            <Show when={user() != null}>
+              {user()?.total_cards_created.toLocaleString()}
+            </Show>
+          </div>
           <div class="font-semibold">Cumulative Rating:</div>
           <div class="flex w-full justify-start">
             {(
@@ -115,6 +108,7 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
                 <div class="w-full">
                   <CardMetadataDisplay
                     signedInUserId={user()?.id}
+                    viewingUserId={props.id}
                     card={card}
                     setShowModal={setShowNeedLoginModal}
                     cardCollections={cardCollections()}

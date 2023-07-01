@@ -64,17 +64,19 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
     <Popover defaultOpen={false} class="relative">
       {({ isOpen, setState }) => (
         <div>
-          <PopoverButton
-            onClick={() => {
-              if (notLoggedIn()) {
-                props.setLoginModal(true);
-                return;
-              }
-              fetchCollections();
-            }}
-          >
-            <RiSystemAddFill class="z-0 h-5 w-5 fill-current" />
-          </PopoverButton>
+          <div class="flex items-center">
+            <PopoverButton
+              onClick={() => {
+                if (notLoggedIn()) {
+                  props.setLoginModal(true);
+                  return;
+                }
+                fetchCollections();
+              }}
+            >
+              <RiSystemAddFill class="z-0 h-5 w-5 fill-current" />
+            </PopoverButton>
+          </div>
           <Show when={isOpen() || usingPanel()}>
             <PopoverPanel
               unmount={false}

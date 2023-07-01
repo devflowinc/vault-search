@@ -3,7 +3,6 @@ export interface CardMetadata {
   content: string;
   card_html?: string;
   link: string | null;
-  author_id: string;
   qdrant_point_id: string;
   created_at: string;
   updated_at: string;
