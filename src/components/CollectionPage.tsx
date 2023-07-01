@@ -12,16 +12,15 @@ import { FullScreenModal } from "./Atoms/FullScreenModal";
 import { BiRegularLogInCircle, BiRegularXCircle } from "solid-icons/bi";
 import { FiEdit, FiLock } from "solid-icons/fi";
 import { ConfirmModal } from "./Atoms/ConfirmModal";
+import { PaginationController } from "./Atoms/PaginationController";
 
 export interface CollectionPageProps {
-  collectionID: string | undefined;
+  collectionID: string;
   defaultCollectionCards: {
-    metadata: {
-      bookmarks: CardMetadataWithVotes[];
-      collection: CardCollectionDTO;
-    };
+    metadata: CardCollectionBookmarkDTO;
     status: number;
   };
+  page: number;
 }
 
 export const CollectionPage = (props: CollectionPageProps) => {
@@ -53,6 +52,9 @@ export const CollectionPage = (props: CollectionPageProps) => {
   const [fetchingCollections, setFetchingCollections] = createSignal(false);
   const [editing, setEditing] = createSignal(false);
   const [user, setUser] = createSignal<UserDTO | undefined>();
+  const [totalPages, setTotalPages] = createSignal(
+    props.defaultCollectionCards.metadata.total_pages,
+  );
 
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
     createSignal(false);
@@ -90,10 +92,13 @@ export const CollectionPage = (props: CollectionPageProps) => {
 
   createEffect(() => {
     setFetching(true);
-    void fetch(`${apiHost}/card_collection/${props.collectionID ?? ""}`, {
-      method: "GET",
-      credentials: "include",
-    }).then((response) => {
+    void fetch(
+      `${apiHost}/card_collection/${props.collectionID}/${props.page}`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    ).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
           //take the data and convert it to ScoreCardDTO
@@ -105,6 +110,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
             },
           );
           setCollectionInfo(collectionBookmarks.collection);
+          setTotalPages(collectionBookmarks.total_pages);
           setConvertedCard(ScoreDTOCards);
           setError("");
           setFetching(false);
@@ -269,6 +275,14 @@ export const CollectionPage = (props: CollectionPageProps) => {
                 </div>
               )}
             </For>
+            <div class="mx-auto my-12 flex items-center justify-center space-x-2">
+              <PaginationController
+                prefix="?"
+                query={`/collection/${props.collectionID}`}
+                page={props.page}
+                totalPages={totalPages()}
+              />
+            </div>
           </Show>
           <Show when={error().length > 0 && !fetching()}>
             <div class="flex w-full flex-col items-center rounded-md p-2">
