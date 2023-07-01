@@ -3,7 +3,12 @@ import type { CardMetadataWithVotes } from "../../utils/apiTypes";
 import { BiRegularChevronDown, BiRegularChevronUp } from "solid-icons/bi";
 import sanitizeHtml from "sanitize-html";
 
-const CardMetadataDisplay = (props: { card: CardMetadataWithVotes }) => {
+export interface CardMetadataDisplayProps {
+  signedInUserId?: string;
+  card: CardMetadataWithVotes;
+}
+
+const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
   const [expanded, setExpanded] = createSignal(false);
 
   return (

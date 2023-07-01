@@ -1,8 +1,10 @@
 import { Show, createEffect, createSignal } from "solid-js";
-import type {
-  CardCollectionDTO,
-  CardMetadataWithVotes,
-  ScoreCardDTO,
+import {
+  isUserDTO,
+  type CardCollectionDTO,
+  type CardMetadataWithVotes,
+  type ScoreCardDTO,
+  type UserDTO,
 } from "../../utils/apiTypes";
 import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
@@ -19,6 +21,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
     metadata: props.defaultResultCards.metadata,
     score: 0,
   };
+
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);
   const [convertedCard, setConvertedCard] =
     createSignal<ScoreCardDTO>(ScoreDTOCard);
@@ -33,6 +36,23 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
   const [cardCollections, setCardCollections] = createSignal<
     CardCollectionDTO[]
   >([]);
+  const [user, setUser] = createSignal<UserDTO | undefined>();
+
+  // Fetch the user info for the auth'ed user
+  createEffect(() => {
+    void fetch(`${apiHost}/auth`, {
+      method: "GET",
+      credentials: "include",
+    }).then((response) => {
+      if (response.ok) {
+        void response.json().then((data) => {
+          isUserDTO(data) ? setUser(data) : setUser(undefined);
+        });
+      }
+    });
+  });
+
+  // Fetch the card collections for the auth'ed user
   const fetchCardCollections = () => {
     void fetch(`${apiHost}/card_collection`, {
       method: "GET",
@@ -82,6 +102,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
           </Show>
           <Show when={error().length == 0 && !fetching()}>
             <ScoreCard
+              signedInUserId={user()?.id}
               card={convertedCard()}
               setShowModal={setShowNeedLoginModal}
               cardCollections={cardCollections()}

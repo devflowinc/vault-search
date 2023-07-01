@@ -153,6 +153,7 @@ export const getReferralTokenArray = (): string[] => {
   return [];
 };
 
+// Called SlimUser in the backend - ai-editor
 export interface UserDTO {
   id: string;
   email: string | null;

@@ -15,6 +15,7 @@ export const UserCardAmountDisplay = () => {
     </div>
   );
 };
+
 export const UserCardDisplay = (props: { id: string; page: number }) => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
 
@@ -83,7 +84,7 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
           <For each={user()?.cards}>
             {(card) => (
               <div class="w-full">
-                <CardMetadataDisplay card={card} />
+                <CardMetadataDisplay card={card} signedInUserId={user()?.id} />
               </div>
             )}
           </For>
