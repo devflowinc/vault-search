@@ -1,19 +1,27 @@
-import { Show, createSignal } from "solid-js";
-import type { CardMetadataWithVotes } from "../../utils/apiTypes";
+import { Setter, Show, createSignal } from "solid-js";
+import type {
+  CardCollectionDTO,
+  CardMetadataWithVotes,
+} from "../../utils/apiTypes";
 import { BiRegularChevronDown, BiRegularChevronUp } from "solid-icons/bi";
 import sanitizeHtml from "sanitize-html";
+import { VsFileSymlinkFile } from "solid-icons/vs";
+import BookmarkPopover from "./BookmarkPopover";
 
 export interface CardMetadataDisplayProps {
   signedInUserId?: string;
   card: CardMetadataWithVotes;
+  cardCollections: CardCollectionDTO[];
+  setShowModal: Setter<boolean>;
+  fetchCardCollections: () => void;
 }
 
 const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
   const [expanded, setExpanded] = createSignal(false);
 
   return (
-    <div class="flex w-full flex-col items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-700">
-      <div class="flex w-full items-start">
+    <div class="flex w-full flex-col items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800">
+      <div class="flex w-full items-start space-x-2">
         <div class="flex w-full flex-col">
           <Show when={props.card.link}>
             <a
@@ -45,33 +53,44 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
             <span class="font-semibold">Created: </span>
             <span>{new Date(props.card.created_at).toLocaleDateString()}</span>
           </div>
-          <div class="grid w-fit auto-cols-min grid-cols-[1fr,3fr] gap-x-2 text-neutral-800 dark:text-neutral-200">
+          <div class="flex w-fit gap-x-2 text-neutral-800 dark:text-neutral-200">
             <span class="font-semibold">Cumulative Score: </span>
             <span>{props.card.total_upvotes - props.card.total_downvotes}</span>
           </div>
-          <div class="mb-1 h-1 w-full border-b border-neutral-300 dark:border-neutral-600" />
-          <Show when={props.card.card_html == null}>
-            <p
-              classList={{
-                "line-clamp-4 gradient-mask-b-0": !expanded(),
-              }}
-            >
-              {props.card.content.toString()}
-            </p>
-          </Show>
-          <Show when={props.card.card_html != null}>
-            <div
-              classList={{
-                "line-clamp-4 gradient-mask-b-0": !expanded(),
-              }}
-              // eslint-disable-next-line solid/no-innerhtml
-              innerHTML={sanitizeHtml(
-                props.card.card_html !== undefined ? props.card.card_html : "",
-              )}
-            />
-          </Show>
+        </div>
+        <div class="flex gap-x-1">
+          <a href={`/card/${props.card.id}`}>
+            <VsFileSymlinkFile class="cursor-pointe h-5 w-5 fill-current" />
+          </a>
+          <BookmarkPopover
+            cardCollections={props.cardCollections}
+            cardMetadata={props.card}
+            fetchCardCollections={props.fetchCardCollections}
+            setLoginModal={props.setShowModal}
+          />
         </div>
       </div>
+      <div class="mb-1 h-1 w-full border-b border-neutral-300 dark:border-neutral-600" />
+      <Show when={props.card.card_html == null}>
+        <p
+          classList={{
+            "line-clamp-4 gradient-mask-b-0": !expanded(),
+          }}
+        >
+          {props.card.content.toString()}
+        </p>
+      </Show>
+      <Show when={props.card.card_html != null}>
+        <div
+          classList={{
+            "line-clamp-4 gradient-mask-b-0": !expanded(),
+          }}
+          // eslint-disable-next-line solid/no-innerhtml
+          innerHTML={sanitizeHtml(
+            props.card.card_html !== undefined ? props.card.card_html : "",
+          )}
+        />
+      </Show>
       <button
         class="ml-2 font-semibold"
         onClick={() => setExpanded((prev) => !prev)}

@@ -10,12 +10,12 @@ import { RiSystemAddFill } from "solid-icons/ri";
 import type {
   CardBookmarksDTO,
   CardCollectionDTO,
-  ScoreCardDTO,
+  CardMetadata,
 } from "../../utils/apiTypes";
 import InputRowsForm from "./Atoms/InputRowsForm";
 
 export interface BookmarkPopoverProps {
-  card: ScoreCardDTO;
+  cardMetadata: CardMetadata;
   cardCollections: CardCollectionDTO[];
   fetchCardCollections: () => void;
   setLoginModal: Setter<boolean>;
@@ -34,13 +34,10 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
   const [usingPanel, setUsingPanel] = createSignal(false);
 
   const fetchCollections = () => {
-    void fetch(
-      `${apiHost}/card_collection/bookmark/${props.card.metadata.id}`,
-      {
-        method: "GET",
-        credentials: "include",
-      },
-    ).then((response) => {
+    void fetch(`${apiHost}/card_collection/bookmark/${props.cardMetadata.id}`, {
+      method: "GET",
+      credentials: "include",
+    }).then((response) => {
       if (response.ok) {
         void response.json().then((collection) => {
           setCardCollections(collection as CardBookmarksDTO[]);
@@ -91,7 +88,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                   Manage Collections For This Card
                 </div>
                 <MenuItem as="button" aria-label="Empty" />
-                <div class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md max-w-screen max-h-[20vh] transform justify-end space-y-2 overflow-y-auto rounded px-4 scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600">
+                <div class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md max-w-screen mx-1 max-h-[20vh] transform justify-end space-y-2 overflow-y-auto rounded px-4 scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600">
                   <For each={props.cardCollections}>
                     {(collection, idx) => {
                       return (
@@ -119,7 +116,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                                     },
                                     credentials: "include",
                                     body: JSON.stringify({
-                                      card_metadata_id: props.card.metadata.id,
+                                      card_metadata_id: props.cardMetadata.id,
                                     }),
                                   },
                                 ).then((response) => {

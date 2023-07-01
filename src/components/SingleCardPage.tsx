@@ -27,30 +27,17 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
     createSignal<ScoreCardDTO>(ScoreDTOCard);
   const [error, setError] = createSignal("");
   const [fetching, setFetching] = createSignal(true);
+  const [cardCollections, setCardCollections] = createSignal<
+    CardCollectionDTO[]
+  >([]);
+  const [user, setUser] = createSignal<UserDTO | undefined>();
+
   if (props.defaultResultCards.status == 401) {
     setError("You are not authorized to view this card.");
   }
   if (props.defaultResultCards.status == 404) {
     setError("This card could not be found.");
   }
-  const [cardCollections, setCardCollections] = createSignal<
-    CardCollectionDTO[]
-  >([]);
-  const [user, setUser] = createSignal<UserDTO | undefined>();
-
-  // Fetch the user info for the auth'ed user
-  createEffect(() => {
-    void fetch(`${apiHost}/auth`, {
-      method: "GET",
-      credentials: "include",
-    }).then((response) => {
-      if (response.ok) {
-        void response.json().then((data) => {
-          isUserDTO(data) ? setUser(data) : setUser(undefined);
-        });
-      }
-    });
-  });
 
   // Fetch the card collections for the auth'ed user
   const fetchCardCollections = () => {
@@ -65,6 +52,24 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
       }
     });
   };
+
+  createEffect(() => {
+    fetchCardCollections();
+  });
+
+  // Fetch the user info for the auth'ed user
+  createEffect(() => {
+    void fetch(`${apiHost}/auth`, {
+      method: "GET",
+      credentials: "include",
+    }).then((response) => {
+      if (response.ok) {
+        void response.json().then((data) => {
+          isUserDTO(data) ? setUser(data) : setUser(undefined);
+        });
+      }
+    });
+  });
 
   createEffect(() => {
     setFetching(true);
@@ -88,6 +93,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
       }
     });
   });
+
   return (
     <>
       <div class="mt-12 flex w-full flex-col items-center space-y-4">
