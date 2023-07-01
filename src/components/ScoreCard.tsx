@@ -12,6 +12,7 @@ import { VsFileSymlinkFile } from "solid-icons/vs";
 import sanitizeHtml from "sanitize-html";
 
 export interface ScoreCardProps {
+  signedInUserId?: string;
   cardCollections: CardCollectionDTO[];
   collection?: boolean;
   card: ScoreCardDTO;

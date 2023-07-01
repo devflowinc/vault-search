@@ -1,8 +1,10 @@
 import { Show, createEffect, createSignal, For } from "solid-js";
-import type {
-  CardCollectionDTO,
-  CardsWithTotalPagesDTO,
-  ScoreCardDTO,
+import {
+  isUserDTO,
+  type CardCollectionDTO,
+  type CardsWithTotalPagesDTO,
+  type ScoreCardDTO,
+  type UserDTO,
 } from "../../utils/apiTypes";
 import ScoreCard from "./ScoreCard";
 import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
@@ -33,11 +35,13 @@ const ResultsPage = (props: ResultsPageProps) => {
   const [cardCollections, setCardCollections] = createSignal<
     CardCollectionDTO[]
   >([]);
+  const [user, setUser] = createSignal<UserDTO | undefined>();
 
   const [resultCards, setResultCards] =
     createSignal<ScoreCardDTO[]>(initialResultCards);
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);
 
+  // Fetch the card collections for the auth'ed user
   const fetchCardCollections = () => {
     void fetch(`${apiHost}/card_collection`, {
       method: "GET",
@@ -50,6 +54,20 @@ const ResultsPage = (props: ResultsPageProps) => {
       }
     });
   };
+
+  // Fetch the user info for the auth'ed user
+  createEffect(() => {
+    void fetch(`${apiHost}/auth`, {
+      method: "GET",
+      credentials: "include",
+    }).then((response) => {
+      if (response.ok) {
+        void response.json().then((data) => {
+          isUserDTO(data) ? setUser(data) : setUser(undefined);
+        });
+      }
+    });
+  });
 
   createEffect(() => {
     const abortController = new AbortController();
@@ -101,6 +119,7 @@ const ResultsPage = (props: ResultsPageProps) => {
             {(card) => (
               <div>
                 <ScoreCard
+                  signedInUserId={user()?.id}
                   cardCollections={cardCollections()}
                   card={card}
                   setShowModal={setShowNeedLoginModal}

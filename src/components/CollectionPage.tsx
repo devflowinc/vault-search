@@ -1,8 +1,10 @@
 import { Show, createEffect, createSignal, For } from "solid-js";
-import type {
-  CardCollectionDTO,
-  CardMetadataWithVotes,
-  ScoreCardDTO,
+import {
+  isUserDTO,
+  type CardCollectionDTO,
+  type CardMetadataWithVotes,
+  type ScoreCardDTO,
+  type UserDTO,
 } from "../../utils/apiTypes";
 import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
@@ -19,6 +21,7 @@ export interface CollectionPageProps {
     status: number;
   };
 }
+
 export const CollectionPage = (props: CollectionPageProps) => {
   const apiHost: string = import.meta.env.PUBLIC_API_HOST as string;
   const ScoreDTOCards: ScoreCardDTO[] = [];
@@ -47,6 +50,21 @@ export const CollectionPage = (props: CollectionPageProps) => {
   const [fetching, setFetching] = createSignal(true);
   const [fetchingCollections, setFetchingCollections] = createSignal(false);
   const [editing, setEditing] = createSignal(false);
+  const [user, setUser] = createSignal<UserDTO | undefined>();
+
+  // Fetch the user info for the auth'ed user
+  createEffect(() => {
+    void fetch(`${apiHost}/auth`, {
+      method: "GET",
+      credentials: "include",
+    }).then((response) => {
+      if (response.ok) {
+        void response.json().then((data) => {
+          isUserDTO(data) ? setUser(data) : setUser(undefined);
+        });
+      }
+    });
+  });
 
   // Fetch the card collections for the auth'ed user
   const fetchCardCollections = () => {
@@ -230,6 +248,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
               {(card) => (
                 <div class="mt-4">
                   <ScoreCard
+                    signedInUserId={user()?.id}
                     card={card}
                     collection={true}
                     setShowModal={setShowNeedLoginModal}
