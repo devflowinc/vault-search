@@ -22,18 +22,24 @@ let collectionCards: {
 };
 
 try {
-  const collectionCard = await fetch(
+  const collectionCardResponse = await fetch(
     `${apiHost}/card_collection/${collectionID ?? ""}`,
     {
       method: "GET",
     },
   );
+  if (!collectionCardResponse.ok) {
+    throw new Error(
+      `Failed to fetch collection cards: ${collectionCardResponse.status} ${collectionCardResponse.statusText}`,
+    );
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const collectionCardJson = await collectionCard.json();
+  const collectionCardJson = await collectionCardResponse.json();
   collectionCards = {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     metadata: collectionCardJson,
-    status: collectionCard.status,
+    status: collectionCardResponse.status,
   };
 } catch (e) {
   console.error(e);

@@ -76,10 +76,7 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
         <CollectionUserPageView user={user()} />
       </div>
       <div class="mb-4 mt-4 flex flex-col border-t border-neutral-500 pt-4 text-xl">
-        <span>Cards Created by</span>{" "}
-        <span class="break-all font-bold">
-          {user()?.username ?? user()?.email}
-        </span>
+        <span>Cards:</span>
       </div>
       <div class="flex w-full flex-col space-y-4">
         <div class="flex w-full flex-col space-y-4">
