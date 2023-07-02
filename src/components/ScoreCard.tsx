@@ -96,11 +96,12 @@ const ScoreCard = (props: ScoreCardProps) => {
   const deleteCard = () => {
     if (props.signedInUserId !== props.card.metadata.author?.id) return;
 
+    const curCardMetadataId = props.card.metadata.id;
+
     props.setOnDelete(() => {
-      // eslint-disable-next-line solid/reactivity
       return () => {
         setDeleting(true);
-        void fetch(`${api_host}/card/${props.card.metadata.id}`, {
+        void fetch(`${api_host}/card/${curCardMetadataId}`, {
           method: "DELETE",
           credentials: "include",
         }).then((response) => {

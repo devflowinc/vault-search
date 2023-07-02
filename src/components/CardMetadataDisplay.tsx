@@ -29,12 +29,12 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
 
   const onDelete = () => {
     if (props.signedInUserId !== props.viewingUserId) return;
+    const curCardId = props.card.id;
 
     props.setOnDelete(() => {
-      // eslint-disable-next-line solid/reactivity
       return () => {
         setDeleting(true);
-        void fetch(`${api_host}/card/${props.card.id}`, {
+        void fetch(`${api_host}/card/${curCardId}`, {
           method: "DELETE",
           credentials: "include",
         }).then((response) => {
