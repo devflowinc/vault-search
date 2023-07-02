@@ -8,15 +8,20 @@ import { PaginationController } from "./Atoms/PaginationController";
 import { CollectionUserPageView } from "./CollectionUserPageView";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
+import { ConfirmModal } from "./Atoms/ConfirmModal";
 
 export const UserCardDisplay = (props: { id: string; page: number }) => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
 
   const [user, setUser] = createSignal<UserDTOWithVotesAndCards>();
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);
+  const [showConfirmModal, setShowConfirmModal] = createSignal(false);
   const [cardCollections, setCardCollections] = createSignal<
     CardCollectionDTO[]
   >([]);
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const [onDelete, setOnDelete] = createSignal<() => void>(() => {});
 
   // Fetch the card collections for the auth'ed user
   const fetchCardCollections = () => {
@@ -107,12 +112,14 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
               {(card) => (
                 <div class="w-full">
                   <CardMetadataDisplay
+                    setShowConfirmModal={setShowConfirmModal}
                     signedInUserId={user()?.id}
                     viewingUserId={props.id}
                     card={card}
                     setShowModal={setShowNeedLoginModal}
                     cardCollections={cardCollections()}
                     fetchCardCollections={fetchCardCollections}
+                    setOnDelete={setOnDelete}
                   />
                 </div>
               )}
@@ -150,6 +157,11 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
           </div>
         </FullScreenModal>
       </Show>
+      <ConfirmModal
+        showConfirmModal={showConfirmModal}
+        setShowConfirmModal={setShowConfirmModal}
+        onConfirm={onDelete}
+      />
     </>
   );
 };

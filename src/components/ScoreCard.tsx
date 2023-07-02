@@ -19,6 +19,8 @@ export interface ScoreCardProps {
   card: ScoreCardDTO;
   setShowModal: Setter<boolean>;
   fetchCardCollections: () => void;
+  setOnDelete: Setter<() => void>;
+  setShowConfirmModal: Setter<boolean>;
 }
 
 const ScoreCard = (props: ScoreCardProps) => {
@@ -92,27 +94,28 @@ const ScoreCard = (props: ScoreCardProps) => {
   };
 
   const deleteCard = () => {
-    console.log(
-      "delete card",
-      props.signedInUserId == props.card.metadata.author?.id,
-    );
     if (props.signedInUserId !== props.card.metadata.author?.id) return;
 
-    if (!confirm("Are you sure you want to delete this card?")) return;
+    const curCardMetadataId = props.card.metadata.id;
 
-    setDeleting(true);
-
-    void fetch(`${api_host}/card/${props.card.metadata.id}`, {
-      method: "DELETE",
-      credentials: "include",
-    }).then((response) => {
-      setDeleting(false);
-      if (response.ok) {
-        setDeleted(true);
-        return;
-      }
-      alert("Failed to delete card");
+    props.setOnDelete(() => {
+      return () => {
+        setDeleting(true);
+        void fetch(`${api_host}/card/${curCardMetadataId}`, {
+          method: "DELETE",
+          credentials: "include",
+        }).then((response) => {
+          setDeleting(false);
+          if (response.ok) {
+            setDeleted(true);
+            return;
+          }
+          alert("Failed to delete card");
+        });
+      };
     });
+
+    props.setShowConfirmModal(true);
   };
 
   return (
@@ -220,12 +223,13 @@ const ScoreCard = (props: ScoreCardProps) => {
                   "h-fit text-red-700 dark:text-red-400": true,
                   "animate-pulse": deleting(),
                 }}
+                title="Delete"
                 onClick={() => deleteCard()}
               >
                 <FiTrash class="h-5 w-5" />
               </button>
             </Show>
-            <a href={`/card/${props.card.metadata.id}`}>
+            <a title="Open" href={`/card/${props.card.metadata.id}`}>
               <VsFileSymlinkFile class="h-5 w-5 fill-current" />
             </a>
             <BookmarkPopover

@@ -11,6 +11,7 @@ import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import { BiRegularLogInCircle, BiRegularXCircle } from "solid-icons/bi";
 import { FiEdit, FiLock } from "solid-icons/fi";
+import { ConfirmModal } from "./Atoms/ConfirmModal";
 
 export interface CollectionPageProps {
   collectionID: string | undefined;
@@ -52,6 +53,12 @@ export const CollectionPage = (props: CollectionPageProps) => {
   const [fetchingCollections, setFetchingCollections] = createSignal(false);
   const [editing, setEditing] = createSignal(false);
   const [user, setUser] = createSignal<UserDTO | undefined>();
+
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
+    createSignal(false);
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const [onDelete, setOnDelete] = createSignal(() => {});
 
   // Fetch the user info for the auth'ed user
   createEffect(() => {
@@ -256,6 +263,8 @@ export const CollectionPage = (props: CollectionPageProps) => {
                     setShowModal={setShowNeedLoginModal}
                     cardCollections={cardCollections()}
                     fetchCardCollections={fetchCardCollections}
+                    setOnDelete={setOnDelete}
+                    setShowConfirmModal={setShowConfirmDeleteModal}
                   />
                 </div>
               )}
@@ -302,6 +311,11 @@ export const CollectionPage = (props: CollectionPageProps) => {
           </div>
         </FullScreenModal>
       </Show>
+      <ConfirmModal
+        showConfirmModal={showConfirmDeleteModal}
+        setShowConfirmModal={setShowConfirmDeleteModal}
+        onConfirm={onDelete}
+      />
     </>
   );
 };
