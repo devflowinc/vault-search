@@ -12,6 +12,14 @@ import { VsFileSymlinkFile } from "solid-icons/vs";
 import sanitizeHtml from "sanitize-html";
 import { FiLock, FiTrash } from "solid-icons/fi";
 
+export const sanitzerOptions = {
+  allowedTags: [...sanitizeHtml.defaults.allowedTags, "font"],
+  allowedAttributes: {
+    ...sanitizeHtml.defaults.allowedAttributes,
+    "*": ["style"],
+  },
+};
+
 export interface ScoreCardProps {
   signedInUserId?: string;
   cardCollections: CardCollectionDTO[];
@@ -260,6 +268,7 @@ const ScoreCard = (props: ScoreCardProps) => {
               props.card.metadata.card_html !== undefined
                 ? props.card.metadata.card_html
                 : "",
+              sanitzerOptions,
             )}
           />
         </Show>
