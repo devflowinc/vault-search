@@ -8,6 +8,7 @@ import sanitizeHtml from "sanitize-html";
 import { VsFileSymlinkFile } from "solid-icons/vs";
 import BookmarkPopover from "./BookmarkPopover";
 import { FiLock, FiTrash } from "solid-icons/fi";
+import { sanitzerOptions } from "./ScoreCard";
 
 export interface CardMetadataDisplayProps {
   signedInUserId?: string;
@@ -140,6 +141,7 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
             // eslint-disable-next-line solid/no-innerhtml
             innerHTML={sanitizeHtml(
               props.card.card_html !== undefined ? props.card.card_html : "",
+              sanitzerOptions,
             )}
           />
         </Show>
