@@ -6,11 +6,11 @@ import {
   type ScoreCardDTO,
   type UserDTO,
 } from "../../utils/apiTypes";
-import ScoreCard from "./ScoreCard";
 import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import { PaginationController } from "./Atoms/PaginationController";
 import { ConfirmModal } from "./Atoms/ConfirmModal";
+import { ScoreCardArray } from "./ScoreCardArray";
 
 export interface Filters {
   dataTypes: string[];
@@ -125,10 +125,11 @@ const ResultsPage = (props: ResultsPageProps) => {
           <For each={resultCards()}>
             {(card) => (
               <div>
-                <ScoreCard
+                <ScoreCardArray
                   signedInUserId={user()?.id}
                   cardCollections={cardCollections()}
-                  card={card}
+                  cards={card.metadata}
+                  score={card.score}
                   setShowModal={setShowNeedLoginModal}
                   fetchCardCollections={fetchCardCollections}
                   setOnDelete={setOnDelete}

@@ -41,7 +41,7 @@ export type CardMetadataWithVotes = Exclude<CardMetadata, "author"> & {
   private: boolean | null;
 };
 
-const isCardMetadataWithVotes = (
+export const isCardMetadataWithVotes = (
   card: unknown,
 ): card is CardMetadataWithVotes => {
   if (typeof card !== "object" || card === null) return false;
@@ -90,7 +90,7 @@ export interface CardsWithTotalPagesDTO {
 }
 
 export interface ScoreCardDTO {
-  metadata: CardMetadataWithVotes;
+  metadata: [CardMetadataWithVotes];
   score: number;
 }
 
@@ -99,7 +99,10 @@ export const isScoreCardDTO = (card: unknown): card is ScoreCardDTO => {
 
   return (
     indirectHasOwnProperty(card, "metadata") &&
-    isCardMetadataWithVotes((card as ScoreCardDTO).metadata) &&
+    Array.isArray((card as ScoreCardDTO).metadata) &&
+    (card as ScoreCardDTO).metadata.every((val) =>
+      isCardMetadataWithVotes(val),
+    ) &&
     indirectHasOwnProperty(card, "score") &&
     typeof (card as ScoreCardDTO).score === "number"
   );
