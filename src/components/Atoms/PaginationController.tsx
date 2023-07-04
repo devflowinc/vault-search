@@ -1,7 +1,7 @@
 import { BiRegularChevronLeft, BiRegularChevronRight } from "solid-icons/bi";
 import { Show } from "solid-js";
 
-const createArrayWithCenteredRange = (center: number, range: number) => {
+export const createArrayWithCenteredRange = (center: number, range: number) => {
   const array = [];
   const indicesBeforeCenter = Math.floor(range / 2);
 
