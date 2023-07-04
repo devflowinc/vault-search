@@ -3,8 +3,8 @@ import {
   isUserDTO,
   type CardCollectionDTO,
   type CardMetadataWithVotes,
-  type ScoreCardDTO,
   type UserDTO,
+  isCardMetadataWithVotes,
 } from "../../utils/apiTypes";
 import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
@@ -18,14 +18,11 @@ export interface SingleCardPageProps {
 }
 export const SingleCardPage = (props: SingleCardPageProps) => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
-  const ScoreDTOCard: ScoreCardDTO = {
-    metadata: props.defaultResultCards.metadata,
-    score: 0,
-  };
+  const initialCardMetadata = props.defaultResultCards.metadata;
 
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);
-  const [convertedCard, setConvertedCard] =
-    createSignal<ScoreCardDTO>(ScoreDTOCard);
+  const [cardMetadata, setCardMetadata] =
+    createSignal<CardMetadataWithVotes>(initialCardMetadata);
   const [error, setError] = createSignal("");
   const [fetching, setFetching] = createSignal(true);
   const [cardCollections, setCardCollections] = createSignal<
@@ -86,10 +83,13 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          setConvertedCard({
-            metadata: data as CardMetadataWithVotes,
-            score: 0,
-          });
+          if (!isCardMetadataWithVotes(data)) {
+            setError("This card could not be found.");
+            setFetching(false);
+            return;
+          }
+
+          setCardMetadata(data);
           setError("");
           setFetching(false);
         });
@@ -118,7 +118,8 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
           <Show when={error().length == 0 && !fetching()}>
             <ScoreCard
               signedInUserId={user()?.id}
-              card={convertedCard()}
+              card={cardMetadata()}
+              score={0}
               setShowModal={setShowNeedLoginModal}
               cardCollections={cardCollections()}
               fetchCardCollections={fetchCardCollections}

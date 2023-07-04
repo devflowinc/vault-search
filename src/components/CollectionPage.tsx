@@ -2,10 +2,9 @@ import { Show, createEffect, createSignal, For } from "solid-js";
 import {
   isUserDTO,
   type CardCollectionDTO,
-  type CardMetadataWithVotes,
-  type ScoreCardDTO,
   type UserDTO,
   type CardCollectionBookmarkDTO,
+  CardMetadataWithVotes,
 } from "../../utils/apiTypes";
 import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
@@ -25,22 +24,23 @@ export interface CollectionPageProps {
 
 export const CollectionPage = (props: CollectionPageProps) => {
   const apiHost: string = import.meta.env.PUBLIC_API_HOST as string;
-  const ScoreDTOCards: ScoreCardDTO[] = [];
+  const cardMetadatasWithVotes: CardMetadataWithVotes[] = [];
 
   // Sometimes this will error server-side if the collection is private so we have to handle it
   try {
     if (props.defaultCollectionCards.metadata.bookmarks.length > 0) {
-      props.defaultCollectionCards.metadata.bookmarks.forEach((card) => {
-        ScoreDTOCards.push({ metadata: card, score: 2 });
-      });
+      cardMetadatasWithVotes.push(
+        ...props.defaultCollectionCards.metadata.bookmarks,
+      );
     }
   } catch (e) {
     console.error(e);
   }
 
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);
-  const [convertedCard, setConvertedCard] =
-    createSignal<ScoreCardDTO[]>(ScoreDTOCards);
+  const [metadatasWithVotes, setMetadatasWithVotes] = createSignal<
+    CardMetadataWithVotes[]
+  >(cardMetadatasWithVotes);
   const [collectionInfo, setCollectionInfo] = createSignal<CardCollectionDTO>(
     props.defaultCollectionCards.metadata.collection,
   );
@@ -101,17 +101,10 @@ export const CollectionPage = (props: CollectionPageProps) => {
     ).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          //take the data and convert it to ScoreCardDTO
           const collectionBookmarks = data as CardCollectionBookmarkDTO;
-          const ScoreDTOCards: ScoreCardDTO[] = [];
-          collectionBookmarks.bookmarks.forEach(
-            (card: CardMetadataWithVotes) => {
-              ScoreDTOCards.push({ metadata: card, score: 2 });
-            },
-          );
           setCollectionInfo(collectionBookmarks.collection);
           setTotalPages(collectionBookmarks.total_pages);
-          setConvertedCard(ScoreDTOCards);
+          setMetadatasWithVotes(collectionBookmarks.bookmarks);
           setError("");
           setFetching(false);
         });
@@ -259,12 +252,13 @@ export const CollectionPage = (props: CollectionPageProps) => {
         </Show>
         <div class="flex w-full max-w-6xl flex-col space-y-4 border-t border-neutral-500 px-4 sm:px-8 md:px-20">
           <Show when={error().length == 0 && !fetching()}>
-            <For each={convertedCard()}>
+            <For each={metadatasWithVotes()}>
               {(card) => (
                 <div class="mt-4">
                   <ScoreCard
                     signedInUserId={user()?.id}
                     card={card}
+                    score={0}
                     collection={true}
                     setShowModal={setShowNeedLoginModal}
                     cardCollections={cardCollections()}
@@ -291,7 +285,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
           </Show>
           <Show
             when={
-              convertedCard().length == 0 &&
+              metadatasWithVotes().length == 0 &&
               props.defaultCollectionCards.metadata.collection.is_public
             }
           >

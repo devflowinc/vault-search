@@ -1,5 +1,8 @@
 import { Setter, Show, createEffect, createSignal } from "solid-js";
-import type { CardCollectionDTO, ScoreCardDTO } from "../../utils/apiTypes";
+import type {
+  CardCollectionDTO,
+  CardMetadataWithVotes,
+} from "../../utils/apiTypes";
 import { BiRegularChevronDown, BiRegularChevronUp } from "solid-icons/bi";
 import {
   RiArrowsArrowDownCircleFill,
@@ -24,7 +27,8 @@ export interface ScoreCardProps {
   signedInUserId?: string;
   cardCollections: CardCollectionDTO[];
   collection?: boolean;
-  card: ScoreCardDTO;
+  card: CardMetadataWithVotes;
+  score: number;
   setShowModal: Setter<boolean>;
   fetchCardCollections: () => void;
   setOnDelete: Setter<() => void>;
@@ -34,12 +38,11 @@ export interface ScoreCardProps {
 const ScoreCard = (props: ScoreCardProps) => {
   const api_host = import.meta.env.PUBLIC_API_HOST as string;
 
-  // eslint-disable-next-line solid/reactivity
-  const [expanded, setExpanded] = createSignal(props.card.score === 0);
+  const [expanded, setExpanded] = createSignal(false);
   const [userVote, setUserVote] = createSignal(0);
   const [totalVote, setTotalVote] = createSignal(
     // eslint-disable-next-line solid/reactivity
-    props.card.metadata.total_upvotes - props.card.metadata.total_downvotes,
+    props.card.total_upvotes - props.card.total_downvotes,
   );
   const [showPropsModal, setShowPropsModal] = createSignal(false);
   const [deleting, setDeleting] = createSignal(false);
@@ -53,20 +56,18 @@ const ScoreCard = (props: ScoreCardProps) => {
   });
 
   createEffect(() => {
-    if (props.card.metadata.vote_by_current_user === null) {
+    if (props.card.vote_by_current_user === null) {
       return;
     }
-    const userVote = props.card.metadata.vote_by_current_user ? 1 : -1;
+    const userVote = props.card.vote_by_current_user ? 1 : -1;
     setUserVote(userVote);
     const newTotalVote =
-      props.card.metadata.total_upvotes -
-      props.card.metadata.total_downvotes -
-      userVote;
+      props.card.total_upvotes - props.card.total_downvotes - userVote;
     setTotalVote(newTotalVote);
   });
 
   const deleteVote = (prev_vote: number) => {
-    void fetch(`${api_host}/vote/${props.card.metadata.id}`, {
+    void fetch(`${api_host}/vote/${props.card.id}`, {
       method: "DELETE",
       credentials: "include",
     }).then((response) => {
@@ -90,7 +91,7 @@ const ScoreCard = (props: ScoreCardProps) => {
       },
       credentials: "include",
       body: JSON.stringify({
-        card_metadata_id: props.card.metadata.id,
+        card_metadata_id: props.card.id,
         vote: new_vote === 1 ? true : false,
       }),
     }).then((response) => {
@@ -102,9 +103,9 @@ const ScoreCard = (props: ScoreCardProps) => {
   };
 
   const deleteCard = () => {
-    if (props.signedInUserId !== props.card.metadata.author?.id) return;
+    if (props.signedInUserId !== props.card.author?.id) return;
 
-    const curCardMetadataId = props.card.metadata.id;
+    const curCardMetadataId = props.card.id;
 
     props.setOnDelete(() => {
       return () => {
@@ -132,7 +133,7 @@ const ScoreCard = (props: ScoreCardProps) => {
         <div class="flex w-full">
           <div class="flex w-full items-start">
             <div class="flex flex-col items-center pr-2">
-              <Show when={!props.card.metadata.private}>
+              <Show when={!props.card.private}>
                 <button
                   onClick={(e) => {
                     e.preventDefault();
@@ -171,16 +172,16 @@ const ScoreCard = (props: ScoreCardProps) => {
               </Show>
             </div>
             <div class="flex w-full flex-col">
-              <Show when={props.card.metadata.link}>
+              <Show when={props.card.link}>
                 <a
                   class="line-clamp-1 w-fit break-all text-magenta-500 underline dark:text-turquoise-400"
                   target="_blank"
-                  href={props.card.metadata.link ?? ""}
+                  href={props.card.link ?? ""}
                 >
-                  {props.card.metadata.link}
+                  {props.card.link}
                 </a>
               </Show>
-              <Show when={props.card.metadata.oc_file_path}>
+              <Show when={props.card.oc_file_path}>
                 <div class="flex space-x-2">
                   <span class="font-semibold text-neutral-800 dark:text-neutral-200">
                     Brief:{" "}
@@ -189,43 +190,40 @@ const ScoreCard = (props: ScoreCardProps) => {
                     class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
                     target="_blank"
                     href={`https://oc.arguflow.com/${
-                      props.card.metadata.oc_file_path ?? ""
+                      props.card.oc_file_path ?? ""
                     }`}
                   >
-                    {props.card.metadata.oc_file_path?.split("/").pop() ??
-                      props.card.metadata.oc_file_path}
+                    {props.card.oc_file_path?.split("/").pop() ??
+                      props.card.oc_file_path}
                   </a>
                 </div>
               </Show>
               <div class="grid w-fit auto-cols-min grid-cols-[1fr,3fr] gap-x-2 text-neutral-800 dark:text-neutral-200">
-                <Show when={props.card.score != 0 && !props.collection}>
+                <Show when={props.score != 0 && !props.collection}>
                   <span class="font-semibold">Similarity: </span>
-                  <span>{props.card.score}</span>
+                  <span>{props.score}</span>
                 </Show>
-                <Show when={props.card.metadata.author}>
+                <Show when={props.card.author}>
                   <span class="font-semibold">Author: </span>
                   <a
-                    href={`/user/${props.card.metadata.author?.id ?? ""}`}
+                    href={`/user/${props.card.author?.id ?? ""}`}
                     class="line-clamp-1 break-all underline"
                   >
-                    {props.card.metadata.author?.username ??
-                      props.card.metadata.author?.email}
+                    {props.card.author?.username ?? props.card.author?.email}
                   </a>
                 </Show>
                 <span class="font-semibold">Created: </span>
                 <span>
-                  {new Date(
-                    props.card.metadata.created_at,
-                  ).toLocaleDateString()}
+                  {new Date(props.card.created_at).toLocaleDateString()}
                 </span>
               </div>
             </div>
           </div>
           <div class="flex h-fit items-center gap-x-1">
-            <Show when={props.card.metadata.private}>
+            <Show when={props.card.private}>
               <FiLock class="h-5 w-5 text-green-500" />
             </Show>
-            <Show when={props.signedInUserId == props.card.metadata.author?.id}>
+            <Show when={props.signedInUserId == props.card.author?.id}>
               <button
                 classList={{
                   "h-fit text-red-700 dark:text-red-400": true,
@@ -237,37 +235,35 @@ const ScoreCard = (props: ScoreCardProps) => {
                 <FiTrash class="h-5 w-5" />
               </button>
             </Show>
-            <a title="Open" href={`/card/${props.card.metadata.id}`}>
+            <a title="Open" href={`/card/${props.card.id}`}>
               <VsFileSymlinkFile class="h-5 w-5 fill-current" />
             </a>
             <BookmarkPopover
               cardCollections={props.cardCollections}
-              cardMetadata={props.card.metadata}
+              cardMetadata={props.card}
               fetchCardCollections={props.fetchCardCollections}
               setLoginModal={props.setShowModal}
             />
           </div>
         </div>
         <div class="mb-1 h-1 w-full border-b border-neutral-300 dark:border-neutral-600" />
-        <Show when={props.card.metadata.card_html == null}>
+        <Show when={props.card.card_html == null}>
           <p
             classList={{
               "line-clamp-4 gradient-mask-b-0": !expanded(),
             }}
           >
-            {props.card.metadata.content.toString()}
+            {props.card.content.toString()}
           </p>
         </Show>
-        <Show when={props.card.metadata.card_html != null}>
+        <Show when={props.card.card_html != null}>
           <div
             classList={{
               "line-clamp-4 gradient-mask-b-0": !expanded(),
             }}
             // eslint-disable-next-line solid/no-innerhtml
             innerHTML={sanitizeHtml(
-              props.card.metadata.card_html !== undefined
-                ? props.card.metadata.card_html
-                : "",
+              props.card.card_html !== undefined ? props.card.card_html : "",
               sanitzerOptions,
             )}
           />
