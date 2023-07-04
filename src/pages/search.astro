@@ -36,6 +36,12 @@ try {
     },
   );
 
+  if (!initialScoreCardsResult.ok) {
+    throw new Error(
+      `Failed to fetch initial score cards: ${initialScoreCardsResult.status}`,
+    );
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const initialScoreCardsJson = await initialScoreCardsResult.json();
   initialScoreCards = initialScoreCardsJson as CardsWithTotalPagesDTO;
