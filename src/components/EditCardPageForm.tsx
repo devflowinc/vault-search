@@ -1,5 +1,8 @@
 import { JSX, Show, createEffect, createSignal } from "solid-js";
-import { isCardMetadataWithVotes } from "../../utils/apiTypes";
+import {
+  isActixCardUpdateError,
+  isCardMetadataWithVotes,
+} from "../../utils/apiTypes";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
 import type { SingleCardPageProps } from "./SingleCardPage";
@@ -32,9 +35,83 @@ export const EditCardPageForm = (props: SingleCardPageProps) => {
     setTopLevelError("This card could not be found.");
   }
 
+  const updateEvidence = () => {
+    const cardHTMLContentValue =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+      (window as any).tinymce.activeEditor.getContent() as unknown as string;
+    const evidenceLinkValue = evidenceLink();
+    const curCardId = props.cardId;
+
+    if (!cardHTMLContentValue || !evidenceLinkValue) {
+      const errors: string[] = [];
+      if (!cardHTMLContentValue) {
+        errors.push("cardContent");
+      }
+      if (!evidenceLinkValue) {
+        errors.push("evidenceLink");
+      }
+      setFormErrorFields(errors);
+      return;
+    }
+
+    setFormErrorFields([]);
+    setIsUpdating(true);
+
+    void fetch(`${apiHost}/card/update`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        card_uuid: curCardId,
+        link: evidenceLinkValue,
+        card_html: cardHTMLContentValue,
+        private: _private(),
+      }),
+    }).then((response) => {
+      if (response.status === 401) {
+        setShowNeedLoginModal(true);
+        setIsUpdating(false);
+        return;
+      }
+      if (response.status === 403) {
+        setFormErrorText("You are not authorized to edit this card.");
+        setIsUpdating(false);
+        return;
+      }
+
+      void response.json().then((data) => {
+        const cardReturnData = data as unknown;
+        if (!response.ok) {
+          setIsUpdating(false);
+          if (isActixCardUpdateError(cardReturnData)) {
+            setFormErrorText(
+              <div class="flex flex-col text-red-500">
+                <span>{cardReturnData.message}</span>
+                <span class="whitespace-pre-line">
+                  {cardReturnData.changed_content}
+                </span>
+              </div>,
+            );
+            return;
+          }
+        }
+
+        window.location.href = `/card/${curCardId ?? ""}`;
+        return;
+      });
+    });
+
+    if (formErrorFields().includes("cardContent")) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+      (window as any).tinymce.activeEditor.focus();
+    }
+  };
+
   createEffect(() => {
     setFetching(true);
-    void fetch(`${apiHost}/card/${props.cardID ?? ""}`, {
+    void fetch(`${apiHost}/card/${props.cardId ?? ""}`, {
       method: "GET",
       credentials: "include",
     }).then((response) => {
@@ -141,6 +218,7 @@ export const EditCardPageForm = (props: SingleCardPageProps) => {
               class="my-8 flex h-full w-full flex-col space-y-4 text-neutral-800 dark:text-white"
               onSubmit={(e) => {
                 e.preventDefault();
+                updateEvidence();
               }}
             >
               <div class="text-center text-red-500">{formErrorText()}</div>

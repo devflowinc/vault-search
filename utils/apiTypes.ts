@@ -123,6 +123,20 @@ export const isActixApiDefaultError = (
   );
 };
 
+export type ActixCardUpdateError = ActixApiDefaultError & {
+  changed_content: string;
+};
+
+export const isActixCardUpdateError = (
+  data: unknown,
+): data is ActixCardUpdateError => {
+  return (
+    isActixApiDefaultError(data) &&
+    indirectHasOwnProperty(data, "changed_content") &&
+    typeof (data as ActixCardUpdateError).changed_content === "string"
+  );
+};
+
 export const detectReferralToken = (queryParamT: string | undefined | null) => {
   if (queryParamT) {
     let previousTokens: string[] = [];
