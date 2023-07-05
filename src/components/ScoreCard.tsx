@@ -13,7 +13,7 @@ import {
 import BookmarkPopover from "./BookmarkPopover";
 import { VsFileSymlinkFile } from "solid-icons/vs";
 import sanitizeHtml from "sanitize-html";
-import { FiGlobe, FiLock, FiTrash } from "solid-icons/fi";
+import { FiEdit, FiGlobe, FiLock, FiTrash } from "solid-icons/fi";
 import { Tooltip } from "./Atoms/Tooltip";
 
 export const sanitzerOptions = {
@@ -158,6 +158,9 @@ const ScoreCard = (props: ScoreCardProps) => {
                 <FiTrash class="h-5 w-5" />
               </button>
             </Show>
+            <a title="Edit" href={`/card/edit/${props.card.id}`}>
+              <FiEdit class="h-5 w-5" />
+            </a>
             <a title="Open" href={`/card/${props.card.id}`}>
               <VsFileSymlinkFile class="h-5 w-5 fill-current" />
             </a>

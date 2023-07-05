@@ -1,12 +1,12 @@
 ---
 import Footer from "../../../components/Footer.astro";
 import SearchLayout from "../../../layouts/SearchLayout.astro";
-import { SingleCardPage } from "../../../components/SingleCardPage";
 import {
   isCardMetadataWithVotes,
   type CardMetadataWithVotes,
   type SingleCardDTO,
 } from "../../../../utils/apiTypes";
+import { EditCardPageForm } from "../../../components/EditCardPageForm";
 
 const { cardId } = Astro.params;
 const requestParams = Astro.request.url.split("?")[1];
@@ -14,28 +14,34 @@ const params = new URLSearchParams(requestParams);
 const collisions = params.get("collisions") ?? "";
 
 const apiHost = import.meta.env.API_HOST as string;
-let specificCards: SingleCardDTO;
+let specificCard: SingleCardDTO;
 
 try {
-  const specificCard = await fetch(`${apiHost}/card/${cardId ?? ""}`, {
+  const specificCardResult = await fetch(`${apiHost}/card/${cardId ?? ""}`, {
     method: "GET",
   });
-  const specificCardJson = (await specificCard.json()) as unknown;
+  const specificCardJson = (await specificCardResult.json()) as unknown;
 
   if (!isCardMetadataWithVotes(specificCardJson)) {
     throw new Error("Invalid card metadata");
   }
 
-  specificCards = { metadata: specificCardJson, status: specificCard.status };
+  specificCard = {
+    metadata: specificCardJson,
+    status: specificCardResult.status,
+  };
 } catch (e) {
-  specificCards = { metadata: null, status: 404 };
+  specificCard = { metadata: null, status: 404 };
 }
 ---
 
+<head>
+  <script src="/tinymce/tinymce.min.js" :inline></script>
+</head>
 <SearchLayout>
-  <SingleCardPage
+  <EditCardPageForm
     cardID={cardId}
-    defaultResultCards={specificCards as {
+    defaultResultCard={specificCard as {
       metadata: CardMetadataWithVotes;
       status: number;
     }}

@@ -7,7 +7,7 @@ import { BiRegularChevronDown, BiRegularChevronUp } from "solid-icons/bi";
 import sanitizeHtml from "sanitize-html";
 import { VsFileSymlinkFile } from "solid-icons/vs";
 import BookmarkPopover from "./BookmarkPopover";
-import { FiGlobe, FiLock, FiTrash } from "solid-icons/fi";
+import { FiEdit, FiGlobe, FiLock, FiTrash } from "solid-icons/fi";
 import { sanitzerOptions } from "./ScoreCard";
 import { Tooltip } from "./Atoms/Tooltip";
 
@@ -82,6 +82,9 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
               <FiTrash class="h-5 w-5" />
             </button>
           </Show>
+          <a title="Edit" href={`/card/edit/${props.card.id}`}>
+            <FiEdit class="h-5 w-5" />
+          </a>
           <a title="Open" href={`/card/${props.card.id}`}>
             <VsFileSymlinkFile class="h-5 w-5 fill-current" />
           </a>
