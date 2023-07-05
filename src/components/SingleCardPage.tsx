@@ -13,7 +13,7 @@ import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
 import { ConfirmModal } from "./Atoms/ConfirmModal";
 
 export interface SingleCardPageProps {
-  cardID: string | undefined;
+  cardId: string | undefined;
   defaultResultCard: SingleCardDTO;
   collisions: string;
 }
@@ -78,7 +78,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
 
   createEffect(() => {
     setFetching(true);
-    void fetch(`${apiHost}/card/${props.cardID ?? ""}`, {
+    void fetch(`${apiHost}/card/${props.cardId ?? ""}`, {
       method: "GET",
       credentials: "include",
     }).then((response) => {
