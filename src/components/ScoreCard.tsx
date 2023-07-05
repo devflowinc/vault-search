@@ -34,12 +34,13 @@ export interface ScoreCardProps {
   fetchCardCollections: () => void;
   setOnDelete: Setter<() => void>;
   setShowConfirmModal: Setter<boolean>;
+  initialExpanded?: boolean;
 }
 
 const ScoreCard = (props: ScoreCardProps) => {
   const api_host = import.meta.env.PUBLIC_API_HOST as string;
 
-  const [expanded, setExpanded] = createSignal(false);
+  const [expanded, setExpanded] = createSignal(props.initialExpanded ?? false);
   const [userVote, setUserVote] = createSignal(0);
   const [totalVote, setTotalVote] = createSignal(
     // eslint-disable-next-line solid/reactivity
@@ -132,7 +133,7 @@ const ScoreCard = (props: ScoreCardProps) => {
     <Show when={!deleted()}>
       <div class="flex w-full flex-col items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800">
         <div class="flex w-full flex-col space-y-2">
-          <div class="flex h-fit items-center gap-x-1">
+          <div class="flex h-fit items-center space-x-1">
             <Show when={props.card.private}>
               <Tooltip
                 body={<FiLock class="h-5 w-5 text-green-500" />}
@@ -158,9 +159,11 @@ const ScoreCard = (props: ScoreCardProps) => {
                 <FiTrash class="h-5 w-5" />
               </button>
             </Show>
-            <a title="Edit" href={`/card/edit/${props.card.id}`}>
-              <FiEdit class="h-5 w-5" />
-            </a>
+            <Show when={props.signedInUserId == props.card.author?.id}>
+              <a title="Edit" href={`/card/edit/${props.card.id}`}>
+                <FiEdit class="h-5 w-5" />
+              </a>
+            </Show>
             <a title="Open" href={`/card/${props.card.id}`}>
               <VsFileSymlinkFile class="h-5 w-5 fill-current" />
             </a>

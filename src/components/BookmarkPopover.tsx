@@ -65,7 +65,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
     <Popover defaultOpen={false} class="relative">
       {({ isOpen, setState }) => (
         <div>
-          <div class="flex items-center">
+          <div class="-ml-[3px] flex items-center">
             <PopoverButton
               title="Bookmark"
               onClick={() => {

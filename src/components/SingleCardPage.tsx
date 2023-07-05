@@ -122,6 +122,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
         fetchCardCollections={fetchCardCollections}
         setOnDelete={setOnDelete}
         setShowConfirmModal={setShowConfirmDeleteModal}
+        initialExpanded={true}
       />
     );
   });

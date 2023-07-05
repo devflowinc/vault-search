@@ -57,43 +57,47 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
     <Show when={!deleted()}>
       <div class="flex w-full flex-col items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800">
         <div class="flex w-full flex-col space-y-2">
-          <Show when={props.card.private}>
-            <Tooltip
-              body={<FiLock class="h-5 w-5 text-green-500" />}
-              tooltipText="Private. Only you can see this card."
+          <div class="flex h-fit items-center space-x-1">
+            <Show when={props.card.private}>
+              <Tooltip
+                body={<FiLock class="h-5 w-5 text-green-500" />}
+                tooltipText="Private. Only you can see this card."
+              />
+            </Show>
+            <Show when={!props.card.private}>
+              <Tooltip
+                body={<FiGlobe class="h-5 w-5 text-green-500" />}
+                tooltipText="Publicly visible"
+              />
+            </Show>
+            <div class="flex-1" />
+            <Show when={props.signedInUserId == props.viewingUserId}>
+              <button
+                classList={{
+                  "h-fit text-red-700 dark:text-red-400": true,
+                  "animate-pulse": deleting(),
+                }}
+                title="Delete"
+                onClick={() => onDelete()}
+              >
+                <FiTrash class="h-5 w-5" />
+              </button>
+            </Show>
+            <Show when={props.signedInUserId == props.viewingUserId}>
+              <a title="Edit" href={`/card/edit/${props.card.id}`}>
+                <FiEdit class="h-5 w-5" />
+              </a>
+            </Show>
+            <a title="Open" href={`/card/${props.card.id}`}>
+              <VsFileSymlinkFile class="h-5 w-5 fill-current" />
+            </a>
+            <BookmarkPopover
+              cardCollections={props.cardCollections}
+              cardMetadata={props.card}
+              fetchCardCollections={props.fetchCardCollections}
+              setLoginModal={props.setShowModal}
             />
-          </Show>
-          <Show when={!props.card.private}>
-            <Tooltip
-              body={<FiGlobe class="h-5 w-5 text-green-500" />}
-              tooltipText="Publicly visible"
-            />
-          </Show>
-          <div class="flex-1" />
-          <Show when={props.signedInUserId == props.card.author?.id}>
-            <button
-              classList={{
-                "h-fit text-red-700 dark:text-red-400": true,
-                "animate-pulse": deleting(),
-              }}
-              title="Delete"
-              onClick={() => onDelete()}
-            >
-              <FiTrash class="h-5 w-5" />
-            </button>
-          </Show>
-          <a title="Edit" href={`/card/edit/${props.card.id}`}>
-            <FiEdit class="h-5 w-5" />
-          </a>
-          <a title="Open" href={`/card/${props.card.id}`}>
-            <VsFileSymlinkFile class="h-5 w-5 fill-current" />
-          </a>
-          <BookmarkPopover
-            cardCollections={props.cardCollections}
-            cardMetadata={props.card}
-            fetchCardCollections={props.fetchCardCollections}
-            setLoginModal={props.setShowModal}
-          />
+          </div>
           <div class="flex w-full flex-col">
             <Show when={props.card.link}>
               <a
