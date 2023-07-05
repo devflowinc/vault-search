@@ -1,10 +1,11 @@
-import { Show, createEffect, createSignal } from "solid-js";
+import { Show, createEffect, createMemo, createSignal } from "solid-js";
 import {
   isUserDTO,
   type CardCollectionDTO,
   type CardMetadataWithVotes,
   type UserDTO,
   isCardMetadataWithVotes,
+  SingleCardDTO,
 } from "../../utils/apiTypes";
 import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
@@ -13,7 +14,7 @@ import { ConfirmModal } from "./Atoms/ConfirmModal";
 
 export interface SingleCardPageProps {
   cardID: string | undefined;
-  defaultResultCards: { metadata: CardMetadataWithVotes; status: number };
+  defaultResultCards: SingleCardDTO;
   collisions: string;
 }
 export const SingleCardPage = (props: SingleCardPageProps) => {
@@ -22,7 +23,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
 
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);
   const [cardMetadata, setCardMetadata] =
-    createSignal<CardMetadataWithVotes>(initialCardMetadata);
+    createSignal<CardMetadataWithVotes | null>(initialCardMetadata);
   const [error, setError] = createSignal("");
   const [fetching, setFetching] = createSignal(true);
   const [cardCollections, setCardCollections] = createSignal<
@@ -103,6 +104,28 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
     });
   });
 
+  const getCard = createMemo(() => {
+    if (error().length > 0 || fetching()) {
+      return null;
+    }
+    const curCardMetadata = cardMetadata();
+    if (!curCardMetadata) {
+      return null;
+    }
+    return (
+      <ScoreCard
+        signedInUserId={user()?.id}
+        card={curCardMetadata}
+        score={0}
+        setShowModal={setShowNeedLoginModal}
+        cardCollections={cardCollections()}
+        fetchCardCollections={fetchCardCollections}
+        setOnDelete={setOnDelete}
+        setShowConfirmModal={setShowConfirmDeleteModal}
+      />
+    );
+  });
+
   return (
     <>
       <div class="mt-12 flex w-full flex-col items-center space-y-4">
@@ -115,18 +138,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
               </div>
             </div>
           </Show>
-          <Show when={error().length == 0 && !fetching()}>
-            <ScoreCard
-              signedInUserId={user()?.id}
-              card={cardMetadata()}
-              score={0}
-              setShowModal={setShowNeedLoginModal}
-              cardCollections={cardCollections()}
-              fetchCardCollections={fetchCardCollections}
-              setOnDelete={setOnDelete}
-              setShowConfirmModal={setShowConfirmDeleteModal}
-            />
-          </Show>
+          {getCard()}
           <Show when={error().length > 0 && !fetching()}>
             <div class="flex w-full flex-col items-center rounded-md p-2">
               <div class="text-xl font-bold text-red-500">{error()}</div>

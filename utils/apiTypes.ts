@@ -282,7 +282,7 @@ export interface CardCountDTO {
 }
 
 export interface SingleCardDTO {
-  metadata: CardMetadataWithVotes;
+  metadata: CardMetadataWithVotes | null;
   status: number;
 }
 
