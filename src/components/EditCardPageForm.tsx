@@ -72,6 +72,11 @@ export const EditCardPageForm = (props: SingleCardPageProps) => {
         private: _private(),
       }),
     }).then((response) => {
+      if (response.ok) {
+        window.location.href = `/card/${curCardId ?? ""}`;
+        return;
+      }
+
       if (response.status === 401) {
         setShowNeedLoginModal(true);
         setIsUpdating(false);
@@ -99,9 +104,6 @@ export const EditCardPageForm = (props: SingleCardPageProps) => {
             return;
           }
         }
-
-        window.location.href = `/card/${curCardId ?? ""}`;
-        return;
       });
     });
 
