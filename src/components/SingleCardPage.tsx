@@ -14,12 +14,12 @@ import { ConfirmModal } from "./Atoms/ConfirmModal";
 
 export interface SingleCardPageProps {
   cardID: string | undefined;
-  defaultResultCards: SingleCardDTO;
+  defaultResultCard: SingleCardDTO;
   collisions: string;
 }
 export const SingleCardPage = (props: SingleCardPageProps) => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
-  const initialCardMetadata = props.defaultResultCards.metadata;
+  const initialCardMetadata = props.defaultResultCard.metadata;
 
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);
   const [cardMetadata, setCardMetadata] =
@@ -37,10 +37,10 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const [onDelete, setOnDelete] = createSignal(() => {});
 
-  if (props.defaultResultCards.status == 401) {
+  if (props.defaultResultCard.status == 401) {
     setError("You are not authorized to view this card.");
   }
-  if (props.defaultResultCards.status == 404) {
+  if (props.defaultResultCard.status == 404) {
     setError("This card could not be found.");
   }
 

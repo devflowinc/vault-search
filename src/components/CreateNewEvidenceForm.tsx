@@ -1,5 +1,5 @@
 import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
-import { JSX, Show, createSignal, onMount } from "solid-js";
+import { JSX, Show, createEffect, createSignal } from "solid-js";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import type { TinyMCE } from "../../public/tinymce/tinymce";
 import { CreateCardDTO, isActixApiDefaultError } from "../../utils/apiTypes";
@@ -17,6 +17,7 @@ const SearchForm = () => {
 
   const submitEvidence = (e: Event) => {
     e.preventDefault();
+
     const cardHTMLContentValue =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       (window as any).tinymce.activeEditor.getContent() as unknown as string;
@@ -24,6 +25,7 @@ const SearchForm = () => {
     const cardTextContentValue = (window as any).tinyMCE.activeEditor.getBody()
       .textContent as unknown as string;
     const evidenceLinkValue = evidenceLink();
+
     if (!cardTextContentValue || !evidenceLinkValue) {
       const errors: string[] = [];
       if (!cardTextContentValue) {
@@ -35,8 +37,10 @@ const SearchForm = () => {
       setErrorFields(errors);
       return;
     }
+
     setErrorFields([]);
     setIsSubmitting(true);
+
     void fetch(`${apiHost}/card`, {
       method: "POST",
       headers: {
@@ -70,16 +74,19 @@ const SearchForm = () => {
           }?collisions=${String(cardReturnData.duplicate)}`;
           return;
         }
+
         window.location.href = `/card/${cardReturnData.card_metadata.id}`;
         return;
       });
     });
+
     if (errorFields().includes("cardContent")) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
       (window as any).tinymce.activeEditor.focus();
     }
   };
-  onMount(() => {
+
+  createEffect(() => {
     const options = {
       selector: "#search-query-textarea",
       height: "100%",
