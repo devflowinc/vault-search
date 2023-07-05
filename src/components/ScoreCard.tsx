@@ -13,7 +13,8 @@ import {
 import BookmarkPopover from "./BookmarkPopover";
 import { VsFileSymlinkFile } from "solid-icons/vs";
 import sanitizeHtml from "sanitize-html";
-import { FiLock, FiTrash } from "solid-icons/fi";
+import { FiGlobe, FiLock, FiTrash } from "solid-icons/fi";
+import { Tooltip } from "./Atoms/Tooltip";
 
 export const sanitzerOptions = {
   allowedTags: [...sanitizeHtml.defaults.allowedTags, "font"],
@@ -130,7 +131,43 @@ const ScoreCard = (props: ScoreCardProps) => {
   return (
     <Show when={!deleted()}>
       <div class="flex w-full flex-col items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800">
-        <div class="flex w-full">
+        <div class="flex w-full flex-col space-y-2">
+          <div class="flex h-fit items-center gap-x-1">
+            <Show when={props.card.private}>
+              <Tooltip
+                body={<FiLock class="h-5 w-5 text-green-500" />}
+                tooltipText="Private. Only you can see this card."
+              />
+            </Show>
+            <Show when={!props.card.private}>
+              <Tooltip
+                body={<FiGlobe class="h-5 w-5 text-green-500" />}
+                tooltipText="Publicly visible"
+              />
+            </Show>
+            <div class="flex-1" />
+            <Show when={props.signedInUserId == props.card.author?.id}>
+              <button
+                classList={{
+                  "h-fit text-red-700 dark:text-red-400": true,
+                  "animate-pulse": deleting(),
+                }}
+                title="Delete"
+                onClick={() => deleteCard()}
+              >
+                <FiTrash class="h-5 w-5" />
+              </button>
+            </Show>
+            <a title="Open" href={`/card/${props.card.id}`}>
+              <VsFileSymlinkFile class="h-5 w-5 fill-current" />
+            </a>
+            <BookmarkPopover
+              cardCollections={props.cardCollections}
+              cardMetadata={props.card}
+              fetchCardCollections={props.fetchCardCollections}
+              setLoginModal={props.setShowModal}
+            />
+          </div>
           <div class="flex w-full items-start">
             <div class="flex flex-col items-center pr-2">
               <Show when={!props.card.private}>
@@ -218,32 +255,6 @@ const ScoreCard = (props: ScoreCardProps) => {
                 </span>
               </div>
             </div>
-          </div>
-          <div class="flex h-fit items-center gap-x-1">
-            <Show when={props.card.private}>
-              <FiLock class="h-5 w-5 text-green-500" />
-            </Show>
-            <Show when={props.signedInUserId == props.card.author?.id}>
-              <button
-                classList={{
-                  "h-fit text-red-700 dark:text-red-400": true,
-                  "animate-pulse": deleting(),
-                }}
-                title="Delete"
-                onClick={() => deleteCard()}
-              >
-                <FiTrash class="h-5 w-5" />
-              </button>
-            </Show>
-            <a title="Open" href={`/card/${props.card.id}`}>
-              <VsFileSymlinkFile class="h-5 w-5 fill-current" />
-            </a>
-            <BookmarkPopover
-              cardCollections={props.cardCollections}
-              cardMetadata={props.card}
-              fetchCardCollections={props.fetchCardCollections}
-              setLoginModal={props.setShowModal}
-            />
           </div>
         </div>
         <div class="mb-1 h-1 w-full border-b border-neutral-300 dark:border-neutral-600" />
