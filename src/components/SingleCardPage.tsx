@@ -15,7 +15,6 @@ import { ConfirmModal } from "./Atoms/ConfirmModal";
 export interface SingleCardPageProps {
   cardId: string | undefined;
   defaultResultCard: SingleCardDTO;
-  collisions: string;
 }
 export const SingleCardPage = (props: SingleCardPageProps) => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
@@ -131,14 +130,6 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
     <>
       <div class="mt-12 flex w-full flex-col items-center space-y-4">
         <div class="flex w-full max-w-6xl flex-col space-y-4 px-4 sm:px-8 md:px-20">
-          <Show when={props.collisions.length > 0}>
-            <div class="flex w-full flex-col items-center rounded-md p-2">
-              <div class="text-xl font-bold text-red-500">
-                This card has the same meaning another card. It has been added
-                to your account as a private card.{" "}
-              </div>
-            </div>
-          </Show>
           {getCard()}
           <Show when={error().length > 0 && !fetching()}>
             <div class="flex w-full flex-col items-center rounded-md p-2">

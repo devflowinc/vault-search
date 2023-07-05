@@ -68,13 +68,6 @@ const SearchForm = () => {
           setIsSubmitting(false);
         }
 
-        if (cardReturnData.duplicate) {
-          window.location.href = `/card/${
-            cardReturnData.card_metadata.id
-          }?collisions=${String(cardReturnData.duplicate)}`;
-          return;
-        }
-
         window.location.href = `/card/${cardReturnData.card_metadata.id}`;
         return;
       });
