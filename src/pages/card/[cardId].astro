@@ -11,7 +11,6 @@ import {
 const { cardId } = Astro.params;
 const requestParams = Astro.request.url.split("?")[1];
 const params = new URLSearchParams(requestParams);
-const collisions = params.get("collisions") ?? "";
 
 const apiHost = import.meta.env.API_HOST as string;
 let specificCards: SingleCardDTO;
@@ -39,7 +38,6 @@ try {
       metadata: CardMetadataWithVotes;
       status: number;
     }}
-    collisions={collisions}
     client:load
   />
   <div class="flex-1"></div>
