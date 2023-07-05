@@ -20,7 +20,9 @@ export const EditCardPageForm = (props: SingleCardPageProps) => {
   >("");
   const [formErrorFields, setFormErrorFields] = createSignal<string[]>([]);
   const [isUpdating, setIsUpdating] = createSignal(false);
-  const [_private, setPrivate] = createSignal(false);
+  const [_private, setPrivate] = createSignal(
+    initialCardMetadata?.private ?? false,
+  );
   const [cardHtml, setCardHtml] = createSignal<string>("");
   const [evidenceLink, setEvidenceLink] = createSignal<string>(
     initialCardMetadata?.link ?? "",
@@ -245,6 +247,7 @@ export const EditCardPageForm = (props: SingleCardPageProps) => {
                 <span class="mr-2 items-center align-middle">Private?</span>
                 <input
                   type="checkbox"
+                  checked={_private()}
                   onChange={(e) => setPrivate(e.target.checked)}
                   class="h-4 w-4 rounded-sm	border-gray-300 bg-neutral-500 align-middle accent-turquoise focus:ring-neutral-200 dark:border-neutral-700 dark:focus:ring-neutral-600"
                 />
