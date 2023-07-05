@@ -13,6 +13,7 @@ import type {
   CardMetadata,
 } from "../../utils/apiTypes";
 import InputRowsForm from "./Atoms/InputRowsForm";
+import { VsBookmark } from "solid-icons/vs";
 
 export interface BookmarkPopoverProps {
   cardMetadata: CardMetadata;
@@ -75,7 +76,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                 fetchCollections();
               }}
             >
-              <RiSystemAddFill class="z-0 h-5 w-5 fill-current" />
+              <VsBookmark class="z-0 h-5 w-5 fill-current" />
             </PopoverButton>
           </div>
           <Show when={isOpen() || usingPanel()}>
