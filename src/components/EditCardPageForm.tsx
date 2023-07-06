@@ -46,12 +46,17 @@ export const EditCardPageForm = (props: SingleCardPageProps) => {
 
     if (!cardHTMLContentValue || !evidenceLinkValue) {
       const errors: string[] = [];
+      let errorMessage = "";
       if (!cardHTMLContentValue) {
+        errorMessage += "Card content cannot be empty";
         errors.push("cardContent");
       }
       if (!evidenceLinkValue) {
+        errorMessage += errorMessage ? " and " : "";
+        errorMessage += "Evidence link cannot be empty";
         errors.push("evidenceLink");
       }
+      setFormErrorText(errorMessage);
       setFormErrorFields(errors);
       return;
     }
