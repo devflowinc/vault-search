@@ -2,6 +2,7 @@ import { Setter, Show, createSignal } from "solid-js";
 import type {
   CardCollectionDTO,
   CardMetadataWithVotes,
+  FileDTO,
 } from "../../utils/apiTypes";
 import { BiRegularChevronDown, BiRegularChevronUp } from "solid-icons/bi";
 import sanitizeHtml from "sanitize-html";
@@ -51,6 +52,49 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
     });
 
     props.setShowConfirmModal(true);
+  };
+
+  function base64UrlToDownloadFile(base64Url: string, fileName: string) {
+    // Decode base64 URL encoded string
+    const base64Data = atob(base64Url.replace(/-/g, "+").replace(/_/g, "/"));
+
+    // Convert binary string to ArrayBuffer
+    const buffer = new ArrayBuffer(base64Data.length);
+    const array = new Uint8Array(buffer);
+    for (let i = 0; i < base64Data.length; i++) {
+      array[i] = base64Data.charCodeAt(i);
+    }
+
+    // Create Blob from ArrayBuffer
+    const blob = new Blob([buffer], { type: "application/octet-stream" });
+
+    // Create URL object
+    const url = URL.createObjectURL(blob);
+
+    // Create <a> element
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+
+    // Programmatically click the link to trigger the file download
+    link.click();
+
+    // Clean up URL object
+    URL.revokeObjectURL(url);
+  }
+
+  const downloadFile = (e: Event) => {
+    e.stopPropagation();
+    e.preventDefault();
+    void fetch(`${api_host}/file/${props.card.file_id}`, {
+      method: "GET",
+      credentials: "include",
+    }).then((response) => {
+      void response.json().then((data) => {
+        const file = data as FileDTO;
+        base64UrlToDownloadFile(file.base64url_content, file.file_name);
+      });
+    });
   };
 
   return (
@@ -108,21 +152,32 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
                 {props.card.link}
               </a>
             </Show>
-            <Show when={props.card.oc_file_path}>
+            <Show when={props.card.oc_file_path || props.card.file_name}>
               <div class="flex space-x-2">
                 <span class="font-semibold text-neutral-800 dark:text-neutral-200">
                   Brief:{" "}
                 </span>
-                <a
-                  class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
-                  target="_blank"
-                  href={`https://oc.arguflow.com/${
-                    props.card.oc_file_path ?? ""
-                  }`}
-                >
-                  {props.card.oc_file_path?.split("/").pop() ??
-                    props.card.oc_file_path}
-                </a>
+                <Show when={props.card.oc_file_path}>
+                  <a
+                    class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
+                    target="_blank"
+                    href={`https://oc.arguflow.com/${
+                      props.card.oc_file_path ?? ""
+                    }`}
+                  >
+                    {props.card.oc_file_path?.split("/").pop() ??
+                      props.card.oc_file_path}
+                  </a>
+                </Show>
+                <Show when={props.card.file_name}>
+                  <a
+                    class="line-clamp-1 cursor-pointer break-all text-magenta-500 underline dark:text-turquoise-400"
+                    target="_blank"
+                    onClick={(e) => downloadFile(e)}
+                  >
+                    {props.card.file_name}
+                  </a>
+                </Show>
               </div>
             </Show>
             <div class="grid w-fit auto-cols-min grid-cols-[1fr,3fr] gap-x-2 text-neutral-800 dark:text-neutral-200">
