@@ -7,6 +7,8 @@ export interface CardMetadata {
   created_at: string;
   updated_at: string;
   oc_file_path: string | null;
+  file_id: string | null;
+  file_name: string | null;
 }
 
 export const indirectHasOwnProperty = (obj: unknown, prop: string): boolean => {
@@ -307,4 +309,14 @@ export interface CardCollectionBookmarksDTO {
 export interface CardCollectionBookmarksWithStatusDTO {
   metadata: CardCollectionBookmarkDTO;
   status: number;
+}
+
+export interface FileDTO {
+  id: string;
+  user_id: string;
+  file_name: string;
+  mime_type: string;
+  private: boolean;
+  size: number;
+  base64url_content: string;
 }
