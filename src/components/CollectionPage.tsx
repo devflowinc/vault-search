@@ -158,7 +158,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
   });
 
   const updateCollection = () => {
-    setFetchingCollections(true);
+    setDeleting(true);
     const body = {
       collection_id: collectionInfo().id,
       name: collectionInfo().name,
@@ -173,12 +173,12 @@ export const CollectionPage = (props: CollectionPageProps) => {
         "Content-Type": "application/json",
       },
     }).then((response) => {
-      setFetchingCollections(false);
+      setDeleting(false);
       if (response.ok) {
-        setEditing(false);
+        setDeleting(false);
       }
       if (response.status == 403) {
-        setFetching(false);
+        setDeleting(false);
       }
       if (response.status == 401) {
         setShowNeedLoginModal(true);
