@@ -26,7 +26,7 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
     }).then((response) => {
       void response.json().then((data) => {
         let notifs = data as NotificationDTO[];
-        setNotifs(notifs.filter((notif) => !notif.user_read));
+        setNotifs(notifs.filter((notif) => !notif.user_read).reverse());
       });
     });
   });
@@ -51,6 +51,22 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
       }
     });
   };
+  function getTimeIn12HourFormat(date: Date): string {
+    let hours: number = date.getHours();
+    let minutes: number = date.getMinutes();
+    let ampm: string = hours >= 12 ? "PM" : "AM";
+
+    // Convert hours to 12-hour format
+    hours = hours % 12;
+    hours = hours ? hours : 12; // 0 should be treated as 12
+
+    // Add leading zeros to minutes if necessary
+    const formattedMinutes: string =
+      minutes < 10 ? "0" + minutes : String(minutes);
+
+    return `${hours}:${formattedMinutes} ${ampm}`;
+  }
+
   return (
     <Transition
       show={!!props.user}
@@ -148,13 +164,18 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
                               </button>
                               <button>
                                 <VsClose
-                                  class="fill-current text-xl"
+                                  class="mt-1 fill-current text-lg"
                                   onClick={(e) => {
                                     markAsRead(notification);
                                     setState(true);
                                   }}
                                 />
                               </button>
+                              <text class="absolute right-1 text-xs text-gray-300">
+                                {getTimeIn12HourFormat(
+                                  new Date(notification.created_at),
+                                )}
+                              </text>
                             </div>
                           </div>
                         );
