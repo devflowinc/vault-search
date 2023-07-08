@@ -164,6 +164,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
         showConfirmModal={showConfirmDeleteModal}
         setShowConfirmModal={setShowConfirmDeleteModal}
         onConfirm={onDelete}
+        message="Are you sure you want to delete this card?"
       />
     </>
   );

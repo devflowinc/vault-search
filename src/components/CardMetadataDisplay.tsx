@@ -152,7 +152,7 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
                 {props.card.link}
               </a>
             </Show>
-            <Show when={props.card.oc_file_path || props.card.file_name}>
+            <Show when={props.card.oc_file_path ?? props.card.file_name}>
               <div class="flex space-x-2">
                 <span class="font-semibold text-neutral-800 dark:text-neutral-200">
                   Brief:{" "}

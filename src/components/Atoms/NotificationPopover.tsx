@@ -6,9 +6,8 @@ import {
   Menu,
   MenuItem,
 } from "solid-headless";
-import { AiOutlineProfile } from "solid-icons/ai";
 import type { NotificationDTO, UserDTO } from "../../../utils/apiTypes";
-import { IoNotificationsOutline, IoSettingsOutline } from "solid-icons/io";
+import { IoNotificationsOutline } from "solid-icons/io";
 import { For, createEffect, createSignal } from "solid-js";
 import { VsClose } from "solid-icons/vs";
 
@@ -85,9 +84,9 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
               classList={{ flex: true }}
             >
               <IoNotificationsOutline class="mr-4 h-6 w-6 fill-current" />
-              {notifs()?.length > 0 && (
+              {notifs().length > 0 && (
                 <span class="relative">
-                  <div class="absolute right-3 top-0 h-2 w-2 rounded-full bg-red-500"></div>
+                  <div class="absolute right-3 top-0 h-2 w-2 rounded-full bg-red-500" />
                 </span>
               )}
             </PopoverButton>
@@ -133,7 +132,7 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
                                     similarityScoreThreshold ? (
                                       <a
                                         href={`/card/${notification.card_uuid}`}
-                                        onClick={(_) => {
+                                        onClick={() => {
                                           markAsRead(notification);
                                           setState(true);
                                         }}
@@ -147,7 +146,7 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
                                     ) : (
                                       <a
                                         href={`/card/${notification.card_uuid}`}
-                                        onClick={(_) => {
+                                        onClick={() => {
                                           markAsRead(notification);
                                           setState(true);
                                         }}
