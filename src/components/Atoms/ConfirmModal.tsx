@@ -7,6 +7,7 @@ interface ConfirmModalProps {
   showConfirmModal: Accessor<boolean>;
   setShowConfirmModal: Setter<boolean>;
   onConfirm: Accessor<() => void>;
+  message: string;
 }
 
 export const ConfirmModal = (props: ConfirmModalProps) => {
@@ -19,7 +20,7 @@ export const ConfirmModal = (props: ConfirmModalProps) => {
         <div class="min-w-[250px] sm:min-w-[300px]">
           <BiRegularXCircle class="mx-auto h-8 w-8 fill-current !text-red-500" />
           <div class="mb-4 text-xl font-bold">
-            Are you sure you want to delete this card?
+            {props.message || "Are you sure you want to delete this?"}
           </div>
           <div class="mx-auto flex w-fit space-x-3">
             <button

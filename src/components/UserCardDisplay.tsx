@@ -161,6 +161,7 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
         showConfirmModal={showConfirmModal}
         setShowConfirmModal={setShowConfirmModal}
         onConfirm={onDelete}
+        message={"Are you sure you want to delete this card?"}
       />
     </>
   );

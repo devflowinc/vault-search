@@ -9,7 +9,7 @@ import {
 import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import { BiRegularLogInCircle, BiRegularXCircle } from "solid-icons/bi";
-import { FiEdit, FiLock } from "solid-icons/fi";
+import { FiEdit, FiLock, FiTrash } from "solid-icons/fi";
 import { ConfirmModal } from "./Atoms/ConfirmModal";
 import { PaginationController } from "./Atoms/PaginationController";
 
@@ -50,6 +50,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
   const [error, setError] = createSignal("");
   const [fetching, setFetching] = createSignal(true);
   const [fetchingCollections, setFetchingCollections] = createSignal(false);
+  const [deleting, setDeleting] = createSignal(false);
   const [editing, setEditing] = createSignal(false);
   const [user, setUser] = createSignal<UserDTO | undefined>();
   const [totalPages, setTotalPages] = createSignal(
@@ -59,8 +60,16 @@ export const CollectionPage = (props: CollectionPageProps) => {
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
     createSignal(false);
 
+  const [
+    showConfirmCollectionDeleteModal,
+    setShowConfirmCollectionmDeleteModal,
+  ] = createSignal(false);
+
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const [onDelete, setOnDelete] = createSignal(() => {});
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const [onCollectionDelete, setOnCollectionDelete] = createSignal(() => {});
 
   // Fetch the user info for the auth'ed user
   createEffect(() => {
@@ -118,10 +127,36 @@ export const CollectionPage = (props: CollectionPageProps) => {
       }
     });
     fetchCardCollections();
+    setOnCollectionDelete(() => {
+      return () => {
+        setFetchingCollections(true);
+        void fetch(`${apiHost}/card_collection`, {
+          method: "DELETE",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            collection_id: collectionInfo().id,
+          }),
+        }).then((response) => {
+          setFetchingCollections(false);
+          if (response.ok) {
+            window.location.href = "/";
+          }
+          if (response.status == 403) {
+            setFetching(false);
+          }
+          if (response.status == 401) {
+            setShowNeedLoginModal(true);
+          }
+        });
+      };
+    });
   });
 
   const updateCollection = () => {
-    setFetchingCollections(true);
+    setDeleting(true);
     const body = {
       collection_id: collectionInfo().id,
       name: collectionInfo().name,
@@ -136,12 +171,12 @@ export const CollectionPage = (props: CollectionPageProps) => {
         "Content-Type": "application/json",
       },
     }).then((response) => {
-      setFetchingCollections(false);
+      setDeleting(false);
       if (response.ok) {
-        setEditing(false);
+        setDeleting(false);
       }
       if (response.status == 403) {
-        setFetching(false);
+        setDeleting(false);
       }
       if (response.status == 401) {
         setShowNeedLoginModal(true);
@@ -164,8 +199,17 @@ export const CollectionPage = (props: CollectionPageProps) => {
                 (collection) => collection.id == collectionInfo().id,
               )}
             >
+              <button
+                classList={{
+                  "h-fit text-red-700 dark:text-red-400": true,
+                  "animate-pulse": deleting(),
+                }}
+                onClick={() => setShowConfirmCollectionmDeleteModal(true)}
+              >
+                <FiTrash class="h-5 w-5" />
+              </button>
               <button onClick={() => setEditing((prev) => !prev)}>
-                <FiEdit />
+                <FiEdit class="h-5 w-5" />
               </button>
             </Show>
           </div>
@@ -323,6 +367,13 @@ export const CollectionPage = (props: CollectionPageProps) => {
         showConfirmModal={showConfirmDeleteModal}
         setShowConfirmModal={setShowConfirmDeleteModal}
         onConfirm={onDelete}
+        message="Are you sure you want to delete this card?"
+      />
+      <ConfirmModal
+        showConfirmModal={showConfirmCollectionDeleteModal}
+        setShowConfirmModal={setShowConfirmCollectionmDeleteModal}
+        onConfirm={onCollectionDelete}
+        message="Are you sure you want to delete this collection?"
       />
     </>
   );

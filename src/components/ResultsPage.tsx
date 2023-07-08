@@ -181,6 +181,7 @@ const ResultsPage = (props: ResultsPageProps) => {
         showConfirmModal={showConfirmDeleteModal}
         setShowConfirmModal={setShowConfirmDeleteModal}
         onConfirm={onDelete}
+        message="Are you sure you want to delete this card?"
       />
     </>
   );
