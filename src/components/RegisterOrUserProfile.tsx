@@ -11,6 +11,7 @@ import { AiOutlineProfile } from "solid-icons/ai";
 import { IoSettingsOutline } from "solid-icons/io";
 import { createEffect, createSignal } from "solid-js";
 import { isUserDTO, type UserDTO } from "../../utils/apiTypes";
+import { NotificationPopover } from "./Atoms/NotificationPopover";
 
 const RegisterOrUserProfile = () => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
@@ -64,6 +65,7 @@ const RegisterOrUserProfile = () => {
         leave="transition duration-300"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
+        class="flex"
       >
         <Transition
           show={!currentUser()}
@@ -82,6 +84,7 @@ const RegisterOrUserProfile = () => {
             <BiRegularLogIn class="h-6 w-6" />
           </a>
         </Transition>
+        <NotificationPopover user={currentUser()} />
         <Transition
           show={!!currentUser()}
           enter="transition duration-700"
@@ -96,7 +99,7 @@ const RegisterOrUserProfile = () => {
               <>
                 <PopoverButton
                   aria-label="Toggle user actions menu"
-                  classList={{}}
+                  classList={{ flex: true }}
                 >
                   <BiRegularUser class="h-6 w-6 fill-current" />
                 </PopoverButton>
