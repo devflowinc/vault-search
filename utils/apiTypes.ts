@@ -320,3 +320,14 @@ export interface FileDTO {
   size: number;
   base64url_content: string;
 }
+
+export interface NotificationDTO {
+  id: string;
+  user_uuid: string;
+  card_uuid: string;
+  verification_uuid: string;
+  similarity_score: number;
+  user_read: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
