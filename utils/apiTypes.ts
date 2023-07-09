@@ -262,6 +262,8 @@ export interface CardCollectionDTO {
   name: string;
   description: string;
   is_public: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export const isCardCollectionDTO = (

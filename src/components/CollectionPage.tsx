@@ -87,6 +87,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
 
   // Fetch the card collections for the auth'ed user
   const fetchCardCollections = () => {
+    if (!user()) return;
     void fetch(`${apiHost}/card_collection`, {
       method: "GET",
       credentials: "include",
@@ -127,9 +128,10 @@ export const CollectionPage = (props: CollectionPageProps) => {
       }
     });
     fetchCardCollections();
+    const collection_id = collectionInfo().id;
     setOnCollectionDelete(() => {
       return () => {
-        setFetchingCollections(true);
+        setDeleting(true);
         void fetch(`${apiHost}/card_collection`, {
           method: "DELETE",
           credentials: "include",
@@ -137,15 +139,15 @@ export const CollectionPage = (props: CollectionPageProps) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            collection_id: collectionInfo().id,
+            collection_id: collection_id,
           }),
         }).then((response) => {
-          setFetchingCollections(false);
+          setDeleting(false);
           if (response.ok) {
             window.location.href = "/";
           }
           if (response.status == 403) {
-            setFetching(false);
+            setDeleting(false);
           }
           if (response.status == 401) {
             setShowNeedLoginModal(true);
@@ -156,7 +158,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
   });
 
   const updateCollection = () => {
-    setDeleting(true);
+    setFetchingCollections(true);
     const body = {
       collection_id: collectionInfo().id,
       name: collectionInfo().name,
@@ -171,12 +173,12 @@ export const CollectionPage = (props: CollectionPageProps) => {
         "Content-Type": "application/json",
       },
     }).then((response) => {
-      setDeleting(false);
+      setFetchingCollections(false);
       if (response.ok) {
-        setDeleting(false);
+        setEditing(false);
       }
       if (response.status == 403) {
-        setDeleting(false);
+        setFetching(false);
       }
       if (response.status == 401) {
         setShowNeedLoginModal(true);

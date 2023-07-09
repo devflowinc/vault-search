@@ -162,7 +162,7 @@ const ScoreCard = (props: ScoreCardProps) => {
   const downloadFile = (e: Event) => {
     e.stopPropagation();
     e.preventDefault();
-    void fetch(`${api_host}/file/${props.card.file_id}`, {
+    void fetch(`${api_host}/file/${props.card.file_id!}`, {
       method: "GET",
       credentials: "include",
     }).then((response) => {
@@ -217,6 +217,7 @@ const ScoreCard = (props: ScoreCardProps) => {
               <VsFileSymlinkFile class="h-5 w-5 fill-current" />
             </a>
             <BookmarkPopover
+              signedInUserId={props.signedInUserId}
               cardCollections={props.cardCollections}
               cardMetadata={props.card}
               fetchCardCollections={props.fetchCardCollections}

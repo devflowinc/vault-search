@@ -24,13 +24,16 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
       credentials: "include",
     }).then((response) => {
       void response.json().then((data) => {
-        let notifs = data as NotificationDTO[];
-        setNotifs(notifs.filter((notif) => !notif.user_read).reverse());
+        if (response.ok) {
+          const notifs = data as NotificationDTO[];
+          setNotifs(notifs.filter((notif) => !notif.user_read));
+        }
       });
     });
   });
 
   const markAsRead = (notification: NotificationDTO) => {
+    const notifs_inner = notifs();
     void fetch(`${apiHost}/notifications`, {
       method: "PUT",
       headers: {
@@ -43,7 +46,7 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
     }).then((response) => {
       if (response.ok) {
         setNotifs(
-          notifs().filter(
+          notifs_inner.filter(
             (notif) => notif.card_uuid !== notification.card_uuid,
           ),
         );

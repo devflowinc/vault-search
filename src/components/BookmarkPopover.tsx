@@ -16,6 +16,7 @@ import InputRowsForm from "./Atoms/InputRowsForm";
 import { VsBookmark } from "solid-icons/vs";
 
 export interface BookmarkPopoverProps {
+  signedInUserId: string | undefined;
   cardMetadata: CardMetadata;
   cardCollections: CardCollectionDTO[];
   fetchCardCollections: () => void;
@@ -35,6 +36,10 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
   const [usingPanel, setUsingPanel] = createSignal(false);
 
   const fetchCollections = () => {
+    if (!props.signedInUserId) {
+      setNotLoggedIn(true);
+      return;
+    }
     void fetch(`${apiHost}/card_collection/bookmark/${props.cardMetadata.id}`, {
       method: "GET",
       credentials: "include",
@@ -79,7 +84,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
               <VsBookmark class="z-0 h-5 w-5 fill-current" />
             </PopoverButton>
           </div>
-          <Show when={isOpen() || usingPanel()}>
+          <Show when={(isOpen() || usingPanel()) && !notLoggedIn()}>
             <PopoverPanel
               unmount={false}
               class="absolute z-50 w-screen max-w-xs -translate-x-[300px]"
@@ -131,7 +136,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                                 });
                                 setState(true);
                               }}
-                              class="h-4 w-4 rounded-sm	border-gray-300 bg-neutral-500 accent-turquoise focus:ring-neutral-200 dark:border-neutral-700 dark:focus:ring-neutral-600"
+                              class="h-4 w-4 cursor-pointer	rounded-sm border-gray-300 bg-neutral-500 accent-turquoise focus:ring-neutral-200 dark:border-neutral-700 dark:focus:ring-neutral-600"
                             />
                           </div>
                         </>

@@ -45,6 +45,8 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
 
   // Fetch the card collections for the auth'ed user
   const fetchCardCollections = () => {
+    if (!user()) return;
+
     void fetch(`${apiHost}/card_collection`, {
       method: "GET",
       credentials: "include",
