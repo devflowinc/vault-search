@@ -279,7 +279,7 @@ const ScoreCard = (props: ScoreCardProps) => {
                   <span class="font-semibold text-neutral-800 dark:text-neutral-200">
                     Brief:{" "}
                   </span>
-                  <Show when={props.card.oc_file_path}>
+                  <Show when={props.card.oc_file_path && !props.card.file_name}>
                     <a
                       class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
                       target="_blank"
