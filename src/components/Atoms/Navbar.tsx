@@ -17,20 +17,20 @@ export const Navbar = () => {
             <div class="flex w-full items-center justify-end space-x-1 sm:space-x-4">
               <a
                 href="/create"
-                class="hidden min-[420px]:text-lg min-[720px]:block"
+                class="hidden min-[420px]:text-lg min-[920px]:block"
               >
                 Create Evidence
               </a>
               <a
                 href="/upload"
-                class="hidden min-[420px]:text-lg min-[720px]:block"
+                class="hidden min-[420px]:text-lg min-[920px]:block"
               >
                 Upload Files
               </a>
               <a
                 href="https://blog.arguflow.com"
                 target="_blank"
-                class="hidden min-[420px]:text-lg min-[720px]:block"
+                class="hidden min-[420px]:text-lg min-[920px]:block"
               >
                 Blog
               </a>
