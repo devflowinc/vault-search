@@ -144,24 +144,26 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
             setShowConfirmModal={setShowConfirmCollectionmDeleteModal}
           />
         </div>
-        <div class="items-center text-center">
-          <button
-            class="ml-2 text-center font-semibold"
-            onClick={() => setExpanded((prev) => !prev)}
-          >
-            {expanded() ? (
-              <div class="flex flex-row items-center">
-                Show Less
-                <BiRegularChevronUp class="h-8 w-8 fill-current" />
-              </div>
-            ) : (
-              <div class="flex flex-row items-center">
-                Show More
-                <BiRegularChevronDown class="h-8 w-8 fill-current" />
-              </div>
-            )}
-          </button>
-        </div>
+        <Show when={cardCollections().length > 5}>
+          <div class="items-center text-center">
+            <button
+              class="ml-2 text-center font-semibold"
+              onClick={() => setExpanded((prev) => !prev)}
+            >
+              {expanded() ? (
+                <div class="flex flex-row items-center">
+                  Show Less
+                  <BiRegularChevronUp class="h-8 w-8 fill-current" />
+                </div>
+              ) : (
+                <div class="flex flex-row items-center">
+                  Show More
+                  <BiRegularChevronDown class="h-8 w-8 fill-current" />
+                </div>
+              )}
+            </button>
+          </div>
+        </Show>
         <div class="mb-4 mt-4 flex flex-col border-t border-neutral-500 pt-4 text-xl">
           <span>Cards:</span>
         </div>

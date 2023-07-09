@@ -86,7 +86,7 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
   const downloadFile = (e: Event) => {
     e.stopPropagation();
     e.preventDefault();
-    void fetch(`${api_host}/file/${props.card.file_id!}`, {
+    void fetch(`${api_host}/file/${props.card.file_id ?? ""}`, {
       method: "GET",
       credentials: "include",
     }).then((response) => {

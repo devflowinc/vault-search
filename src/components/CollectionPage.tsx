@@ -85,23 +85,10 @@ export const CollectionPage = (props: CollectionPageProps) => {
     });
   });
 
-  // Fetch the card collections for the auth'ed user
-  const fetchCardCollections = () => {
-    if (!user()) return;
-    void fetch(`${apiHost}/card_collection`, {
-      method: "GET",
-      credentials: "include",
-    }).then((response) => {
-      if (response.ok) {
-        void response.json().then((data) => {
-          setCardCollections(data as CardCollectionDTO[]);
-        });
-      }
-    });
-  };
-
   createEffect(() => {
     setFetching(true);
+    let collection_id: string | null = null;
+
     void fetch(
       `${apiHost}/card_collection/${props.collectionID}/${props.page}`,
       {
@@ -112,6 +99,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
       if (response.ok) {
         void response.json().then((data) => {
           const collectionBookmarks = data as CardCollectionBookmarkDTO;
+          collection_id = collectionBookmarks.collection.id;
           setCollectionInfo(collectionBookmarks.collection);
           setTotalPages(collectionBookmarks.total_pages);
           setMetadatasWithVotes(collectionBookmarks.bookmarks);
@@ -127,8 +115,9 @@ export const CollectionPage = (props: CollectionPageProps) => {
         setShowNeedLoginModal(true);
       }
     });
+
     fetchCardCollections();
-    const collection_id = collectionInfo().id;
+
     setOnCollectionDelete(() => {
       return () => {
         setDeleting(true);
@@ -156,6 +145,21 @@ export const CollectionPage = (props: CollectionPageProps) => {
       };
     });
   });
+
+  // Fetch the card collections for the auth'ed user
+  const fetchCardCollections = () => {
+    if (!user()) return;
+    void fetch(`${apiHost}/card_collection`, {
+      method: "GET",
+      credentials: "include",
+    }).then((response) => {
+      if (response.ok) {
+        void response.json().then((data) => {
+          setCardCollections(data as CardCollectionDTO[]);
+        });
+      }
+    });
+  };
 
   const updateCollection = () => {
     setFetchingCollections(true);
