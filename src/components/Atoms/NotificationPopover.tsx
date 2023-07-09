@@ -26,7 +26,7 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
       void response.json().then((data) => {
         if (response.ok) {
           const notifs = data as NotificationDTO[];
-          setNotifs(notifs.filter((notif) => !notif.user_read));
+          setNotifs(notifs.filter((notif) => !notif.user_read).reverse());
         }
       });
     });
@@ -53,10 +53,11 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
       }
     });
   };
+
   function getTimeIn12HourFormat(date: Date): string {
     let hours: number = date.getHours();
-    let minutes: number = date.getMinutes();
-    let ampm: string = hours >= 12 ? "PM" : "AM";
+    const minutes: number = date.getMinutes();
+    const ampm: string = hours >= 12 ? "PM" : "AM";
 
     // Convert hours to 12-hour format
     hours = hours % 12;
@@ -64,7 +65,7 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
 
     // Add leading zeros to minutes if necessary
     const formattedMinutes: string =
-      minutes < 10 ? "0" + minutes : String(minutes);
+      minutes < 10 ? `0${minutes}` : String(minutes);
 
     return `${hours}:${formattedMinutes} ${ampm}`;
   }
@@ -167,7 +168,7 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
                               <button>
                                 <VsClose
                                   class="mt-1 fill-current text-lg"
-                                  onClick={(e) => {
+                                  onClick={() => {
                                     markAsRead(notification);
                                     setState(true);
                                   }}
