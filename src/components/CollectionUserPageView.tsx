@@ -121,14 +121,13 @@ export const CollectionUserPageView = (props: CollectionUserPageViewProps) => {
                   <For each={collections()}>
                     {(collection) => (
                       <tr>
-                        <td
-                          class="cursor-pointer whitespace-nowrap py-4 pl-4 pr-3 text-sm font-semibold text-gray-500 dark:text-white"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            return (window.location.href = `/collection/${collection.id}`);
-                          }}
-                        >
-                          {collection.name}
+                        <td class="cursor-pointer whitespace-nowrap py-4 pl-4 pr-3 text-sm font-semibold text-gray-500 dark:text-white">
+                          <a
+                            class="w-full"
+                            href={`/collection/${collection.id}`}
+                          >
+                            {collection.name}
+                          </a>
                         </td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-300">
                           {collection.description}
