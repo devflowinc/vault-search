@@ -1,19 +1,27 @@
 import { Show, createEffect, createSignal, For } from "solid-js";
-import type {
-  CardCollectionDTO,
-  UserDTOWithVotesAndCards,
+import {
+  isUserDTO,
+  type CardCollectionDTO,
+  type UserDTO,
+  type UserDTOWithVotesAndCards,
 } from "../../utils/apiTypes";
 import CardMetadataDisplay from "./CardMetadataDisplay";
 import { PaginationController } from "./Atoms/PaginationController";
 import { CollectionUserPageView } from "./CollectionUserPageView";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
-import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
+import {
+  BiRegularChevronDown,
+  BiRegularChevronUp,
+  BiRegularLogIn,
+  BiRegularXCircle,
+} from "solid-icons/bi";
 import { ConfirmModal } from "./Atoms/ConfirmModal";
 
 export const UserCardDisplay = (props: { id: string; page: number }) => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
 
   const [user, setUser] = createSignal<UserDTOWithVotesAndCards>();
+  const [loggedUser, setLoggedUser] = createSignal<UserDTO>();
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);
   const [showConfirmModal, setShowConfirmModal] = createSignal(false);
   const [cardCollections, setCardCollections] = createSignal<
@@ -22,9 +30,31 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const [onDelete, setOnDelete] = createSignal<() => void>(() => {});
+  const [expanded, setExpanded] = createSignal(false);
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const [onCollectionDelete, setOnCollectionDelete] = createSignal(() => {});
+  const [
+    showConfirmCollectionDeleteModal,
+    setShowConfirmCollectionmDeleteModal,
+  ] = createSignal(false);
+
+  createEffect(() => {
+    void fetch(`${apiHost}/auth`, {
+      method: "GET",
+      credentials: "include",
+    }).then((response) => {
+      if (response.ok) {
+        void response.json().then((data) => {
+          isUserDTO(data) ? setLoggedUser(data) : setLoggedUser(undefined);
+        });
+      }
+    });
+  });
 
   // Fetch the card collections for the auth'ed user
   const fetchCardCollections = () => {
+    if (!user()) return;
+
     void fetch(`${apiHost}/card_collection`, {
       method: "GET",
       credentials: "include",
@@ -100,8 +130,37 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
             {new Date(user()?.created_at ?? "").toLocaleDateString()}
           </div>
         </div>
-        <div class="mb-4 mt-4 flex flex-col border-t border-neutral-500 pt-4 text-xl">
-          <CollectionUserPageView user={user()} />
+        <div
+          classList={{
+            "mb-4 mt-4 flex  flex-col overflow-hidden border-t border-neutral-500 pt-4 text-xl":
+              true,
+            "max-h-[400px]": !expanded(),
+          }}
+        >
+          <CollectionUserPageView
+            user={user()}
+            loggedUser={loggedUser()}
+            setOnDelete={setOnCollectionDelete}
+            setShowConfirmModal={setShowConfirmCollectionmDeleteModal}
+          />
+        </div>
+        <div class="items-center text-center">
+          <button
+            class="ml-2 text-center font-semibold"
+            onClick={() => setExpanded((prev) => !prev)}
+          >
+            {expanded() ? (
+              <div class="flex flex-row items-center">
+                Show Less
+                <BiRegularChevronUp class="h-8 w-8 fill-current" />
+              </div>
+            ) : (
+              <div class="flex flex-row items-center">
+                Show More
+                <BiRegularChevronDown class="h-8 w-8 fill-current" />
+              </div>
+            )}
+          </button>
         </div>
         <div class="mb-4 mt-4 flex flex-col border-t border-neutral-500 pt-4 text-xl">
           <span>Cards:</span>
@@ -113,7 +172,7 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
                 <div class="w-full">
                   <CardMetadataDisplay
                     setShowConfirmModal={setShowConfirmModal}
-                    signedInUserId={user()?.id}
+                    signedInUserId={loggedUser()?.id}
                     viewingUserId={props.id}
                     card={card}
                     setShowModal={setShowNeedLoginModal}
@@ -143,7 +202,7 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
           <div class="min-w-[250px] sm:min-w-[300px]">
             <BiRegularXCircle class="mx-auto h-8 w-8 fill-current !text-red-500" />
             <div class="mb-4 text-xl font-bold">
-              Cannot view this card without an account
+              Cannot use collections without an account
             </div>
             <div class="mx-auto flex w-fit flex-col space-y-3">
               <a
@@ -162,6 +221,12 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
         setShowConfirmModal={setShowConfirmModal}
         onConfirm={onDelete}
         message={"Are you sure you want to delete this card?"}
+      />
+      <ConfirmModal
+        showConfirmModal={showConfirmCollectionDeleteModal}
+        setShowConfirmModal={setShowConfirmCollectionmDeleteModal}
+        onConfirm={onCollectionDelete}
+        message={"Are you sure you want to delete this collection?"}
       />
     </>
   );
