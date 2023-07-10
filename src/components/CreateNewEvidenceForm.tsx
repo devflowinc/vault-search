@@ -194,12 +194,12 @@ const SearchForm = () => {
         <div class="flex flex-col space-y-2">
           <div class="flex items-center space-x-2">
             <div>Card Content*</div>
-            <div class="rounded-full border border-black dark:border-white">
+            <div class="h-4.5 w-4.5 rounded-full border border-black dark:border-white">
               <Tooltip
                 body={
-                  <BiRegularQuestionMark class="h-5 w-5 rounded-full fill-current" />
+                  <BiRegularQuestionMark class="h-4 w-4 rounded-full fill-current" />
                 }
-                tooltipText="ctrl+shift+j to shrink text, ctrl+shift+k to enlarge text"
+                tooltipText="Ctrl+Shift+J to Shrink Text, Ctrl+Shift+K to Enlarge Text"
               />
             </div>
           </div>
