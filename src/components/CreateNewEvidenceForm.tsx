@@ -1,8 +1,13 @@
-import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
+import {
+  BiRegularLogIn,
+  BiRegularQuestionMark,
+  BiRegularXCircle,
+} from "solid-icons/bi";
 import { JSX, Show, createEffect, createSignal } from "solid-js";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import type { TinyMCE } from "../../public/tinymce/tinymce";
 import { CreateCardDTO, isActixApiDefaultError } from "../../utils/apiTypes";
+import { Tooltip } from "./Atoms/Tooltip";
 
 const SearchForm = () => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
@@ -78,8 +83,9 @@ const SearchForm = () => {
       (window as any).tinymce.activeEditor.focus();
     }
   };
-
   createEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+    const tinyMCE: TinyMCE = (window as any).tinymce as TinyMCE;
     const options = {
       selector: "#search-query-textarea",
       height: "100%",
@@ -112,18 +118,52 @@ const SearchForm = () => {
         ? "dark"
         : "default",
       toolbar:
-        "undo redo | blocks | " +
+        "undo redo | fontsize | " +
         "bold italic backcolor | alignleft aligncenter " +
         "alignright alignjustify | bullist numlist outdent indent | " +
         "removeformat | help",
+      font_size_formats: "4px 6px 8px 10px 12px 14px 16px 18px 20px 22px",
       content_style:
         "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }",
       menubar: false,
       entity_encoding: "raw",
       entities: "160,nbsp,38,amp,60,lt,62,gt",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setup: function (editor: any) {
+        const getSelectionFontSize = () => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
+          const node = tinyMCE.activeEditor?.selection.getNode();
+
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+          const fontsize = tinyMCE.activeEditor?.dom.getStyle(
+            node as unknown as HTMLElement | null,
+            "font-size",
+            true,
+          );
+          const fontsizeNumber = fontsize
+            ? Number(fontsize.replace("px", ""))
+            : 16;
+
+          return fontsizeNumber;
+        };
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        editor.addShortcut("meta+shift+k", "Increase font size.", function () {
+          const newFontsize = getSelectionFontSize() + 2;
+
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+          editor.execCommand("FontSize", false, `${newFontsize}px`);
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        editor.addShortcut("meta+shift+j", "Decrease font size.", function () {
+          const newFontsize = getSelectionFontSize() - 2;
+
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+          editor.execCommand("FontSize", false, `${newFontsize}px`);
+        });
+      },
     };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-    const tinyMCE: TinyMCE = (window as any).tinymce as TinyMCE;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
     void tinyMCE.init(options as any);
   });
@@ -152,7 +192,17 @@ const SearchForm = () => {
           />
         </div>
         <div class="flex flex-col space-y-2">
-          <div>Card Content*</div>
+          <div class="flex items-center space-x-2">
+            <div>Card Content*</div>
+            <div class="rounded-full border border-black dark:border-white">
+              <Tooltip
+                body={
+                  <BiRegularQuestionMark class="h-5 w-5 rounded-full fill-current" />
+                }
+                tooltipText="ctrl+shift+j to shrink text, ctrl+shift+k to enlarge text"
+              />
+            </div>
+          </div>
 
           <textarea id="search-query-textarea" />
         </div>
