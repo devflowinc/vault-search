@@ -1,5 +1,6 @@
 import { Setter, Show, createSignal } from "solid-js";
 import type {
+  CardBookmarksDTO,
   CardCollectionDTO,
   CardMetadataWithVotes,
   FileDTO,
@@ -17,9 +18,11 @@ export interface CardMetadataDisplayProps {
   viewingUserId?: string;
   card: CardMetadataWithVotes;
   cardCollections: CardCollectionDTO[];
+  bookmarks: CardBookmarksDTO[];
   setShowModal: Setter<boolean>;
   setShowConfirmModal: Setter<boolean>;
   fetchCardCollections: () => void;
+  fetchBookmarks: () => void;
   setOnDelete: Setter<() => void>;
 }
 
@@ -141,6 +144,10 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
               cardMetadata={props.card}
               fetchCardCollections={props.fetchCardCollections}
               setLoginModal={props.setShowModal}
+              bookmarks={
+                props.bookmarks.filter((e) => e.card_uuid == props.card.id)[0]
+              }
+              fetchBookmarks={props.fetchBookmarks}
             />
           </div>
           <div class="flex w-full flex-col">

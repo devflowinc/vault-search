@@ -1,5 +1,6 @@
 import { Setter, Show, createEffect, createSignal } from "solid-js";
 import type {
+  CardBookmarksDTO,
   CardCollectionDTO,
   CardMetadataWithVotes,
   FileDTO,
@@ -33,9 +34,11 @@ export interface ScoreCardProps {
   score: number;
   setShowModal: Setter<boolean>;
   fetchCardCollections: () => void;
+  fetchBookmarks: () => void;
   setOnDelete: Setter<() => void>;
   setShowConfirmModal: Setter<boolean>;
   initialExpanded?: boolean;
+  bookmarks: CardBookmarksDTO[];
 }
 
 const ScoreCard = (props: ScoreCardProps) => {
@@ -222,6 +225,12 @@ const ScoreCard = (props: ScoreCardProps) => {
               cardMetadata={props.card}
               fetchCardCollections={props.fetchCardCollections}
               setLoginModal={props.setShowModal}
+              bookmarks={
+                props.bookmarks.filter((bookmark) => {
+                  return bookmark.card_uuid === props.card.id;
+                })[0]
+              }
+              fetchBookmarks={props.fetchBookmarks}
             />
           </div>
           <div class="flex w-full items-start">

@@ -81,9 +81,8 @@ export interface CardCollectionDTO {
 }
 
 export interface CardBookmarksDTO {
-  id: string;
-  collection_id: string;
-  card_metadata_id: string;
+  card_uuid: string;
+  collection_ids: [string];
 }
 
 export interface CardsWithTotalPagesDTO {

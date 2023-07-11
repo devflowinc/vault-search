@@ -4,6 +4,7 @@ import {
   type CardCollectionDTO,
   type UserDTO,
   type UserDTOWithVotesAndCards,
+  CardBookmarksDTO,
 } from "../../utils/apiTypes";
 import CardMetadataDisplay from "./CardMetadataDisplay";
 import { PaginationController } from "./Atoms/PaginationController";
@@ -37,6 +38,7 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
     showConfirmCollectionDeleteModal,
     setShowConfirmCollectionmDeleteModal,
   ] = createSignal(false);
+  const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO[]>([]);
 
   createEffect(() => {
     void fetch(`${apiHost}/auth`, {
@@ -69,6 +71,7 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
 
   createEffect(() => {
     fetchCardCollections();
+    fetchBookmarks();
   });
 
   createEffect(() => {
@@ -83,6 +86,23 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
       }
     });
   });
+  const fetchBookmarks = () => {
+    if (!user()) return;
+    void fetch(
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      `${apiHost}/card_collection/bookmark/${user()?.cards.map((c) => c.id)}`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    ).then((response) => {
+      if (response.ok) {
+        void response.json().then((data) => {
+          setBookmarks(data as CardBookmarksDTO[]);
+        });
+      }
+    });
+  };
 
   return (
     <>
@@ -181,6 +201,8 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
                     cardCollections={cardCollections()}
                     fetchCardCollections={fetchCardCollections}
                     setOnDelete={setOnDelete}
+                    fetchBookmarks={fetchBookmarks}
+                    bookmarks={bookmarks()}
                   />
                 </div>
               )}
