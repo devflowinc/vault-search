@@ -45,14 +45,19 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
       if (response.ok) {
         void response.json().then((data) => {
           setBookmarks((data as CardBookmarksDTO[])[0]);
+          setNotLoggedIn(false);
         });
+      }
+
+      if (response.status === 401) {
+        props.setLoginModal(true);
+        setNotLoggedIn(true);
       }
     });
   };
   createEffect(() => {
     setBookmarks(props.bookmarks);
     if (props.signedInUserId === undefined) {
-      setNotLoggedIn(true);
       return;
     }
     if (!refetchingCardCollections()) return;
