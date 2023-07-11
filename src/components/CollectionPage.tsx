@@ -5,6 +5,7 @@ import {
   type UserDTO,
   type CardCollectionBookmarkDTO,
   CardMetadataWithVotes,
+  CardBookmarksDTO,
 } from "../../utils/apiTypes";
 import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
@@ -47,6 +48,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
   const [cardCollections, setCardCollections] = createSignal<
     CardCollectionDTO[]
   >([]);
+  const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO[]>([]);
   const [error, setError] = createSignal("");
   const [fetching, setFetching] = createSignal(true);
   const [fetchingCollections, setFetchingCollections] = createSignal(false);
@@ -146,6 +148,10 @@ export const CollectionPage = (props: CollectionPageProps) => {
     });
   });
 
+  createEffect(() => {
+    fetchBookmarks();
+  });
+
   // Fetch the card collections for the auth'ed user
   const fetchCardCollections = () => {
     if (!user()) return;
@@ -156,6 +162,27 @@ export const CollectionPage = (props: CollectionPageProps) => {
       if (response.ok) {
         void response.json().then((data) => {
           setCardCollections(data as CardCollectionDTO[]);
+        });
+      }
+    });
+  };
+
+  const fetchBookmarks = () => {
+    if (!user()) return;
+    void fetch(
+      `${apiHost}/card_collection/bookmark/${metadatasWithVotes()
+        .map((m) => {
+          return m.id;
+        })
+        .join(",")}`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    ).then((response) => {
+      if (response.ok) {
+        void response.json().then((data) => {
+          setBookmarks(data as CardBookmarksDTO[]);
         });
       }
     });
@@ -313,6 +340,8 @@ export const CollectionPage = (props: CollectionPageProps) => {
                     setShowModal={setShowNeedLoginModal}
                     cardCollections={cardCollections()}
                     fetchCardCollections={fetchCardCollections}
+                    fetchBookmarks={fetchBookmarks}
+                    bookmarks={bookmarks()}
                     setOnDelete={setOnDelete}
                     setShowConfirmModal={setShowConfirmDeleteModal}
                   />

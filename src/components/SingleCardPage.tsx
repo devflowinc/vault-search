@@ -6,6 +6,7 @@ import {
   type UserDTO,
   isCardMetadataWithVotes,
   SingleCardDTO,
+  CardBookmarksDTO,
 } from "../../utils/apiTypes";
 import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
@@ -29,7 +30,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
     CardCollectionDTO[]
   >([]);
   const [user, setUser] = createSignal<UserDTO | undefined>();
-
+  const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO[]>([]);
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
     createSignal(false);
 
@@ -61,6 +62,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
 
   createEffect(() => {
     fetchCardCollections();
+    fetchBookmarks();
   });
 
   // Fetch the user info for the auth'ed user
@@ -76,6 +78,21 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
       }
     });
   });
+
+  const fetchBookmarks = () => {
+    if (!user()) return;
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    void fetch(`${apiHost}/card_collection/bookmark/${cardMetadata()?.id}`, {
+      method: "GET",
+      credentials: "include",
+    }).then((response) => {
+      if (response.ok) {
+        void response.json().then((data) => {
+          setBookmarks(data as CardBookmarksDTO[]);
+        });
+      }
+    });
+  };
 
   createEffect(() => {
     setFetching(true);
@@ -121,6 +138,8 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
         setShowModal={setShowNeedLoginModal}
         cardCollections={cardCollections()}
         fetchCardCollections={fetchCardCollections}
+        fetchBookmarks={fetchBookmarks}
+        bookmarks={bookmarks()}
         setOnDelete={setOnDelete}
         setShowConfirmModal={setShowConfirmDeleteModal}
         initialExpanded={true}

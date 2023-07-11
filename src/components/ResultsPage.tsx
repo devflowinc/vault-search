@@ -5,6 +5,7 @@ import {
   type CardsWithTotalPagesDTO,
   type ScoreCardDTO,
   type UserDTO,
+  CardBookmarksDTO,
 } from "../../utils/apiTypes";
 import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
@@ -32,7 +33,6 @@ const ResultsPage = (props: ResultsPageProps) => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
   const initialResultCards = props.defaultResultCards.score_cards;
   const totalPages = props.defaultResultCards.total_card_pages;
-
   const [cardCollections, setCardCollections] = createSignal<
     CardCollectionDTO[]
   >([]);
@@ -47,7 +47,7 @@ const ResultsPage = (props: ResultsPageProps) => {
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const [onDelete, setOnDelete] = createSignal(() => {});
-
+  const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO[]>([]);
   // Fetch the card collections for the auth'ed user
   const fetchCardCollections = () => {
     if (!user()) return;
@@ -97,7 +97,8 @@ const ResultsPage = (props: ResultsPageProps) => {
       if (response.ok) {
         void response.json().then((data) => {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          setResultCards(data.score_cards);
+          const result = data.score_cards as ScoreCardDTO[];
+          setResultCards(result);
         });
       }
     });
@@ -108,6 +109,31 @@ const ResultsPage = (props: ResultsPageProps) => {
       abortController.abort();
     };
   });
+
+  createEffect(() => {
+    fetchBookmarks();
+  });
+
+  const fetchBookmarks = () => {
+    if (!user()) return;
+    void fetch(
+      `${apiHost}/card_collection/bookmark/${resultCards()
+        .map((c) => {
+          return c.metadata.map((m) => m.id);
+        })
+        .join(",")}`,
+      {
+        method: "GET",
+        credentials: "include",
+      },
+    ).then((response) => {
+      if (response.ok) {
+        void response.json().then((data) => {
+          setBookmarks(data as CardBookmarksDTO[]);
+        });
+      }
+    });
+  };
 
   return (
     <>
@@ -134,6 +160,8 @@ const ResultsPage = (props: ResultsPageProps) => {
                   score={card.score}
                   setShowModal={setShowNeedLoginModal}
                   fetchCardCollections={fetchCardCollections}
+                  fetchBookmarks={fetchBookmarks}
+                  bookmarks={bookmarks()}
                   setOnDelete={setOnDelete}
                   setShowConfirmModal={setShowConfirmDeleteModal}
                 />

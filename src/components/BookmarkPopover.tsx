@@ -20,7 +20,9 @@ export interface BookmarkPopoverProps {
   cardMetadata: CardMetadata;
   cardCollections: CardCollectionDTO[];
   fetchCardCollections: () => void;
+  fetchBookmarks: () => void;
   setLoginModal: Setter<boolean>;
+  bookmarks: CardBookmarksDTO;
 }
 
 const BookmarkPopover = (props: BookmarkPopoverProps) => {
@@ -28,42 +30,42 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
 
   const [refetchingCardCollections, setRefetchingCardCollections] =
     createSignal(false);
+  const [refetchingBookmarks, setRefetchingBookmarks] = createSignal(false);
   const [showCollectionForm, setShowCollectionForm] = createSignal(false);
   const [notLoggedIn, setNotLoggedIn] = createSignal(false);
   const [collectionFormTitle, setCollectionFormTitle] = createSignal("");
-  const [cardCollections, setCardCollections] =
-    createSignal<CardBookmarksDTO[]>();
   const [usingPanel, setUsingPanel] = createSignal(false);
+  const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO>();
 
-  const fetchCollections = () => {
-    if (!props.signedInUserId) {
-      setNotLoggedIn(true);
-      return;
-    }
+  const refetchBookmarks = () => {
     void fetch(`${apiHost}/card_collection/bookmark/${props.cardMetadata.id}`, {
       method: "GET",
       credentials: "include",
     }).then((response) => {
       if (response.ok) {
-        void response.json().then((collection) => {
-          setCardCollections(collection as CardBookmarksDTO[]);
+        void response.json().then((data) => {
+          setBookmarks((data as CardBookmarksDTO[])[0]);
         });
-      }
-      if (response.status == 401) {
-        setNotLoggedIn(true);
       }
     });
   };
-
   createEffect(() => {
-    fetchCollections();
-  });
-
-  createEffect(() => {
+    setBookmarks(props.bookmarks);
+    if (props.signedInUserId === undefined) {
+      setNotLoggedIn(true);
+      return;
+    }
     if (!refetchingCardCollections()) return;
 
     props.fetchCardCollections();
     setRefetchingCardCollections(false);
+  });
+
+  createEffect(() => {
+    if (!refetchingBookmarks()) return;
+
+    refetchBookmarks();
+    setRefetchingBookmarks(false);
   });
 
   return (
@@ -78,7 +80,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                   props.setLoginModal(true);
                   return;
                 }
-                fetchCollections();
+                refetchBookmarks();
               }}
             >
               <VsBookmark class="z-0 h-5 w-5 fill-current" />
@@ -110,8 +112,8 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
 
                             <input
                               type="checkbox"
-                              checked={cardCollections()?.some(
-                                (c) => c.collection_id == collection.id,
+                              checked={bookmarks()?.collection_ids.includes(
+                                collection.id,
                               )}
                               onChange={(e) => {
                                 void fetch(
@@ -133,6 +135,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                                     e.currentTarget.checked =
                                       !e.currentTarget.checked;
                                   }
+                                  setRefetchingBookmarks(true);
                                 });
                                 setState(true);
                               }}
