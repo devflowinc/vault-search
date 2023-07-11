@@ -6,6 +6,7 @@ import {
   type CardCollectionBookmarkDTO,
   CardMetadataWithVotes,
   CardBookmarksDTO,
+  BookmarkDTO,
 } from "../../utils/apiTypes";
 import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
@@ -13,6 +14,7 @@ import { BiRegularLogInCircle, BiRegularXCircle } from "solid-icons/bi";
 import { FiEdit, FiLock, FiTrash } from "solid-icons/fi";
 import { ConfirmModal } from "./Atoms/ConfirmModal";
 import { PaginationController } from "./Atoms/PaginationController";
+import { ScoreCardArray } from "./ScoreCardArray";
 
 export interface CollectionPageProps {
   collectionID: string;
@@ -25,7 +27,7 @@ export interface CollectionPageProps {
 
 export const CollectionPage = (props: CollectionPageProps) => {
   const apiHost: string = import.meta.env.PUBLIC_API_HOST as string;
-  const cardMetadatasWithVotes: CardMetadataWithVotes[] = [];
+  const cardMetadatasWithVotes: BookmarkDTO[] = [];
 
   // Sometimes this will error server-side if the collection is private so we have to handle it
   try {
@@ -40,7 +42,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
 
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);
   const [metadatasWithVotes, setMetadatasWithVotes] = createSignal<
-    CardMetadataWithVotes[]
+    BookmarkDTO[]
   >(cardMetadatasWithVotes);
   const [collectionInfo, setCollectionInfo] = createSignal<CardCollectionDTO>(
     props.defaultCollectionCards.metadata.collection,
@@ -172,7 +174,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
     void fetch(
       `${apiHost}/card_collection/bookmark/${metadatasWithVotes()
         .map((m) => {
-          return m.id;
+          return m.metadata.map((c) => c.id);
         })
         .join(",")}`,
       {
@@ -332,9 +334,9 @@ export const CollectionPage = (props: CollectionPageProps) => {
             <For each={metadatasWithVotes()}>
               {(card) => (
                 <div class="mt-4">
-                  <ScoreCard
+                  <ScoreCardArray
                     signedInUserId={user()?.id}
-                    card={card}
+                    cards={card.metadata}
                     score={0}
                     collection={true}
                     setShowModal={setShowNeedLoginModal}

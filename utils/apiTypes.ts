@@ -283,11 +283,14 @@ export const isCardCollectionDTO = (
 };
 
 export interface CardCollectionBookmarkDTO {
-  bookmarks: CardMetadataWithVotes[];
+  bookmarks: BookmarkDTO[];
   collection: CardCollectionDTO;
   total_pages: number;
 }
 
+export interface BookmarkDTO {
+  metadata: [CardMetadataWithVotes];
+}
 export interface CreateCardDTO {
   message?: string;
   card_metadata: CardMetadataWithVotes;
