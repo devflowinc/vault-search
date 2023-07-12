@@ -82,9 +82,15 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
   const fetchBookmarks = () => {
     if (!user()) return;
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    void fetch(`${apiHost}/card_collection/bookmark/${cardMetadata()?.id}`, {
-      method: "GET",
+    void fetch(`${apiHost}/card_collection/bookmark`, {
+      method: "POST",
       credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        collection_ids: cardMetadata()?.id,
+      }),
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {

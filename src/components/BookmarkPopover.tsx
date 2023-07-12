@@ -38,9 +38,15 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
   const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO>();
 
   const refetchBookmarks = () => {
-    void fetch(`${apiHost}/card_collection/bookmark/${props.cardMetadata.id}`, {
-      method: "GET",
+    void fetch(`${apiHost}/card_collection/bookmark`, {
+      method: "POST",
       credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        collection_ids: props.cardMetadata.id,
+      }),
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
@@ -50,7 +56,6 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
       }
 
       if (response.status === 401) {
-        props.setLoginModal(true);
         setNotLoggedIn(true);
       }
     });
@@ -71,6 +76,12 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
 
     refetchBookmarks();
     setRefetchingBookmarks(false);
+  });
+
+  createEffect(() => {
+    if (!notLoggedIn()) return;
+
+    props.setLoginModal(true);
   });
 
   return (
