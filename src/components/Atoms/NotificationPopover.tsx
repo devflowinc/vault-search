@@ -9,12 +9,12 @@ import {
 import type { NotificationDTO, UserDTO } from "../../../utils/apiTypes";
 import { IoNotificationsOutline } from "solid-icons/io";
 import { For, createEffect, createSignal } from "solid-js";
-import { VsClose } from "solid-icons/vs";
+import { VsCheckAll, VsClose } from "solid-icons/vs";
 
 export const NotificationPopover = (props: { user: UserDTO | null }) => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
   const similarityScoreThreshold =
-    (import.meta.env.SIMILARITY_SCORE_THRESHOLD as number) ?? 80;
+    (import.meta.env.SIMILARITY_SCORE_THRESHOLD as number | undefined) ?? 80;
 
   const [notifs, setNotifs] = createSignal<NotificationDTO[]>([]);
 
@@ -50,6 +50,20 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
             (notif) => notif.card_uuid !== notification.card_uuid,
           ),
         );
+      }
+    });
+  };
+
+  const markAllAsRead = () => {
+    void fetch(`${apiHost}/notifications/all`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    }).then((response) => {
+      if (response.ok) {
+        setNotifs([]);
       }
     });
   };
@@ -105,19 +119,28 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
             >
               <PopoverPanel
                 unmount={true}
-                class="dark:text-whit  absolute  left-1/2  z-10 mt-5 h-fit w-fit -translate-x-[100%] transform  rounded-md  bg-neutral-100 p-1 px-4 dark:bg-neutral-700  sm:px-0"
+                class="absolute left-1/2  z-10  mt-5 h-fit w-fit -translate-x-[100%] transform rounded-md  bg-neutral-100  p-1 px-4 dark:bg-neutral-700 dark:text-white  sm:px-0"
               >
                 <Menu class="h-0">
                   <MenuItem class="h-0" as="button" aria-label="Empty" />
                 </Menu>
                 <div class="e w-full  min-w-[200px] md:min-w-[300px]">
-                  <div class="mb-1 text-center text-sm font-semibold">
-                    {"Notifications " +
-                      (notifs().length > 0
-                        ? `(${notifs().length} pending)`
-                        : "")}
+                  <div class="mb-1 flex items-center justify-center text-center align-middle text-sm font-semibold">
+                    <div class="items-center text-center">
+                      {"Notifications " +
+                        (notifs().length > 0
+                          ? `(${notifs().length} pending)`
+                          : "")}
+                    </div>
+                    <button
+                      class="absolute right-2 flex justify-end"
+                      onClick={() => markAllAsRead()}
+                    >
+                      <VsCheckAll class="h-4 w-4" />
+                    </button>
                   </div>
-                  <div class="flex flex-col space-y-1 overflow-hidden rounded-lg bg-neutral-100 shadow-lg drop-shadow-lg dark:bg-neutral-700 dark:text-white">
+
+                  <div class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md flex max-h-[40vh] w-full transform flex-col space-y-1 overflow-hidden overflow-y-auto rounded-lg bg-neutral-100 shadow-lg drop-shadow-lg scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:bg-neutral-700 dark:text-white dark:scrollbar-track-neutral-600 dark:scrollbar-thumb-neutral-500">
                     <For each={notifs()}>
                       {(notification) => {
                         return (
