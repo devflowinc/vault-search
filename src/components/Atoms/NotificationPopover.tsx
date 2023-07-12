@@ -16,8 +16,6 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
   const similarityScoreThreshold =
     (import.meta.env.SIMILARITY_SCORE_THRESHOLD as number) ?? 80;
 
-  console.log(similarityScoreThreshold);
-
   const [notifs, setNotifs] = createSignal<NotificationDTO[]>([]);
 
   createEffect(() => {
