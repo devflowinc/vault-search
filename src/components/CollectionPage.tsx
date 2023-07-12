@@ -4,11 +4,9 @@ import {
   type CardCollectionDTO,
   type UserDTO,
   type CardCollectionBookmarkDTO,
-  CardMetadataWithVotes,
   CardBookmarksDTO,
   BookmarkDTO,
 } from "../../utils/apiTypes";
-import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import { BiRegularLogInCircle, BiRegularXCircle } from "solid-icons/bi";
 import { FiEdit, FiLock, FiTrash } from "solid-icons/fi";
@@ -171,17 +169,20 @@ export const CollectionPage = (props: CollectionPageProps) => {
 
   const fetchBookmarks = () => {
     if (!user()) return;
-    void fetch(
-      `${apiHost}/card_collection/bookmark/${metadatasWithVotes()
-        .map((m) => {
-          return m.metadata.map((c) => c.id);
-        })
-        .join(",")}`,
-      {
-        method: "GET",
-        credentials: "include",
+    void fetch(`${apiHost}/card_collection/bookmark`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
       },
-    ).then((response) => {
+      body: JSON.stringify({
+        collection_ids: metadatasWithVotes()
+          .map((m) => {
+            return m.metadata.map((c) => c.id);
+          })
+          .join(","),
+      }),
+    }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
           setBookmarks(data as CardBookmarksDTO[]);

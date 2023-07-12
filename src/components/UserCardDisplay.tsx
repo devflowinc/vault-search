@@ -90,10 +90,16 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
     if (!user()) return;
     void fetch(
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `${apiHost}/card_collection/bookmark/${user()?.cards.map((c) => c.id)}`,
+      `${apiHost}/card_collection/bookmark`,
       {
-        method: "GET",
+        method: "POST",
         credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          collection_ids: user()?.cards.map((c) => c.id),
+        }),
       },
     ).then((response) => {
       if (response.ok) {

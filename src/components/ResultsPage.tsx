@@ -116,17 +116,20 @@ const ResultsPage = (props: ResultsPageProps) => {
 
   const fetchBookmarks = () => {
     if (!user()) return;
-    void fetch(
-      `${apiHost}/card_collection/bookmark/${resultCards()
-        .map((c) => {
-          return c.metadata.map((m) => m.id);
-        })
-        .join(",")}`,
-      {
-        method: "GET",
-        credentials: "include",
+    void fetch(`${apiHost}/card_collection/bookmark`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
       },
-    ).then((response) => {
+      body: JSON.stringify({
+        collection_ids: resultCards()
+          .map((c) => {
+            return c.metadata.map((m) => m.id);
+          })
+          .join(","),
+      }),
+    }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
           setBookmarks(data as CardBookmarksDTO[]);
