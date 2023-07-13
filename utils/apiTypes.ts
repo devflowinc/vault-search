@@ -41,6 +41,7 @@ export type CardMetadataWithVotes = Exclude<CardMetadata, "author"> & {
   total_downvotes: number;
   vote_by_current_user: boolean | null;
   private: boolean | null;
+  verification_score: number | null;
 };
 
 export const isCardMetadataWithVotes = (
