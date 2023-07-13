@@ -19,6 +19,10 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
   const [notifs, setNotifs] = createSignal<NotificationDTO[]>([]);
 
   createEffect(() => {
+    fetchNotifs();
+  });
+
+  const fetchNotifs = () => {
     void fetch(`${apiHost}/notifications`, {
       method: "GET",
       credentials: "include",
@@ -30,7 +34,7 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
         }
       });
     });
-  });
+  };
 
   const markAsRead = (notification: NotificationDTO) => {
     const notifs_inner = notifs();
@@ -100,6 +104,9 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
             <PopoverButton
               aria-label="Toggle user actions menu"
               classList={{ flex: true }}
+              onClick={() => {
+                fetchNotifs();
+              }}
             >
               <IoNotificationsOutline class="mr-4 h-6 w-6 fill-current" />
               {notifs().length > 0 && (
