@@ -7,11 +7,12 @@ import type {
 } from "../../utils/apiTypes";
 import { BiRegularChevronDown, BiRegularChevronUp } from "solid-icons/bi";
 import sanitizeHtml from "sanitize-html";
-import { VsFileSymlinkFile } from "solid-icons/vs";
+import { VsCheck, VsFileSymlinkFile } from "solid-icons/vs";
 import BookmarkPopover from "./BookmarkPopover";
 import { FiEdit, FiGlobe, FiLock, FiTrash } from "solid-icons/fi";
 import { sanitzerOptions } from "./ScoreCard";
 import { Tooltip } from "./Atoms/Tooltip";
+import { AiOutlineExclamation } from "solid-icons/ai";
 
 export interface CardMetadataDisplayProps {
   signedInUserId?: string;
@@ -28,6 +29,8 @@ export interface CardMetadataDisplayProps {
 
 const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
   const api_host = import.meta.env.PUBLIC_API_HOST as string;
+  const similarityScoreThreshold =
+    (import.meta.env.SIMILARITY_SCORE_THRESHOLD as number | undefined) ?? 80;
 
   const [expanded, setExpanded] = createSignal(false);
   const [deleting, setDeleting] = createSignal(false);
@@ -115,6 +118,26 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
               <Tooltip
                 body={<FiGlobe class="h-5 w-5 text-green-500" />}
                 tooltipText="Publicly visible"
+              />
+            </Show>
+            <Show
+              when={
+                props.card.verification_score ?? 0 > similarityScoreThreshold
+              }
+            >
+              <Tooltip
+                body={<VsCheck class="h-5 w-5 text-green-500" />}
+                tooltipText="This card has been verified"
+              />
+            </Show>
+            <Show
+              when={
+                props.card.verification_score ?? 0 < similarityScoreThreshold
+              }
+            >
+              <Tooltip
+                body={<AiOutlineExclamation class="h-5 w-5 fill-amber-300" />}
+                tooltipText="This card could not be verified"
               />
             </Show>
             <div class="flex-1" />
