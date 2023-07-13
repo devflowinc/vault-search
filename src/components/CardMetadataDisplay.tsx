@@ -122,7 +122,8 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
             </Show>
             <Show
               when={
-                props.card.verification_score ?? 0 > similarityScoreThreshold
+                props.card.verification_score != null &&
+                props.card.verification_score > similarityScoreThreshold
               }
             >
               <Tooltip
@@ -132,7 +133,8 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
             </Show>
             <Show
               when={
-                props.card.verification_score ?? 0 < similarityScoreThreshold
+                props.card.verification_score != null &&
+                props.card.verification_score < similarityScoreThreshold
               }
             >
               <Tooltip
