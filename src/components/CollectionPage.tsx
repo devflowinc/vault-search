@@ -6,6 +6,9 @@ import {
   type CardCollectionBookmarkDTO,
   CardBookmarksDTO,
   BookmarkDTO,
+  ScoreCardDTO,
+  CardCollectionSearchDTO,
+  isScoreCardDTO,
 } from "../../utils/apiTypes";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import { BiRegularLogInCircle, BiRegularXCircle } from "solid-icons/bi";
@@ -13,25 +16,46 @@ import { FiEdit, FiLock, FiTrash } from "solid-icons/fi";
 import { ConfirmModal } from "./Atoms/ConfirmModal";
 import { PaginationController } from "./Atoms/PaginationController";
 import { ScoreCardArray } from "./ScoreCardArray";
+import SearchForm from "./SearchForm";
+import type { Filters } from "./ResultsPage";
 
 export interface CollectionPageProps {
   collectionID: string;
   defaultCollectionCards: {
-    metadata: CardCollectionBookmarkDTO;
+    metadata: CardCollectionBookmarkDTO | CardCollectionSearchDTO;
     status: number;
   };
   page: number;
+  query: string;
+  searchType: string;
+  dataTypeFilters: Filters;
 }
 
 export const CollectionPage = (props: CollectionPageProps) => {
   const apiHost: string = import.meta.env.PUBLIC_API_HOST as string;
   const cardMetadatasWithVotes: BookmarkDTO[] = [];
+  const searchCardMetadatasWithVotes: ScoreCardDTO[] = [];
+  const dataTypeFilters = encodeURIComponent(
+    props.dataTypeFilters.dataTypes.join(","),
+  );
+  // eslint-disable-next-line solid/reactivity
+  const linkFilters = encodeURIComponent(props.dataTypeFilters.links.join(","));
 
   // Sometimes this will error server-side if the collection is private so we have to handle it
   try {
-    if (props.defaultCollectionCards.metadata.bookmarks.length > 0) {
+    if (
+      props.defaultCollectionCards.metadata.bookmarks.length > 0 &&
+      !isScoreCardDTO(props.defaultCollectionCards.metadata.bookmarks)
+    ) {
       cardMetadatasWithVotes.push(
-        ...props.defaultCollectionCards.metadata.bookmarks,
+        ...(props.defaultCollectionCards.metadata.bookmarks as BookmarkDTO[]),
+      );
+    } else if (
+      props.defaultCollectionCards.metadata.bookmarks.length > 0 &&
+      isScoreCardDTO(props.defaultCollectionCards.metadata.bookmarks)
+    ) {
+      searchCardMetadatasWithVotes.push(
+        ...(props.defaultCollectionCards.metadata.bookmarks as ScoreCardDTO[]),
       );
     }
   } catch (e) {
@@ -42,6 +66,9 @@ export const CollectionPage = (props: CollectionPageProps) => {
   const [metadatasWithVotes, setMetadatasWithVotes] = createSignal<
     BookmarkDTO[]
   >(cardMetadatasWithVotes);
+  const [searchMetadatasWithVotes, setSearchMetadatasWithVotes] = createSignal<
+    ScoreCardDTO[]
+  >(searchCardMetadatasWithVotes);
   const [collectionInfo, setCollectionInfo] = createSignal<CardCollectionDTO>(
     props.defaultCollectionCards.metadata.collection,
   );
@@ -90,33 +117,67 @@ export const CollectionPage = (props: CollectionPageProps) => {
   createEffect(() => {
     setFetching(true);
     let collection_id: string | null = null;
-
-    void fetch(
-      `${apiHost}/card_collection/${props.collectionID}/${props.page}`,
-      {
-        method: "GET",
-        credentials: "include",
-      },
-    ).then((response) => {
-      if (response.ok) {
-        void response.json().then((data) => {
-          const collectionBookmarks = data as CardCollectionBookmarkDTO;
-          collection_id = collectionBookmarks.collection.id;
-          setCollectionInfo(collectionBookmarks.collection);
-          setTotalPages(collectionBookmarks.total_pages);
-          setMetadatasWithVotes(collectionBookmarks.bookmarks);
-          setError("");
+    if (props.query === "") {
+      void fetch(
+        `${apiHost}/card_collection/${props.collectionID}/${props.page}`,
+        {
+          method: "GET",
+          credentials: "include",
+        },
+      ).then((response) => {
+        if (response.ok) {
+          void response.json().then((data) => {
+            const collectionBookmarks = data as CardCollectionBookmarkDTO;
+            collection_id = collectionBookmarks.collection.id;
+            setCollectionInfo(collectionBookmarks.collection);
+            setTotalPages(collectionBookmarks.total_pages);
+            setMetadatasWithVotes(collectionBookmarks.bookmarks);
+            setError("");
+            setFetching(false);
+          });
+        }
+        if (response.status == 403) {
           setFetching(false);
-        });
-      }
-      if (response.status == 403) {
-        setFetching(false);
-        setError("You are not authorized to view this collection");
-      }
-      if (response.status == 401) {
-        setShowNeedLoginModal(true);
-      }
-    });
+          setError("You are not authorized to view this collection");
+        }
+        if (response.status == 401) {
+          setShowNeedLoginModal(true);
+        }
+      });
+    } else {
+      void fetch(`${apiHost}/card_collection/search/${props.page}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          content: props.query,
+          filter_oc_file_path: props.dataTypeFilters.dataTypes,
+          filter_link_url: props.dataTypeFilters.links,
+          collection_id: props.collectionID,
+        }),
+      }).then((response) => {
+        if (response.ok) {
+          void response.json().then((data) => {
+            const collectionBookmarks = data as CardCollectionSearchDTO;
+            collection_id = collectionBookmarks.collection.id;
+            setCollectionInfo(collectionBookmarks.collection);
+            setTotalPages(collectionBookmarks.total_pages);
+            setSearchMetadatasWithVotes(collectionBookmarks.bookmarks);
+            setError("");
+            setFetching(false);
+          });
+        }
+        if (response.status == 403) {
+          setFetching(false);
+          setError("You are not authorized to view this collection");
+        }
+        if (response.status == 401) {
+          setShowNeedLoginModal(true);
+        }
+      });
+    }
 
     fetchCardCollections();
 
@@ -332,7 +393,21 @@ export const CollectionPage = (props: CollectionPageProps) => {
         </Show>
         <div class="flex w-full max-w-6xl flex-col space-y-4 border-t border-neutral-500 px-4 sm:px-8 md:px-20">
           <Show when={error().length == 0 && !fetching()}>
-            <For each={metadatasWithVotes()}>
+            <div class="mx-auto mt-8 w-full max-w-4xl px-4 sm:px-8 md:px-20">
+              <SearchForm
+                query={props.query}
+                filters={props.dataTypeFilters}
+                searchType={props.searchType}
+                collectionID={props.collectionID}
+              />
+            </div>
+            <For
+              each={
+                metadatasWithVotes().length > 0
+                  ? metadatasWithVotes()
+                  : searchMetadatasWithVotes()
+              }
+            >
               {(card) => (
                 <div class="mt-4">
                   <ScoreCardArray
@@ -353,8 +428,16 @@ export const CollectionPage = (props: CollectionPageProps) => {
             </For>
             <div class="mx-auto my-12 flex items-center justify-center space-x-2">
               <PaginationController
-                prefix="?"
-                query={`/collection/${props.collectionID}`}
+                prefix={props.query ? "&" : "?"}
+                query={
+                  `/collection/${props.collectionID}` +
+                  (props.query ? `?q=${props.query}` : "") +
+                  (dataTypeFilters ? `&datatypes=${dataTypeFilters}` : "") +
+                  (linkFilters ? `&links=${linkFilters}` : "") +
+                  (props.searchType == "fulltextsearch"
+                    ? `&searchType=fulltextsearch`
+                    : "")
+                }
                 page={props.page}
                 totalPages={totalPages()}
               />

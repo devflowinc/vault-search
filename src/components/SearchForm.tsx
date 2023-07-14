@@ -119,6 +119,7 @@ const SearchForm = (props: {
   query?: string;
   filters: Filters;
   searchType: string;
+  collectionID?: string;
 }) => {
   const [searchTypes, setSearchTypes] = createSignal([
     { name: "Full Text", isSelected: false, route: "fulltextsearch" },
@@ -219,11 +220,15 @@ const SearchForm = (props: {
         .join(","),
     );
 
-    window.location.href =
-      `/search?q=${searchQuery}` +
-      (dataTypeFilters ? `&datatypes=${dataTypeFilters}` : "") +
-      (linkFilters ? `&links=${linkFilters}` : "") +
-      (searchTypes()[0].isSelected ? `&searchType=fulltextsearch` : "");
+    window.location.href = props.collectionID
+      ? `/collection/${props.collectionID}?q=${searchQuery}` +
+        (dataTypeFilters ? `&datatypes=${dataTypeFilters}` : "") +
+        (linkFilters ? `&links=${linkFilters}` : "") +
+        (searchTypes()[0].isSelected ? `&searchType=fulltextsearch` : "")
+      : `/search?q=${searchQuery}` +
+        (dataTypeFilters ? `&datatypes=${dataTypeFilters}` : "") +
+        (linkFilters ? `&links=${linkFilters}` : "") +
+        (searchTypes()[0].isSelected ? `&searchType=fulltextsearch` : "");
   };
 
   createEffect(() => {
@@ -447,7 +452,7 @@ const SearchForm = (props: {
             )}
           </Popover>
         </div>
-        <Show when={!props.query}>
+        <Show when={!props.query && !props.collectionID}>
           <div class="flex flex-row justify-center space-x-2 px-6 md:px-40">
             <button
               class="w-fit rounded  bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"

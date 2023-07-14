@@ -289,6 +289,26 @@ export interface CardCollectionBookmarkDTO {
   total_pages: number;
 }
 
+export interface CardCollectionSearchDTO {
+  bookmarks: ScoreCardDTO[];
+  collection: CardCollectionDTO;
+  total_pages: number;
+}
+
+export const isCardCollectionSearchDTO = (
+  collection: unknown,
+): collection is CardCollectionSearchDTO => {
+  if (typeof collection !== "object" || collection === null) return false;
+
+  return (
+    indirectHasOwnProperty(collection, "bookmarks") &&
+    isScoreCardDTO((collection as CardCollectionSearchDTO).bookmarks[0]) &&
+    indirectHasOwnProperty(collection, "collection") &&
+    isCardCollectionDTO((collection as CardCollectionSearchDTO).collection) &&
+    indirectHasOwnProperty(collection, "total_pages") &&
+    typeof (collection as CardCollectionSearchDTO).total_pages === "number"
+  );
+};
 export interface BookmarkDTO {
   metadata: [CardMetadataWithVotes];
 }
@@ -312,7 +332,7 @@ export interface CardCollectionBookmarksDTO {
   collection: CardCollectionDTO;
 }
 export interface CardCollectionBookmarksWithStatusDTO {
-  metadata: CardCollectionBookmarkDTO;
+  metadata: CardCollectionBookmarkDTO | CardCollectionSearchDTO;
   status: number;
 }
 
