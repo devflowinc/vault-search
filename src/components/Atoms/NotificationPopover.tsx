@@ -6,9 +6,16 @@ import {
   Menu,
   MenuItem,
 } from "solid-headless";
-import type { NotificationDTO, UserDTO } from "../../../utils/apiTypes";
+import {
+  isFileUploadCompleteNotificationDTO,
+  type NotificationDTO,
+  type UserDTO,
+  type VerificationDTO,
+  type FileUploadCompleteNotificationDTO,
+  isVerificationNotificationDTO,
+} from "../../../utils/apiTypes";
 import { IoNotificationsOutline } from "solid-icons/io";
-import { For, createEffect, createSignal } from "solid-js";
+import { For, Show, createEffect, createSignal } from "solid-js";
 import { VsCheckAll, VsClose } from "solid-icons/vs";
 
 export const NotificationPopover = (props: { user: UserDTO | null }) => {
@@ -49,10 +56,21 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
       }),
     }).then((response) => {
       if (response.ok) {
+        const isVerif = isVerificationNotificationDTO(notification);
+        const isFileUpload = isFileUploadCompleteNotificationDTO(notification);
         setNotifs(
-          notifs_inner.filter(
-            (notif) => notif.card_uuid !== notification.card_uuid,
-          ),
+          notifs_inner.filter((notif) => {
+            if (isVerif && isVerificationNotificationDTO(notif)) {
+              return notif.card_uuid !== notification.card_uuid;
+            } else if (
+              isFileUpload &&
+              isFileUploadCompleteNotificationDTO(notif)
+            ) {
+              return notif.collection_uuid !== notification.collection_uuid;
+            } else {
+              return true;
+            }
+          }),
         );
       }
     });
@@ -150,6 +168,10 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
                   <div class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md flex max-h-[40vh] w-full transform flex-col space-y-1 overflow-hidden overflow-y-auto rounded-lg bg-neutral-100 shadow-lg drop-shadow-lg scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:bg-neutral-700 dark:text-white dark:scrollbar-track-neutral-600 dark:scrollbar-thumb-neutral-500">
                     <For each={notifs()}>
                       {(notification) => {
+                        const isVerif =
+                          isVerificationNotificationDTO(notification);
+                        const isFileUpload =
+                          isFileUploadCompleteNotificationDTO(notification);
                         return (
                           <div>
                             <div class="flex space-x-2 rounded-md px-2 hover:cursor-pointer focus:bg-neutral-100 focus:outline-none dark:hover:bg-neutral-600 dark:hover:bg-none dark:focus:bg-neutral-600">
@@ -161,38 +183,63 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
                                 }}
                               >
                                 <div class="flex flex-row justify-start space-x-2 py-2 ">
-                                  <span class="text-left">
-                                    {notification.similarity_score >
-                                    similarityScoreThreshold ? (
+                                  <Show when={isVerif}>
+                                    <span class="text-left">
+                                      {isVerif &&
+                                        notification.similarity_score >
+                                        similarityScoreThreshold ? (
+                                        <a
+                                          href={`/card/${notification.card_uuid}`}
+                                          onClick={() => {
+                                            markAsRead(notification);
+                                            setState(true);
+                                          }}
+                                        >
+                                          Your{" "}
+                                          <text class="underline dark:text-acid-500">
+                                            card
+                                          </text>{" "}
+                                          was approved! 🎉
+                                        </a>
+                                      ) : (
+                                        <a
+                                          href={
+                                            isFileUpload
+                                              ? `/collection/${notification.collection_uuid}`
+                                              : "/"
+                                          }
+                                          onClick={() => {
+                                            markAsRead(notification);
+                                            setState(true);
+                                          }}
+                                        >
+                                          Your{" "}
+                                          <text class="underline dark:text-acid-500">
+                                            Collection
+                                          </text>{" "}
+                                          has been uploaded
+                                        </a>
+                                      )}
+                                    </span>
+                                  </Show>
+                                  <Show when={isFileUpload}>
+                                    <span class="text-left">
                                       <a
-                                        href={`/card/${notification.card_uuid}`}
+                                        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                                        href={`/collection/${notification.collection_uuid}`}
                                         onClick={() => {
                                           markAsRead(notification);
                                           setState(true);
                                         }}
                                       >
-                                        Your{" "}
+                                        Your docment collection{" "}
                                         <text class="underline dark:text-acid-500">
-                                          card
+                                          "{notification.collection_name}"
                                         </text>{" "}
-                                        was approved! 🎉
+                                        has been uploaded
                                       </a>
-                                    ) : (
-                                      <a
-                                        href={`/card/${notification.card_uuid}`}
-                                        onClick={() => {
-                                          markAsRead(notification);
-                                          setState(true);
-                                        }}
-                                      >
-                                        Your{" "}
-                                        <text class="underline dark:text-acid-500">
-                                          card
-                                        </text>{" "}
-                                        could not be verified.
-                                      </a>
-                                    )}
-                                  </span>
+                                    </span>
+                                  </Show>
                                 </div>
                               </button>
                               <button>
