@@ -69,6 +69,11 @@ export const UploadFile = () => {
         setIsSubmitting(false);
         return;
       }
+      if (!response.ok) {
+        setIsSubmitting(false);
+        setErrorText("Something went wrong. Please try again.");
+        return;
+      }
       void response.json().then((data) => {
         setIsSubmitting(false);
 
