@@ -151,7 +151,7 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
           <div class="flex w-full justify-start">
             {user()?.total_votes_cast.toLocaleString()}
           </div>
-          <div class="font-semibold">Date Created:</div>
+          <div class="font-semibold">Date Joined:</div>
           <div class="flex w-full justify-start">
             {new Date(user()?.created_at ?? "").toLocaleDateString()}
           </div>
