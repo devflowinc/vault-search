@@ -255,7 +255,7 @@ const SearchForm = (props: {
         onSubmit={onSubmit}
       >
         <div class="flex space-x-2">
-          <div class="pr-0. flex w-full justify-center space-x-2 rounded-md bg-neutral-100 px-4 py-1 pr-[10px] dark:bg-neutral-700 ">
+          <div class="flex w-full justify-center space-x-2 rounded-md bg-neutral-100 px-4 py-1 pr-[10px] dark:bg-neutral-700 ">
             <Show when={!props.query}>
               <BiRegularSearch class="mt-1 h-6 w-6 fill-current" />
             </Show>
@@ -348,15 +348,17 @@ const SearchForm = (props: {
                       <MenuItem class="h-0" as="button" aria-label="Empty" />
                     </Menu>
                     <div class="flex w-full min-w-full space-x-2">
-                      <Combobox
-                        selectedComboboxItems={selectedDataTypeComboboxItems}
-                        setSelectedComboboxItems={
-                          setDataTypeSelectedComboboxItems
-                        }
-                        comboboxSections={filterDataTypes}
-                        setComboboxSections={setFilterDataTypes}
-                        setPopoverOpen={setState}
-                      />
+                      <Show when={!props.collectionID}>
+                        <Combobox
+                          selectedComboboxItems={selectedDataTypeComboboxItems}
+                          setSelectedComboboxItems={
+                            setDataTypeSelectedComboboxItems
+                          }
+                          comboboxSections={filterDataTypes}
+                          setComboboxSections={setFilterDataTypes}
+                          setPopoverOpen={setState}
+                        />
+                      </Show>
                       <Combobox
                         selectedComboboxItems={selectedLinkComboboxItems}
                         setSelectedComboboxItems={setLinkSelectedComboboxItems}
@@ -438,7 +440,7 @@ const SearchForm = (props: {
                               </div>
                               {option.isSelected && (
                                 <span>
-                                  <FaSolidCheck class="text-xl" />
+                                  <FaSolidCheck class="fill-current text-xl" />
                                 </span>
                               )}
                             </MenuItem>

@@ -45,14 +45,14 @@ export const CollectionPage = (props: CollectionPageProps) => {
   try {
     if (
       props.defaultCollectionCards.metadata.bookmarks.length > 0 &&
-      !isScoreCardDTO(props.defaultCollectionCards.metadata.bookmarks)
+      !isScoreCardDTO(props.defaultCollectionCards.metadata.bookmarks[0])
     ) {
       cardMetadatasWithVotes.push(
         ...(props.defaultCollectionCards.metadata.bookmarks as BookmarkDTO[]),
       );
     } else if (
       props.defaultCollectionCards.metadata.bookmarks.length > 0 &&
-      isScoreCardDTO(props.defaultCollectionCards.metadata.bookmarks)
+      isScoreCardDTO(props.defaultCollectionCards.metadata.bookmarks[0])
     ) {
       searchCardMetadatasWithVotes.push(
         ...(props.defaultCollectionCards.metadata.bookmarks as ScoreCardDTO[]),
@@ -145,19 +145,22 @@ export const CollectionPage = (props: CollectionPageProps) => {
         }
       });
     } else {
-      void fetch(`${apiHost}/card_collection/search/${props.page}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      void fetch(
+        `${apiHost}/card_collection/${props.searchType}/${props.page}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            content: props.query,
+            filter_oc_file_path: props.dataTypeFilters.dataTypes,
+            filter_link_url: props.dataTypeFilters.links,
+            collection_id: props.collectionID,
+          }),
         },
-        credentials: "include",
-        body: JSON.stringify({
-          content: props.query,
-          filter_oc_file_path: props.dataTypeFilters.dataTypes,
-          filter_link_url: props.dataTypeFilters.links,
-          collection_id: props.collectionID,
-        }),
-      }).then((response) => {
+      ).then((response) => {
         if (response.ok) {
           void response.json().then((data) => {
             const collectionBookmarks = data as CardCollectionSearchDTO;
@@ -393,14 +396,33 @@ export const CollectionPage = (props: CollectionPageProps) => {
         </Show>
         <div class="flex w-full max-w-6xl flex-col space-y-4 border-t border-neutral-500 px-4 sm:px-8 md:px-20">
           <Show when={error().length == 0 && !fetching()}>
-            <div class="mx-auto mt-8 w-full max-w-4xl px-4 sm:px-8 md:px-20">
-              <SearchForm
-                query={props.query}
-                filters={props.dataTypeFilters}
-                searchType={props.searchType}
-                collectionID={props.collectionID}
-              />
+            <div class="align-middle md:flex">
+              <Show when={props.query != ""}>
+                <button
+                  class="relative mx-auto ml-5 mt-8 h-fit max-h-[240px] rounded-md bg-neutral-600 p-2 md:absolute"
+                  onClick={() =>
+                    (window.location.href = `/collection/${props.collectionID}`)
+                  }
+                >
+                  ← Back
+                </button>
+              </Show>
+              <div class="mx-auto mt-8 w-full max-w-4xl px-4 sm:px-8 md:px-20">
+                <SearchForm
+                  query={props.query}
+                  filters={props.dataTypeFilters}
+                  searchType={props.searchType}
+                  collectionID={props.collectionID}
+                />
+              </div>
             </div>
+            <Show when={props.query != ""}>
+              <div class="flex w-full flex-col items-center rounded-md p-2">
+                <div class="text-xl font-semibold">
+                  Search results for "{props.query}"
+                </div>
+              </div>
+            </Show>
             <For
               each={
                 metadatasWithVotes().length > 0
@@ -413,7 +435,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
                   <ScoreCardArray
                     signedInUserId={user()?.id}
                     cards={card.metadata}
-                    score={0}
+                    score={isScoreCardDTO(card) ? card.score : 0}
                     collection={true}
                     setShowModal={setShowNeedLoginModal}
                     cardCollections={cardCollections()}
@@ -451,6 +473,8 @@ export const CollectionPage = (props: CollectionPageProps) => {
           <Show
             when={
               metadatasWithVotes().length == 0 &&
+              searchMetadatasWithVotes().length == 0 &&
+              !fetching() &&
               props.defaultCollectionCards.metadata.collection.is_public
             }
           >

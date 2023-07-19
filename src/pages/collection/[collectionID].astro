@@ -62,7 +62,7 @@ try {
     };
   } else {
     const collectionCardResponse = await fetch(
-      `${apiHost}/card_collection/search/${page}`,
+      `${apiHost}/card_collection/${searchType}/${page}`,
       {
         method: "POST",
         headers: {
