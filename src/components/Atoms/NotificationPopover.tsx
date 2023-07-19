@@ -217,7 +217,7 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
                                           <text class="underline dark:text-acid-500">
                                             Collection
                                           </text>{" "}
-                                          has been uploaded
+                                          has been uploaded and parsed
                                         </a>
                                       )}
                                     </span>
