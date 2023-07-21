@@ -14,6 +14,7 @@ export const UploadFile = () => {
   const [isSubmitting, setIsSubmitting] = createSignal(false);
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);
   const [errorText, setErrorText] = createSignal("");
+  const [submitted, setSubmitted] = createSignal(false);
 
   const handleDragUpload = (e: DragEvent) => {
     e.preventDefault();
@@ -76,24 +77,19 @@ export const UploadFile = () => {
       }
       void response.json().then((data) => {
         setIsSubmitting(false);
-
-        if (
-          typeof data !== "object" ||
-          !indirectHasOwnProperty(data, "collection_id")
-        ) {
-          setErrorText("Something went wrong. Please try again.");
-          return;
-        }
-
-        const typedData = data as { collection_id: string };
-
-        window.location.href = `/collection/${typedData.collection_id || ""}`;
+        setSubmitted(true);
       });
     });
   };
   return (
     <>
       <div class="text-center text-red-500">{errorText()}</div>
+      <Show when={submitted()}>
+        <div class="text-center text-green-500">
+          Your document has been uploaded and we will send you a notification
+          when it has been processed.
+        </div>
+      </Show>
       <div class="my-4 flex w-full flex-col gap-y-3">
         <label
           for="dropzone-file"

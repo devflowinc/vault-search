@@ -186,7 +186,7 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
                                   <Show when={isVerif}>
                                     <span class="text-left">
                                       {isVerif &&
-                                        notification.similarity_score >
+                                      notification.similarity_score >
                                         similarityScoreThreshold ? (
                                         <a
                                           href={`/card/${notification.card_uuid}`}
@@ -226,17 +226,22 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
                                     <span class="text-left">
                                       <a
                                         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                                        href={`/collection/${notification.collection_uuid}`}
+                                        href={`/collection/${
+                                          (
+                                            notification as FileUploadCompleteNotificationDTO
+                                          ).collection_uuid
+                                        }`}
                                         onClick={() => {
                                           markAsRead(notification);
                                           setState(true);
                                         }}
                                       >
-                                        Your docment collection{" "}
+                                        Your{" "}
                                         <text class="underline dark:text-acid-500">
-                                          "{notification.collection_name}"
+                                          document
                                         </text>{" "}
-                                        has been uploaded
+                                        collection has been uploaded and
+                                        processed
                                       </a>
                                     </span>
                                   </Show>
