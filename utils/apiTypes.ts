@@ -223,13 +223,13 @@ export const isUserDTOWithVotesAndCards = (
     typeof (user as UserDTOWithVotesAndCards).created_at === "string" &&
     indirectHasOwnProperty(user, "total_cards_created") &&
     typeof (user as UserDTOWithVotesAndCards).total_cards_created ===
-    "number" &&
+      "number" &&
     indirectHasOwnProperty(user, "total_upvotes_received") &&
     typeof (user as UserDTOWithVotesAndCards).total_upvotes_received ===
-    "number" &&
+      "number" &&
     indirectHasOwnProperty(user, "total_downvotes_received") &&
     typeof (user as UserDTOWithVotesAndCards).total_downvotes_received ===
-    "number" &&
+      "number" &&
     indirectHasOwnProperty(user, "total_votes_cast") &&
     typeof (user as UserDTOWithVotesAndCards).total_votes_cast === "number"
   );
@@ -364,25 +364,22 @@ export const isFileUploadCompleteNotificationDTO = (
   return (
     indirectHasOwnProperty(notification, "id") &&
     typeof (notification as FileUploadCompleteNotificationDTO).id ===
-    "string" &&
+      "string" &&
     indirectHasOwnProperty(notification, "user_uuid") &&
     typeof (notification as FileUploadCompleteNotificationDTO).user_uuid ===
-    "string" &&
+      "string" &&
     indirectHasOwnProperty(notification, "collection_uuid") &&
     typeof (notification as FileUploadCompleteNotificationDTO)
       .collection_uuid === "string" &&
-    indirectHasOwnProperty(notification, "collection_name") &&
-    typeof (notification as FileUploadCompleteNotificationDTO)
-      .collection_name === "string" &&
     indirectHasOwnProperty(notification, "user_read") &&
     typeof (notification as FileUploadCompleteNotificationDTO).user_read ===
-    "boolean" &&
+      "boolean" &&
     indirectHasOwnProperty(notification, "created_at") &&
     typeof (notification as FileUploadCompleteNotificationDTO).created_at ===
-    "string" &&
+      "string" &&
     indirectHasOwnProperty(notification, "updated_at") &&
     typeof (notification as FileUploadCompleteNotificationDTO).updated_at ===
-    "string"
+      "string"
   );
 };
 
@@ -412,7 +409,7 @@ export const isVerificationNotificationDTO = (
     indirectHasOwnProperty(notification, "verification_uuid") &&
     typeof (notification as VerificationDTO).verification_uuid === "string" &&
     indirectHasOwnProperty(notification, "similarity_score") &&
-    typeof (notification as VerificationDTO).similarity_score === "string" &&
+    typeof (notification as VerificationDTO).similarity_score === "number" &&
     indirectHasOwnProperty(notification, "user_read") &&
     typeof (notification as VerificationDTO).user_read === "boolean" &&
     indirectHasOwnProperty(notification, "created_at") &&
