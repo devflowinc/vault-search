@@ -17,13 +17,13 @@ export const Navbar = () => {
             <div class="flex w-full items-center justify-end space-x-1 sm:space-x-4">
               <a
                 href="/create"
-                class="hidden min-[420px]:text-lg min-[920px]:block"
+                class="hidden text-center min-[420px]:text-lg min-[920px]:block"
               >
                 Create Evidence
               </a>
               <a
                 href="/upload"
-                class="hidden min-[420px]:text-lg min-[920px]:block"
+                class="hidden text-center min-[420px]:text-lg min-[920px]:block"
               >
                 Upload Files
               </a>
@@ -33,6 +33,12 @@ export const Navbar = () => {
                 class="hidden min-[420px]:text-lg min-[920px]:block"
               >
                 Blog
+              </a>
+              <a
+                href="/auth/login"
+                class="hidden min-[420px]:text-lg min-[720px]:block"
+              >
+                Login
               </a>
               <div>
                 <RegisterOrUserProfile />
@@ -90,7 +96,7 @@ export const Navbar = () => {
       <div
         class={`${
           isOpen() ? "block" : "hidden"
-        } bg-white dark:bg-shark-500 dark:text-white md:hidden`}
+        } bg-neutral-100 dark:bg-shark-500 dark:text-white md:hidden`}
         id="mobile-menu"
       >
         <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
@@ -112,6 +118,12 @@ export const Navbar = () => {
             class="block rounded-md bg-neutral-100 px-3 py-2 text-base font-medium hover:bg-neutral-100 dark:bg-shark-500 dark:hover:bg-neutral-700"
           >
             Blog
+          </a>
+          <a
+            href="/auth/login"
+            class="block rounded-md bg-neutral-100 px-3 py-2 text-base font-medium hover:bg-neutral-100 dark:bg-shark-500 dark:hover:bg-neutral-700"
+          >
+            Login
           </a>
         </div>
       </div>

@@ -10,7 +10,7 @@ const SetPasswordForm = (params: { id: string }) => {
 
   return (
     <>
-      <div class="flex w-full max-w-sm flex-col space-y-2">
+      <div class="flex w-full max-w-sm flex-col space-y-2 p-2">
         <div class="text-center text-2xl font-bold">
           <span class="py-2">Finish Registration</span>
         </div>
