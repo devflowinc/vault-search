@@ -193,18 +193,22 @@ export const CollectionUserPageView = (props: CollectionUserPageViewProps) => {
               {collectionPage()} / {collectionPageCount()}
             </div>
             <button
+              class="disabled:text-neutral-400 dark:disabled:text-neutral-500"
+              disabled={collectionPage() == 1}
               onClick={() => {
                 setCollectionPage((prev) => prev - 1);
               }}
             >
-              <BiRegularChevronLeft class="h-6 w-6 fill-current text-neutral-400 dark:text-neutral-500" />
+              <BiRegularChevronLeft class="h-6 w-6 fill-current" />
             </button>
             <button
+              class="disabled:text-neutral-400 dark:disabled:text-neutral-500"
+              disabled={collectionPage() == collectionPageCount()}
               onClick={() => {
                 setCollectionPage((prev) => prev + 1);
               }}
             >
-              <BiRegularChevronRight class="h-6 w-6 fill-current text-neutral-400 dark:text-neutral-500" />
+              <BiRegularChevronRight class="h-6 w-6 fill-current" />
             </button>
           </div>
         </div>
