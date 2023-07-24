@@ -51,13 +51,17 @@ try {
 ---
 
 <SearchLayout>
-  <div class="mx-auto mt-8 w-full max-w-4xl px-4 sm:px-8 md:px-20">
-    <SearchForm
-      query={query}
-      filters={dataTypeFilters}
-      searchType={searchType}
-      client:load
-    />
+  <div class="max-w-6xl mx-auto w-full">
+    <div
+      class="mt-8 mx-auto w-full max-w-[calc(100%-32px)] min-[360px]:max-w-[calc(100%-64px)] px-4 sm:px-8 md:px-20"
+    >
+      <SearchForm
+        query={query}
+        filters={dataTypeFilters}
+        searchType={searchType}
+        client:load
+      />
+    </div>
   </div>
   <ResultsPage
     page={page}
