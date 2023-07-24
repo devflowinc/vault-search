@@ -1,10 +1,12 @@
 import { FiTrash } from "solid-icons/fi";
-import type {
-  CardCollectionDTO,
-  UserDTO,
-  UserDTOWithVotesAndCards,
+import {
+  isCardCollectionPageDTO,
+  type CardCollectionDTO,
+  type UserDTO,
+  type UserDTOWithVotesAndCards,
 } from "../../utils/apiTypes";
 import { For, Setter, Show, createEffect, createSignal } from "solid-js";
+import { BiRegularChevronLeft, BiRegularChevronRight } from "solid-icons/bi";
 
 export interface CollectionUserPageViewProps {
   user: UserDTOWithVotesAndCards | undefined;
@@ -16,19 +18,24 @@ export interface CollectionUserPageViewProps {
 export const CollectionUserPageView = (props: CollectionUserPageViewProps) => {
   const api_host = import.meta.env.PUBLIC_API_HOST as string;
   const [collections, setCollections] = createSignal<CardCollectionDTO[]>([]);
+  const [collectionPage, setCollectionPage] = createSignal(1);
+  const [collectionPageCount, setCollectionPageCount] = createSignal(1);
   const [deleting, setDeleting] = createSignal(false);
 
   createEffect(() => {
     const userId = props.user?.id;
     if (userId === undefined) return;
 
-    void fetch(`${api_host}/user/collections/${userId}`, {
+    void fetch(`${api_host}/user/collections/${userId}/${collectionPage()}`, {
       method: "GET",
       credentials: "include",
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          setCollections(data as CardCollectionDTO[]);
+          if (isCardCollectionPageDTO(data)) {
+            setCollections(data.collections);
+            setCollectionPageCount(data.total_pages);
+          }
         });
       }
     });
@@ -121,7 +128,7 @@ export const CollectionUserPageView = (props: CollectionUserPageViewProps) => {
                   <For each={collections()}>
                     {(collection) => (
                       <tr>
-                        <td class="cursor-pointer whitespace-nowrap py-4 pl-4 pr-3 text-sm font-semibold text-gray-500 dark:text-white">
+                        <td class="cursor-pointer whitespace-nowrap py-4 pl-4 pr-3 text-sm font-semibold text-gray-900 dark:text-white">
                           <a
                             class="w-full"
                             href={`/collection/${collection.id}`}
@@ -129,13 +136,13 @@ export const CollectionUserPageView = (props: CollectionUserPageViewProps) => {
                             {collection.name}
                           </a>
                         </td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-300">
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-900 dark:text-gray-300">
                           {collection.description}
                         </td>
-                        <td class="whitespace-nowrap px-3 py-4 text-center text-sm text-gray-500 dark:text-gray-300">
+                        <td class="whitespace-nowrap px-3 py-4 text-center text-sm text-gray-900 dark:text-gray-300">
                           {!collection.is_public ? "✓" : ""}
                         </td>
-                        <td class="whitespace-nowrap px-3 py-4 text-left text-sm text-gray-500 dark:text-gray-300">
+                        <td class="whitespace-nowrap px-3 py-4 text-left text-sm text-gray-900 dark:text-gray-300">
                           {new Date(
                             collection.created_at,
                           ).toLocaleDateString() +
@@ -177,6 +184,16 @@ export const CollectionUserPageView = (props: CollectionUserPageViewProps) => {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <div />
+          <div class="flex items-center">
+            <div class="text-sm text-neutral-400">
+              {collectionPage()} / {collectionPageCount()}
+            </div>
+            <BiRegularChevronLeft class="h-6 w-6 fill-current text-neutral-400 dark:text-neutral-500" />{" "}
+            <BiRegularChevronRight class="h-6 w-6 fill-current text-neutral-400 dark:text-neutral-500" />
           </div>
         </div>
       </div>

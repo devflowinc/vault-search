@@ -223,13 +223,13 @@ export const isUserDTOWithVotesAndCards = (
     typeof (user as UserDTOWithVotesAndCards).created_at === "string" &&
     indirectHasOwnProperty(user, "total_cards_created") &&
     typeof (user as UserDTOWithVotesAndCards).total_cards_created ===
-      "number" &&
+    "number" &&
     indirectHasOwnProperty(user, "total_upvotes_received") &&
     typeof (user as UserDTOWithVotesAndCards).total_upvotes_received ===
-      "number" &&
+    "number" &&
     indirectHasOwnProperty(user, "total_downvotes_received") &&
     typeof (user as UserDTOWithVotesAndCards).total_downvotes_received ===
-      "number" &&
+    "number" &&
     indirectHasOwnProperty(user, "total_votes_cast") &&
     typeof (user as UserDTOWithVotesAndCards).total_votes_cast === "number"
   );
@@ -265,6 +265,31 @@ export interface CardCollectionDTO {
   created_at: string;
   updated_at: string;
 }
+
+export interface CardCollectionPageDTO {
+  collections: CardCollectionDTO[];
+  total_pages: number;
+  page: number;
+}
+
+export const isCardCollectionPageDTO = (
+  collectionPage: unknown,
+): collectionPage is CardCollectionPageDTO => {
+  if (typeof collectionPage !== "object" || collectionPage === null)
+    return false;
+
+  return (
+    indirectHasOwnProperty(collectionPage, "collections") &&
+    Array.isArray((collectionPage as CardCollectionPageDTO).collections) &&
+    (collectionPage as CardCollectionPageDTO).collections.every((collection) =>
+      isCardCollectionDTO(collection),
+    ) &&
+    indirectHasOwnProperty(collectionPage, "total_pages") &&
+    typeof (collectionPage as CardCollectionPageDTO).total_pages === "number" &&
+    indirectHasOwnProperty(collectionPage, "page") &&
+    typeof (collectionPage as CardCollectionPageDTO).page === "number"
+  );
+};
 
 export const isCardCollectionDTO = (
   collection: unknown,
@@ -364,22 +389,22 @@ export const isFileUploadCompleteNotificationDTO = (
   return (
     indirectHasOwnProperty(notification, "id") &&
     typeof (notification as FileUploadCompleteNotificationDTO).id ===
-      "string" &&
+    "string" &&
     indirectHasOwnProperty(notification, "user_uuid") &&
     typeof (notification as FileUploadCompleteNotificationDTO).user_uuid ===
-      "string" &&
+    "string" &&
     indirectHasOwnProperty(notification, "collection_uuid") &&
     typeof (notification as FileUploadCompleteNotificationDTO)
       .collection_uuid === "string" &&
     indirectHasOwnProperty(notification, "user_read") &&
     typeof (notification as FileUploadCompleteNotificationDTO).user_read ===
-      "boolean" &&
+    "boolean" &&
     indirectHasOwnProperty(notification, "created_at") &&
     typeof (notification as FileUploadCompleteNotificationDTO).created_at ===
-      "string" &&
+    "string" &&
     indirectHasOwnProperty(notification, "updated_at") &&
     typeof (notification as FileUploadCompleteNotificationDTO).updated_at ===
-      "string"
+    "string"
   );
 };
 
