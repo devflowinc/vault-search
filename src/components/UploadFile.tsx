@@ -5,7 +5,6 @@ import {
 } from "solid-icons/bi";
 import { Show, createSignal } from "solid-js";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
-import { indirectHasOwnProperty } from "../../utils/apiTypes";
 
 export const UploadFile = () => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
@@ -75,7 +74,7 @@ export const UploadFile = () => {
         setErrorText("Something went wrong. Please try again.");
         return;
       }
-      void response.json().then((data) => {
+      void response.json().then(() => {
         setIsSubmitting(false);
         setSubmitted(true);
       });

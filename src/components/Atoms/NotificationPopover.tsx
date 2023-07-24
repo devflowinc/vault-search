@@ -10,7 +10,6 @@ import {
   isFileUploadCompleteNotificationDTO,
   type NotificationDTO,
   type UserDTO,
-  type VerificationDTO,
   type FileUploadCompleteNotificationDTO,
   isVerificationNotificationDTO,
 } from "../../../utils/apiTypes";
