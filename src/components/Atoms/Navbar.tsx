@@ -34,12 +34,6 @@ export const Navbar = () => {
               >
                 Blog
               </a>
-              <a
-                href="/auth/login"
-                class="hidden min-[420px]:text-lg min-[720px]:block"
-              >
-                Login
-              </a>
               <div>
                 <RegisterOrUserProfile />
               </div>
@@ -118,12 +112,6 @@ export const Navbar = () => {
             class="block rounded-md bg-neutral-100 px-3 py-2 text-base font-medium hover:bg-neutral-100 dark:bg-shark-500 dark:hover:bg-neutral-700"
           >
             Blog
-          </a>
-          <a
-            href="/auth/login"
-            class="block rounded-md bg-neutral-100 px-3 py-2 text-base font-medium hover:bg-neutral-100 dark:bg-shark-500 dark:hover:bg-neutral-700"
-          >
-            Login
           </a>
         </div>
       </div>
