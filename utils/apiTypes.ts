@@ -269,7 +269,6 @@ export interface CardCollectionDTO {
 export interface CardCollectionPageDTO {
   collections: CardCollectionDTO[];
   total_pages: number;
-  page: number;
 }
 
 export const isCardCollectionPageDTO = (
@@ -285,9 +284,7 @@ export const isCardCollectionPageDTO = (
       isCardCollectionDTO(collection),
     ) &&
     indirectHasOwnProperty(collectionPage, "total_pages") &&
-    typeof (collectionPage as CardCollectionPageDTO).total_pages === "number" &&
-    indirectHasOwnProperty(collectionPage, "page") &&
-    typeof (collectionPage as CardCollectionPageDTO).page === "number"
+    typeof (collectionPage as CardCollectionPageDTO).total_pages === "number"
   );
 };
 

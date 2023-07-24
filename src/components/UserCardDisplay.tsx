@@ -10,12 +10,7 @@ import CardMetadataDisplay from "./CardMetadataDisplay";
 import { PaginationController } from "./Atoms/PaginationController";
 import { CollectionUserPageView } from "./CollectionUserPageView";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
-import {
-  BiRegularChevronLeft,
-  BiRegularChevronRight,
-  BiRegularLogIn,
-  BiRegularXCircle,
-} from "solid-icons/bi";
+import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
 import { ConfirmModal } from "./Atoms/ConfirmModal";
 
 export const UserCardDisplay = (props: { id: string; page: number }) => {
