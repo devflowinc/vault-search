@@ -12,10 +12,12 @@ import {
   type UserDTO,
   type FileUploadCompleteNotificationDTO,
   isVerificationNotificationDTO,
+  NotificationWithPagesDTO,
 } from "../../../utils/apiTypes";
 import { IoNotificationsOutline } from "solid-icons/io";
 import { For, Show, createEffect, createSignal } from "solid-js";
 import { VsCheckAll, VsClose } from "solid-icons/vs";
+import { BiRegularChevronLeft, BiRegularChevronRight } from "solid-icons/bi";
 
 export const NotificationPopover = (props: { user: UserDTO | null }) => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
@@ -23,20 +25,26 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
     (import.meta.env.SIMILARITY_SCORE_THRESHOLD as number | undefined) ?? 80;
 
   const [notifs, setNotifs] = createSignal<NotificationDTO[]>([]);
+  const [page, setPage] = createSignal(1);
+  const [fullCount, setFullCount] = createSignal(0);
+  const [totalPages, setTotalPages] = createSignal(0);
+  const [usingPanel, setUsingPanel] = createSignal(false);
 
   createEffect(() => {
     fetchNotifs();
   });
 
   const fetchNotifs = () => {
-    void fetch(`${apiHost}/notifications`, {
+    void fetch(`${apiHost}/notifications/${page()}`, {
       method: "GET",
       credentials: "include",
     }).then((response) => {
       void response.json().then((data) => {
         if (response.ok) {
-          const notifs = data as NotificationDTO[];
-          setNotifs(notifs.filter((notif) => !notif.user_read).reverse());
+          const notifData = data as NotificationWithPagesDTO;
+          setNotifs(notifData.notifications);
+          setTotalPages(notifData.total_pages);
+          setFullCount(notifData.full_count);
         }
       });
     });
@@ -90,19 +98,14 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
   };
 
   function getTimeIn12HourFormat(date: Date): string {
-    let hours: number = date.getHours();
-    const minutes: number = date.getMinutes();
-    const ampm: string = hours >= 12 ? "PM" : "AM";
-
-    // Convert hours to 12-hour format
-    hours = hours % 12;
-    hours = hours ? hours : 12; // 0 should be treated as 12
-
-    // Add leading zeros to minutes if necessary
-    const formattedMinutes: string =
-      minutes < 10 ? `0${minutes}` : String(minutes);
-
-    return `${hours}:${formattedMinutes} ${ampm}`;
+    return date.toLocaleString("en-US", {
+      hour12: true,
+      year: "2-digit",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    });
   }
 
   return (
@@ -122,6 +125,7 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
               aria-label="Toggle user actions menu"
               classList={{ flex: true }}
               onClick={() => {
+                setPage(1);
                 fetchNotifs();
               }}
             >
@@ -133,7 +137,7 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
               )}
             </PopoverButton>
             <Transition
-              show={isOpen()}
+              show={isOpen() || usingPanel()}
               enter="transition duration-200"
               enterFrom="opacity-0"
               enterTo="opacity-100"
@@ -144,6 +148,9 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
               <PopoverPanel
                 unmount={true}
                 class="absolute left-1/2  z-10  mt-5 h-fit w-fit -translate-x-[100%] transform rounded-md  bg-neutral-100  p-1 px-4 dark:bg-neutral-700 dark:text-white  sm:px-0"
+                onMouseEnter={() => setUsingPanel(true)}
+                onMouseLeave={() => setUsingPanel(false)}
+                onClick={() => setState(true)}
               >
                 <Menu class="h-0">
                   <MenuItem class="h-0" as="button" aria-label="Empty" />
@@ -152,9 +159,7 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
                   <div class="mb-1 flex items-center justify-center text-center align-middle text-sm font-semibold">
                     <div class="items-center text-center">
                       {"Notifications " +
-                        (notifs().length > 0
-                          ? `(${notifs().length} pending)`
-                          : "")}
+                        (notifs().length > 0 ? `(${fullCount()} pending)` : "")}
                     </div>
                     <button
                       class="absolute right-2 flex justify-end"
@@ -265,6 +270,36 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
                         );
                       }}
                     </For>
+                    <div class="flex items-center justify-between">
+                      <div />
+                      <div class="flex items-center">
+                        <div class="text-sm text-neutral-400">
+                          {page()} / {totalPages()}
+                        </div>
+                        <button
+                          class="disabled:text-neutral-400 dark:disabled:text-neutral-500"
+                          disabled={page() == 1}
+                          onClick={() => {
+                            setState(true);
+                            setPage((prev) => prev - 1);
+                            fetchNotifs();
+                          }}
+                        >
+                          <BiRegularChevronLeft class="h-6 w-6 fill-current" />
+                        </button>
+                        <button
+                          class="disabled:text-neutral-400 dark:disabled:text-neutral-500"
+                          disabled={page() == totalPages()}
+                          onClick={() => {
+                            setState(true);
+                            setPage((prev) => prev + 1);
+                            fetchNotifs();
+                          }}
+                        >
+                          <BiRegularChevronRight class="h-6 w-6 fill-current" />
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </PopoverPanel>
