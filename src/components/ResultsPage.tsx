@@ -152,7 +152,7 @@ const ResultsPage = (props: ResultsPageProps) => {
             <div class="text-2xl">No results found</div>
           </button>
         </Show>
-        <div class="flex w-full max-w-6xl flex-col space-y-4 px-4 sm:px-8 md:px-20">
+        <div class="flex w-full max-w-6xl flex-col space-y-4 px-1 min-[360px]:px-4 sm:px-8 md:px-20">
           <For each={resultCards()}>
             {(card) => (
               <div>
