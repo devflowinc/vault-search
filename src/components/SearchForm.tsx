@@ -250,10 +250,7 @@ const SearchForm = (props: {
 
   return (
     <div class="w-full">
-      <form
-        class="w-full space-y-4 text-neutral-800 dark:text-white"
-        onSubmit={onSubmit}
-      >
+      <form class="w-full space-y-4 dark:text-white" onSubmit={onSubmit}>
         <div class="flex space-x-2">
           <div class="flex w-full justify-center space-x-2 rounded-md bg-neutral-100 px-4 py-1 pr-[10px] dark:bg-neutral-700 ">
             <Show when={!props.query}>
@@ -378,7 +375,7 @@ const SearchForm = (props: {
                 <PopoverButton
                   aria-label="Toggle filters"
                   type="button"
-                  class="flex items-center space-x-1 text-sm text-neutral-800 dark:text-white"
+                  class="flex items-center space-x-1 text-sm"
                 >
                   <span>Search Type</span>{" "}
                   <svg
