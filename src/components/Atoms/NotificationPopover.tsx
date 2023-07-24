@@ -84,7 +84,7 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
   };
 
   const markAllAsRead = () => {
-    void fetch(`${apiHost}/notifications/all`, {
+    void fetch(`${apiHost}/notifications_readall`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
