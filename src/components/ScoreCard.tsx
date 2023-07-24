@@ -308,6 +308,16 @@ const ScoreCard = (props: ScoreCardProps) => {
                   {props.card.link}
                 </a>
               </Show>
+              <Show when={props.card.oc_file_path}>
+                <div class="flex space-x-2">
+                  <span class="font-semibold text-neutral-800 dark:text-neutral-200">
+                    OC Path:{" "}
+                  </span>
+                  <a>
+                    {props.card.oc_file_path?.split("/").slice(0, -1).join("/")}
+                  </a>
+                </div>
+              </Show>
               <Show when={props.card.oc_file_path ?? props.card.file_name}>
                 <div class="flex space-x-2">
                   <span class="font-semibold text-neutral-800 dark:text-neutral-200">
@@ -372,6 +382,7 @@ const ScoreCard = (props: ScoreCardProps) => {
           <div
             classList={{
               "line-clamp-4 gradient-mask-b-0": !expanded(),
+              "text-ellipsis max-w-fit break-all ": true,
             }}
             // eslint-disable-next-line solid/no-innerhtml
             innerHTML={sanitizeHtml(
