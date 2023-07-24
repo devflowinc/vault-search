@@ -36,6 +36,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
   const cardMetadatasWithVotes: BookmarkDTO[] = [];
   const searchCardMetadatasWithVotes: ScoreCardDTO[] = [];
   const dataTypeFilters = encodeURIComponent(
+    // eslint-disable-next-line solid/reactivity
     props.dataTypeFilters.dataTypes.join(","),
   );
   // eslint-disable-next-line solid/reactivity
@@ -407,13 +408,15 @@ export const CollectionPage = (props: CollectionPageProps) => {
                   ← Back
                 </button>
               </Show>
-              <div class="mx-auto mt-8 w-full max-w-4xl px-4 sm:px-8 md:px-20">
-                <SearchForm
-                  query={props.query}
-                  filters={props.dataTypeFilters}
-                  searchType={props.searchType}
-                  collectionID={props.collectionID}
-                />
+              <div class="mx-auto w-full max-w-6xl">
+                <div class="mx-auto mt-8 w-full max-w-[calc(100%-32px)] min-[360px]:max-w-[calc(100%-64px)]">
+                  <SearchForm
+                    query={props.query}
+                    filters={props.dataTypeFilters}
+                    searchType={props.searchType}
+                    collectionID={props.collectionID}
+                  />
+                </div>
               </div>
             </div>
             <Show when={props.query != ""}>
