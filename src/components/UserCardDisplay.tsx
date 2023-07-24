@@ -11,8 +11,8 @@ import { PaginationController } from "./Atoms/PaginationController";
 import { CollectionUserPageView } from "./CollectionUserPageView";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import {
-  BiRegularChevronDown,
-  BiRegularChevronUp,
+  BiRegularChevronLeft,
+  BiRegularChevronRight,
   BiRegularLogIn,
   BiRegularXCircle,
 } from "solid-icons/bi";
@@ -31,7 +31,6 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const [onDelete, setOnDelete] = createSignal<() => void>(() => {});
-  const [expanded, setExpanded] = createSignal(false);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const [onCollectionDelete, setOnCollectionDelete] = createSignal(() => {});
   const [
@@ -156,13 +155,7 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
             {new Date(user()?.created_at ?? "").toLocaleDateString()}
           </div>
         </div>
-        <div
-          classList={{
-            "mb-4 mt-4 flex  flex-col overflow-hidden border-t border-neutral-500 pt-4 text-xl":
-              true,
-            "max-h-[400px]": !expanded(),
-          }}
-        >
+        <div class="mb-4 mt-4 flex  flex-col overflow-hidden border-t border-neutral-500 pt-4 text-xl">
           <CollectionUserPageView
             user={user()}
             loggedUser={loggedUser()}
@@ -170,26 +163,6 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
             setShowConfirmModal={setShowConfirmCollectionmDeleteModal}
           />
         </div>
-        <Show when={cardCollections().length > 5}>
-          <div class="items-center text-center">
-            <button
-              class="ml-2 text-center font-semibold"
-              onClick={() => setExpanded((prev) => !prev)}
-            >
-              {expanded() ? (
-                <div class="flex flex-row items-center">
-                  Show Less
-                  <BiRegularChevronUp class="h-8 w-8 fill-current" />
-                </div>
-              ) : (
-                <div class="flex flex-row items-center">
-                  Show More
-                  <BiRegularChevronDown class="h-8 w-8 fill-current" />
-                </div>
-              )}
-            </button>
-          </div>
-        </Show>
         <div class="mb-4 mt-4 flex flex-col border-t border-neutral-500 pt-4 text-xl">
           <span>Cards:</span>
         </div>
