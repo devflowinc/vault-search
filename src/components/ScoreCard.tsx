@@ -186,7 +186,7 @@ const ScoreCard = (props: ScoreCardProps) => {
 
   return (
     <Show when={!deleted()}>
-      <div class="flex w-full flex-col items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800">
+      <div class="flex w-full max-w-[calc(100%-32px)] flex-col items-center rounded-md !bg-neutral-200 p-2 dark:!bg-neutral-800 min-[360px]:max-w-[calc(100%-64px)]">
         <div class="flex w-full flex-col space-y-2">
           <div class="flex h-fit items-center space-x-1">
             <Show when={props.card.private}>
@@ -311,11 +311,11 @@ const ScoreCard = (props: ScoreCardProps) => {
               <Show when={props.card.oc_file_path}>
                 <div class="flex space-x-2">
                   <span class="font-semibold text-neutral-800 dark:text-neutral-200">
-                    OC Path:{" "}
+                    OC_Path:{" "}
                   </span>
-                  <a>
+                  <span class="line-clamp-1 break-all">
                     {props.card.oc_file_path?.split("/").slice(0, -1).join("/")}
-                  </a>
+                  </span>
                 </div>
               </Show>
               <Show when={props.card.oc_file_path ?? props.card.file_name}>
@@ -325,7 +325,7 @@ const ScoreCard = (props: ScoreCardProps) => {
                   </span>
                   <Show when={props.card.oc_file_path && !props.card.file_name}>
                     <a
-                      class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
+                      class="line-clamp-1 text-magenta-500 underline dark:text-turquoise-400"
                       target="_blank"
                       href={`https://oc.arguflow.com/${
                         props.card.oc_file_path ?? ""
@@ -382,11 +382,13 @@ const ScoreCard = (props: ScoreCardProps) => {
           <div
             classList={{
               "line-clamp-4 gradient-mask-b-0": !expanded(),
-              "text-ellipsis max-w-fit break-all ": true,
+              "text-ellipsis max-w-[100%] break-words": true,
             }}
             // eslint-disable-next-line solid/no-innerhtml
             innerHTML={sanitizeHtml(
-              props.card.card_html !== undefined ? props.card.card_html : "",
+              props.card.card_html !== undefined
+                ? props.card.card_html.replace("background", "bg")
+                : "",
               sanitzerOptions,
             )}
           />
