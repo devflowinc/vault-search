@@ -10,7 +10,7 @@ const PasswordResetForm = () => {
 
   return (
     <>
-      <div class="flex w-full max-w-sm flex-col space-y-2">
+      <div class="flex w-full max-w-sm flex-col space-y-2 p-2">
         <Show when={!getEmailSent()}>
           <div class="text-center text-2xl font-bold">
             <span class="py-2">Reset Your Password</span>
@@ -77,7 +77,7 @@ const PasswordResetForm = () => {
           </div>
         </Show>
         <Show when={getEmailSent()}>
-          <div class="flex w-full max-w-sm flex-col space-y-2 text-neutral-900 dark:text-neutral-50">
+          <div class="flex w-full max-w-sm flex-col space-y-2 p-2 text-neutral-900 dark:text-neutral-50">
             <div class="text-center text-2xl font-bold">
               <span class="py-2">
                 Check your email to finish resetting your password
