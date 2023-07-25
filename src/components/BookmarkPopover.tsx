@@ -7,13 +7,15 @@ import {
   PopoverPanel,
 } from "solid-headless";
 import { RiSystemAddFill } from "solid-icons/ri";
-import type {
-  CardBookmarksDTO,
-  CardCollectionDTO,
-  CardMetadata,
+import {
+  isCardCollectionPageDTO,
+  type CardBookmarksDTO,
+  type CardCollectionDTO,
+  type CardMetadata,
 } from "../../utils/apiTypes";
 import InputRowsForm from "./Atoms/InputRowsForm";
 import { VsBookmark } from "solid-icons/vs";
+import { BiRegularChevronLeft, BiRegularChevronRight } from "solid-icons/bi";
 
 export interface BookmarkPopoverProps {
   signedInUserId: string | undefined;
@@ -21,6 +23,9 @@ export interface BookmarkPopoverProps {
   cardCollections: CardCollectionDTO[];
   fetchCardCollections: () => void;
   fetchBookmarks: () => void;
+  collectionPage: number;
+  totalCollectionPages: number;
+  setCollectionPage: Setter<number>;
   setLoginModal: Setter<boolean>;
   bookmarks: CardBookmarksDTO;
 }
@@ -36,6 +41,36 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
   const [collectionFormTitle, setCollectionFormTitle] = createSignal("");
   const [usingPanel, setUsingPanel] = createSignal(false);
   const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO>();
+
+  const [localCollectionPage, setLocalCollectionPage] = createSignal(1);
+
+  const [localCardCollections, setLocalCardCollections] = createSignal<
+    CardCollectionDTO[]
+  >([]);
+
+  createEffect(() => {
+    setLocalCollectionPage(props.collectionPage);
+    setLocalCardCollections(props.cardCollections);
+  });
+
+  createEffect(() => {
+    if (localCollectionPage() == props.collectionPage) {
+      return;
+    }
+
+    void fetch(`${apiHost}/card_collection/${localCollectionPage()}`, {
+      method: "GET",
+      credentials: "include",
+    }).then((response) => {
+      if (response.ok) {
+        void response.json().then((data) => {
+          if (isCardCollectionPageDTO(data)) {
+            setLocalCardCollections(data.collections);
+          }
+        });
+      }
+    });
+  });
 
   const refetchBookmarks = () => {
     void fetch(`${apiHost}/card_collection/bookmark`, {
@@ -116,7 +151,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                 </div>
                 <MenuItem as="button" aria-label="Empty" />
                 <div class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md max-w-screen mx-1 max-h-[20vh] transform justify-end space-y-2 overflow-y-auto rounded px-4 scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600">
-                  <For each={props.cardCollections}>
+                  <For each={localCardCollections()}>
                     {(collection, idx) => {
                       return (
                         <>
@@ -155,13 +190,44 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                                 });
                                 setState(true);
                               }}
-                              class="h-4 w-4 cursor-pointer	rounded-sm border-gray-300 bg-neutral-500 accent-turquoise focus:ring-neutral-200 dark:border-neutral-700 dark:focus:ring-neutral-600"
+                              class="h-4 w-4 cursor-pointer rounded-sm border-gray-300 bg-neutral-500 accent-turquoise focus:ring-neutral-200 dark:border-neutral-700 dark:focus:ring-neutral-600"
                             />
                           </div>
                         </>
                       );
                     }}
                   </For>
+                  <div class="flex items-center justify-between">
+                    <div />
+                    <div class="flex items-center">
+                      <div class="text-sm text-neutral-400">
+                        {localCollectionPage()} / {props.totalCollectionPages}
+                      </div>
+                      <button
+                        class="disabled:text-neutral-400 dark:disabled:text-neutral-500"
+                        disabled={localCollectionPage() == 1}
+                        onClick={() => {
+                          setState(true);
+                          // props.setCollectionPage((prev) => prev - 1);
+                          setLocalCollectionPage((prev) => prev - 1);
+                        }}
+                      >
+                        <BiRegularChevronLeft class="h-6 w-6 fill-current" />
+                      </button>
+                      <button
+                        class="disabled:text-neutral-400 dark:disabled:text-neutral-500"
+                        disabled={
+                          localCollectionPage() == props.totalCollectionPages
+                        }
+                        onClick={() => {
+                          setState(true);
+                          setLocalCollectionPage((prev) => prev + 1);
+                        }}
+                      >
+                        <BiRegularChevronRight class="h-6 w-6 fill-current" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
                 {showCollectionForm() && (
                   <div class="mx-4 rounded bg-gray-100 py-2 dark:bg-neutral-800">

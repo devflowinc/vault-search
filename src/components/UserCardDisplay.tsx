@@ -5,6 +5,7 @@ import {
   type UserDTO,
   type UserDTOWithVotesAndCards,
   CardBookmarksDTO,
+  isCardCollectionPageDTO,
 } from "../../utils/apiTypes";
 import CardMetadataDisplay from "./CardMetadataDisplay";
 import { PaginationController } from "./Atoms/PaginationController";
@@ -34,6 +35,9 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
   ] = createSignal(false);
   const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO[]>([]);
 
+  const [collectionPage, setCollectionPage] = createSignal(1);
+  const [totalCollectionPages, setTotalCollectionPages] = createSignal(0);
+
   createEffect(() => {
     void fetch(`${apiHost}/auth`, {
       method: "GET",
@@ -51,13 +55,16 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
   const fetchCardCollections = () => {
     if (!user()) return;
 
-    void fetch(`${apiHost}/card_collection`, {
+    void fetch(`${apiHost}/card_collection/${collectionPage()}`, {
       method: "GET",
       credentials: "include",
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          setCardCollections(data);
+          if (isCardCollectionPageDTO(data)) {
+            setCardCollections(data.collections);
+            setTotalCollectionPages(data.total_pages);
+          }
         });
       }
     });
@@ -167,6 +174,9 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
               {(card) => (
                 <div class="w-full">
                   <CardMetadataDisplay
+                    totalCollectionPages={totalCollectionPages()}
+                    collectionPage={collectionPage()}
+                    setCollectionPage={setCollectionPage}
                     setShowConfirmModal={setShowConfirmModal}
                     signedInUserId={loggedUser()?.id}
                     viewingUserId={props.id}

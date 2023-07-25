@@ -9,6 +9,7 @@ import {
   ScoreCardDTO,
   CardCollectionSearchDTO,
   isScoreCardDTO,
+  isCardCollectionPageDTO,
 } from "../../utils/apiTypes";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import { BiRegularLogInCircle, BiRegularXCircle } from "solid-icons/bi";
@@ -95,6 +96,8 @@ export const CollectionPage = (props: CollectionPageProps) => {
     setShowConfirmCollectionmDeleteModal,
   ] = createSignal(false);
 
+  const [collectionPage, setCollectionPage] = createSignal(1);
+  const [totalCollectionPages, setTotalCollectionPages] = createSignal(0);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const [onDelete, setOnDelete] = createSignal(() => {});
 
@@ -214,19 +217,23 @@ export const CollectionPage = (props: CollectionPageProps) => {
   });
 
   createEffect(() => {
+    collectionPage();
     fetchBookmarks();
   });
 
   // Fetch the card collections for the auth'ed user
   const fetchCardCollections = () => {
     if (!user()) return;
-    void fetch(`${apiHost}/card_collection`, {
+    void fetch(`${apiHost}/card_collection/${collectionPage()}`, {
       method: "GET",
       credentials: "include",
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          setCardCollections(data as CardCollectionDTO[]);
+          if (isCardCollectionPageDTO(data)) {
+            setCardCollections(data.collections);
+            setTotalCollectionPages(data.total_pages);
+          }
         });
       }
     });
@@ -436,6 +443,9 @@ export const CollectionPage = (props: CollectionPageProps) => {
               {(card) => (
                 <div class="mt-4">
                   <ScoreCardArray
+                    totalCollectionPages={totalCollectionPages()}
+                    collectionPage={collectionPage()}
+                    setCollectionPage={setCollectionPage}
                     signedInUserId={user()?.id}
                     cards={card.metadata}
                     score={isScoreCardDTO(card) ? card.score : 0}
