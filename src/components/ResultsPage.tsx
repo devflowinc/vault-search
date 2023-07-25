@@ -6,6 +6,7 @@ import {
   type ScoreCardDTO,
   type UserDTO,
   CardBookmarksDTO,
+  isCardCollectionPageDTO,
 } from "../../utils/apiTypes";
 import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
@@ -45,6 +46,9 @@ const ResultsPage = (props: ResultsPageProps) => {
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
     createSignal(false);
 
+  const [collectionPage, setCollectionPage] = createSignal(1);
+  const [totalCollectionPages, setTotalCollectionPages] = createSignal(0);
+
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const [onDelete, setOnDelete] = createSignal(() => {});
   const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO[]>([]);
@@ -52,13 +56,16 @@ const ResultsPage = (props: ResultsPageProps) => {
   const fetchCardCollections = () => {
     if (!user()) return;
 
-    void fetch(`${apiHost}/card_collection`, {
+    void fetch(`${apiHost}/card_collection/${collectionPage()}`, {
       method: "GET",
       credentials: "include",
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          setCardCollections(data as CardCollectionDTO[]);
+          if (isCardCollectionPageDTO(data)) {
+            setCardCollections(data.collections);
+            setTotalCollectionPages(data.total_pages);
+          }
         });
       }
     });
@@ -157,6 +164,9 @@ const ResultsPage = (props: ResultsPageProps) => {
             {(card) => (
               <div>
                 <ScoreCardArray
+                  totalCollectionPages={totalCollectionPages()}
+                  collectionPage={collectionPage()}
+                  setCollectionPage={setCollectionPage}
                   signedInUserId={user()?.id}
                   cardCollections={cardCollections()}
                   cards={card.metadata}

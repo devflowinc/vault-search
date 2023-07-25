@@ -35,6 +35,8 @@ export const CollectionUserPageView = (props: CollectionUserPageViewProps) => {
           if (isCardCollectionPageDTO(data)) {
             setCollections(data.collections);
             setCollectionPageCount(data.total_pages);
+          } else {
+            console.error("Invalid response", data);
           }
         });
       }

@@ -30,6 +30,9 @@ export const sanitzerOptions = {
 export interface ScoreCardProps {
   signedInUserId?: string;
   cardCollections: CardCollectionDTO[];
+  collectionPage: number;
+  totalCollectionPages: number;
+  setCollectionPage: Setter<number>;
   collection?: boolean;
   card: CardMetadataWithVotes;
   score: number;
@@ -246,7 +249,10 @@ const ScoreCard = (props: ScoreCardProps) => {
             </a>
             <BookmarkPopover
               signedInUserId={props.signedInUserId}
+              totalCollectionPages={props.totalCollectionPages}
               cardCollections={props.cardCollections}
+              collectionPage={props.collectionPage}
+              setCollectionPage={props.setCollectionPage}
               cardMetadata={props.card}
               fetchCardCollections={props.fetchCardCollections}
               setLoginModal={props.setShowModal}

@@ -7,6 +7,7 @@ import {
   isCardMetadataWithVotes,
   SingleCardDTO,
   CardBookmarksDTO,
+  isCardCollectionPageDTO,
 } from "../../utils/apiTypes";
 import ScoreCard from "./ScoreCard";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
@@ -34,6 +35,8 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
     createSignal(false);
 
+  const [collectionPage, setCollectionPage] = createSignal(1);
+  const [totalCollectionPages, setTotalCollectionPages] = createSignal(0);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const [onDelete, setOnDelete] = createSignal(() => {});
 
@@ -48,13 +51,16 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
   const fetchCardCollections = () => {
     if (!user()) return;
 
-    void fetch(`${apiHost}/card_collection`, {
+    void fetch(`${apiHost}/card_collection/${collectionPage()}`, {
       method: "GET",
       credentials: "include",
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          setCardCollections(data as CardCollectionDTO[]);
+          if (isCardCollectionPageDTO(data)) {
+            setCardCollections(data.collections);
+            setTotalCollectionPages(data.total_pages);
+          }
         });
       }
     });
@@ -138,6 +144,9 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
     }
     return (
       <ScoreCard
+        totalCollectionPages={totalCollectionPages()}
+        collectionPage={collectionPage()}
+        setCollectionPage={setCollectionPage}
         signedInUserId={user()?.id}
         card={curCardMetadata}
         score={0}

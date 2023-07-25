@@ -15,6 +15,9 @@ import { Tooltip } from "./Atoms/Tooltip";
 import { AiOutlineExclamation } from "solid-icons/ai";
 
 export interface CardMetadataDisplayProps {
+  collectionPage: number;
+  totalCollectionPages: number;
+  setCollectionPage: Setter<number>;
   signedInUserId?: string;
   viewingUserId?: string;
   card: CardMetadataWithVotes;
@@ -165,7 +168,10 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
             </a>
             <BookmarkPopover
               signedInUserId={props.signedInUserId}
+              totalCollectionPages={props.totalCollectionPages}
               cardCollections={props.cardCollections}
+              collectionPage={props.collectionPage}
+              setCollectionPage={props.setCollectionPage}
               cardMetadata={props.card}
               fetchCardCollections={props.fetchCardCollections}
               setLoginModal={props.setShowModal}
