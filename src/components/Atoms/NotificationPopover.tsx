@@ -13,6 +13,7 @@ import {
   type FileUploadCompleteNotificationDTO,
   isVerificationNotificationDTO,
   NotificationWithPagesDTO,
+  VerificationDTO,
 } from "../../../utils/apiTypes";
 import { IoNotificationsOutline } from "solid-icons/io";
 import { For, Show, createEffect, createSignal } from "solid-js";
@@ -207,11 +208,10 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
                                         </a>
                                       ) : (
                                         <a
-                                          href={
-                                            isFileUpload
-                                              ? `/collection/${notification.collection_uuid}`
-                                              : "/"
-                                          }
+                                          href={`/card/${
+                                            (notification as VerificationDTO)
+                                              .card_uuid
+                                          }`}
                                           onClick={() => {
                                             markAsRead(notification);
                                             setState(true);
@@ -219,9 +219,9 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
                                         >
                                           Your{" "}
                                           <text class="underline dark:text-acid-500">
-                                            Collection
+                                            card
                                           </text>{" "}
-                                          has been uploaded and parsed
+                                          could not be approved
                                         </a>
                                       )}
                                     </span>
