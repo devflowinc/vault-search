@@ -221,7 +221,7 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
                                           <text class="underline dark:text-acid-500">
                                             card
                                           </text>{" "}
-                                          could not be approved
+                                          could not be verified
                                         </a>
                                       )}
                                     </span>
