@@ -404,26 +404,30 @@ export const CollectionPage = (props: CollectionPageProps) => {
         </Show>
         <div class="flex w-full max-w-6xl flex-col space-y-4 border-t border-neutral-500 px-4 sm:px-8 md:px-20">
           <Show when={error().length == 0 && !fetching()}>
-            <div class="align-middle md:flex">
-              <Show when={props.query != ""}>
-                <button
-                  class="relative mx-auto ml-5 mt-8 h-fit max-h-[240px] rounded-md bg-neutral-600 p-2 md:absolute"
-                  onClick={() =>
-                    (window.location.href = `/collection/${props.collectionID}`)
-                  }
-                >
-                  ← Back
-                </button>
-              </Show>
-              <div class="mx-auto w-full max-w-6xl">
-                <div class="mx-auto mt-8 w-full max-w-[calc(100%-32px)] min-[360px]:max-w-[calc(100%-64px)]">
-                  <SearchForm
-                    query={props.query}
-                    filters={props.dataTypeFilters}
-                    searchType={props.searchType}
-                    collectionID={props.collectionID}
-                  />
-                </div>
+            <Show when={props.query != ""}>
+              <button
+                class="relative mx-auto ml-8 mt-8 h-fit max-h-[240px] rounded-md bg-neutral-100 p-2 dark:bg-neutral-700"
+                onClick={() =>
+                  (window.location.href = `/collection/${props.collectionID}`)
+                }
+              >
+                ← Back
+              </button>
+            </Show>
+            <div class="mx-auto w-full max-w-6xl">
+              <div
+                classList={{
+                  "mx-auto w-full max-w-[calc(100%-32px)] min-[360px]:max-w-[calc(100%-64px)]":
+                    true,
+                  "mt-8": props.query == "",
+                }}
+              >
+                <SearchForm
+                  query={props.query}
+                  filters={props.dataTypeFilters}
+                  searchType={props.searchType}
+                  collectionID={props.collectionID}
+                />
               </div>
             </div>
             <Show when={props.query != ""}>
