@@ -8,6 +8,8 @@ import type {
 import type { Filters } from "../components/ResultsPage";
 import HomeLayout from "../layouts/HomeLayout.astro";
 import { RecentCardsTable } from "../components/RecentCardsTable";
+import { FirstVisitPopUp } from "../components/FirstVisitPopUp";
+
 const apiHost = import.meta.env.API_HOST as string;
 
 const requestParams = Astro.request.url.split("?")[1];
@@ -44,6 +46,7 @@ try {
 ---
 
 <HomeLayout>
+  <FirstVisitPopUp client:only />
   <div class="space-y mt-12 flex w-full flex-col items-center">
     <div class="flex w-full items-center justify-center">
       <a class="flex items-center justify-center" href="/">
