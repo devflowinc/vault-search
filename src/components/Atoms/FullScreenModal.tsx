@@ -19,7 +19,10 @@ export const FullScreenModal = (props: FullScreenModalProps) => {
       <Dialog
         isOpen={props.isOpen()}
         class="overflow-none fixed inset-0 z-10"
-        onClose={() => props.setIsOpen(false)}
+        onClose={() => {
+          props.setIsOpen(false);
+          localStorage.setItem("notFirstVisit", "true");
+        }}
       >
         <div class="flex h-screen items-center justify-center px-4">
           <DialogOverlay class="fixed inset-0 bg-gray-500/5 backdrop-blur-[3px]" />
