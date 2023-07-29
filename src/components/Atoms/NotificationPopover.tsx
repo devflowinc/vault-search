@@ -43,7 +43,9 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
         if (response.ok) {
           const notifData = data as NotificationWithPagesDTO;
           setNotifs(notifData.notifications);
-          setTotalPages(notifData.total_pages);
+          setTotalPages(
+            notifData.total_pages === 0 ? 1 : notifData.total_pages,
+          );
           setFullCount(notifData.full_count);
         }
       });
@@ -150,7 +152,10 @@ export const NotificationPopover = (props: { user: UserDTO | null }) => {
                 class="absolute left-1/2  z-10  mt-5 h-fit w-fit -translate-x-[100%] transform rounded-md  bg-neutral-100  p-1 px-4 dark:bg-neutral-700 dark:text-white  sm:px-0"
                 onMouseEnter={() => setUsingPanel(true)}
                 onMouseLeave={() => setUsingPanel(false)}
-                onClick={() => setState(true)}
+                onClick={() => {
+                  setState(true);
+                  setUsingPanel(true);
+                }}
               >
                 <Menu class="h-0">
                   <MenuItem class="h-0" as="button" aria-label="Empty" />
