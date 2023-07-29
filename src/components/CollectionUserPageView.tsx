@@ -34,7 +34,9 @@ export const CollectionUserPageView = (props: CollectionUserPageViewProps) => {
         void response.json().then((data) => {
           if (isCardCollectionPageDTO(data)) {
             setCollections(data.collections);
-            setCollectionPageCount(data.total_pages);
+            setCollectionPageCount(
+              data.total_pages == 0 ? 1 : data.total_pages,
+            );
           } else {
             console.error("Invalid response", data);
           }
