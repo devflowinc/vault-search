@@ -122,50 +122,58 @@ const SearchForm = () => {
         "bold italic backcolor | alignleft aligncenter " +
         "alignright alignjustify | bullist numlist outdent indent | " +
         "removeformat | help",
-      font_size_formats: "4px 6px 8px 10px 12px 14px 16px 18px 20px 22px",
+      font_size_formats: "4pt 6pt 8pt 10pt 12pt 14pt 16pt 18pt 20pt 22pt",
       content_style:
-        "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }",
+        "body { font-family:Helvetica,Arial,sans-serif; font-size:16pt }",
       menubar: false,
       entity_encoding: "raw",
       entities: "160,nbsp,38,amp,60,lt,62,gt",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setup: function (editor: any) {
-        const getSelectionFontSize = () => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
-          const node = tinyMCE.activeEditor?.selection.getNode();
-
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-          const fontsize = tinyMCE.activeEditor?.dom.getStyle(
-            node as unknown as HTMLElement | null,
-            "font-size",
-            true,
-          );
-          const fontsizeNumber = fontsize
-            ? Number(fontsize.replace("px", ""))
-            : 16;
-
-          return fontsizeNumber;
-        };
-
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-        editor.addShortcut("meta+shift+k", "Increase font size.", function () {
-          const newFontsize = getSelectionFontSize() + 2;
-
+        editor.addShortcut("meta+shift+1", "Font size 8.", function () {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-          editor.execCommand("FontSize", false, `${newFontsize}px`);
+          editor.execCommand("FontSize", false, `8pt`);
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-        editor.addShortcut("meta+shift+j", "Decrease font size.", function () {
-          const newFontsize = getSelectionFontSize() - 2;
-
+        editor.addShortcut("meta+shift+2", "Font size 12.", function () {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-          editor.execCommand("FontSize", false, `${newFontsize}px`);
+          editor.execCommand("FontSize", false, `12pt`);
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        editor.addShortcut("meta+shift+3", "Font size 16.", function () {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+          editor.execCommand("FontSize", false, `16pt`);
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        editor.addShortcut("meta+shift+4", "Font size 20.", function () {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+          editor.execCommand("FontSize", false, `20pt`);
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        editor.addShortcut("meta+shift+5", "Font size 24.", function () {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+          editor.execCommand("FontSize", false, `24pt`);
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        editor.addShortcut("meta+shift+h", "Font size 24.", function () {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+          editor.execCommand("HiliteColor", false, `#F1C40F`);
         });
       },
     };
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-    void tinyMCE.init(options as any);
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+      void tinyMCE.init(options as any);
+    } catch (e) {
+      console.error(e);
+    }
   });
 
   return (
@@ -199,7 +207,7 @@ const SearchForm = () => {
                 body={
                   <BiRegularQuestionMark class="h-4 w-4 rounded-full fill-current" />
                 }
-                tooltipText="Ctrl+Shift+J to Shrink Text, Ctrl+Shift+K to Enlarge Text"
+                tooltipText="Ctrl+Shift+1 thru 5 to change font size. ctrl+Shift+h to highlight."
               />
             </div>
           </div>
