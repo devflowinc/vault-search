@@ -7,6 +7,7 @@ const PasswordResetForm = () => {
   const [getErrorMessage, setErrorMessage] = createSignal("");
   const [getEmail, setEmail] = createSignal("");
   const [getEmailSent, setEmailSent] = createSignal(false);
+  const [getIsLoading, setIsLoading] = createSignal(false);
 
   return (
     <>
@@ -33,9 +34,14 @@ const PasswordResetForm = () => {
             <div class="w-full">
               <button
                 type="submit"
-                class="w-full rounded bg-neutral-200 p-2  dark:bg-neutral-700"
+                classList={{
+                  "w-full rounded bg-neutral-200 p-2  dark:bg-neutral-700":
+                    true,
+                  "animate-pulse": getIsLoading(),
+                }}
                 onClick={(e) => {
                   e.preventDefault();
+                  setIsLoading(true);
                   setErrorMessage("");
                   const email = getEmail();
                   if (!email) {
@@ -48,6 +54,7 @@ const PasswordResetForm = () => {
                       "Content-Type": "application/json",
                     },
                   }).then((response) => {
+                    setIsLoading(false);
                     if (!response.ok) {
                       void response.json().then((data) => {
                         if (isActixApiDefaultError(data)) {

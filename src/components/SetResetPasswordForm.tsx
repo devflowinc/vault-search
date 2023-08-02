@@ -7,6 +7,7 @@ const FinishPasswordReset = (params: { id: string }) => {
   const [getErrorMessage, setErrorMessage] = createSignal("");
   const [getPassword, setPassword] = createSignal("");
   const [getPasswordConfirmation, setPasswordConfirmation] = createSignal("");
+  const [getIsLoading, setIsLoading] = createSignal(false);
 
   return (
     <>
@@ -41,9 +42,13 @@ const FinishPasswordReset = (params: { id: string }) => {
           <div class="w-full">
             <button
               type="submit"
-              class="w-full rounded bg-neutral-200 p-2  dark:bg-neutral-700"
+              classList={{
+                "w-full rounded bg-neutral-200 p-2  dark:bg-neutral-700": true,
+                "animate-pulse": getIsLoading(),
+              }}
               onClick={(e) => {
                 e.preventDefault();
+                setIsLoading(true);
                 void fetch(`${api_host}/password`, {
                   method: "POST",
                   headers: {
@@ -55,6 +60,7 @@ const FinishPasswordReset = (params: { id: string }) => {
                     password_confirmation: getPasswordConfirmation(),
                   }),
                 }).then((response) => {
+                  setIsLoading(false);
                   if (!response.ok) {
                     void response.json().then((data) => {
                       if (isActixApiDefaultError(data)) {
