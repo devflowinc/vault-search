@@ -353,7 +353,7 @@ const ScoreCard = (props: ScoreCardProps) => {
                 </div>
               </Show>
               <div class="grid w-fit auto-cols-min grid-cols-[1fr,3fr] gap-x-2 text-neutral-800 dark:text-neutral-200">
-                <Show when={props.score != 0 && !props.collection}>
+                <Show when={props.score != 0}>
                   <span class="font-semibold">Similarity: </span>
                   <span>{props.score.toPrecision(3)}</span>
                 </Show>
