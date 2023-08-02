@@ -110,7 +110,7 @@ const SearchForm = () => {
         "help",
         "wordcount",
       ],
-      autoresize_bottom_margin: 150,
+      autoresize_bottom_margin: 0,
       skin: document.documentElement.classList.contains("dark")
         ? "oxide-dark"
         : "oxide",
