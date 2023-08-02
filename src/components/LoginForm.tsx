@@ -5,6 +5,7 @@ const LoginForm = () => {
   const [getEmail, setEmail] = createSignal("");
   const [getPassword, setPassword] = createSignal("");
   const [getErrorMessage, setErrorMessage] = createSignal("");
+  const [getIsLoading, setIsLoading] = createSignal(false);
 
   const api_host: string = import.meta.env.PUBLIC_API_HOST as unknown as string;
 
@@ -49,9 +50,13 @@ const LoginForm = () => {
           <div class="w-full">
             <button
               type="submit"
-              class="w-full rounded bg-neutral-200 p-2  dark:bg-neutral-700"
+              classList={{
+                "w-full rounded bg-neutral-200 p-2  dark:bg-neutral-700": true,
+                "animate-pulse": getIsLoading(),
+              }}
               onClick={(e) => {
                 e.preventDefault();
+                setIsLoading(true);
                 void fetch(`${api_host}/auth`, {
                   method: "POST",
                   headers: {
@@ -63,6 +68,7 @@ const LoginForm = () => {
                     password: getPassword(),
                   }),
                 }).then((response) => {
+                  setIsLoading(false);
                   if (!response.ok) {
                     void response.json().then((data) => {
                       if (isActixApiDefaultError(data)) {
