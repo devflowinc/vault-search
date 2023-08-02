@@ -14,7 +14,15 @@ import { FullScreenModal } from "./Atoms/FullScreenModal";
 import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
 import { ConfirmModal } from "./Atoms/ConfirmModal";
 
-export const UserCardDisplay = (props: { id: string; page: number }) => {
+export interface UserCardDisplayProps {
+  id: string;
+  page: number;
+  initialUser?: UserDTOWithVotesAndCards;
+  initialUserCollections?: CardCollectionDTO[];
+  initialUserCollectionPageCount?: number;
+}
+
+export const UserCardDisplay = (props: UserCardDisplayProps) => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
 
   const [user, setUser] = createSignal<UserDTOWithVotesAndCards>();
@@ -24,6 +32,8 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
   const [cardCollections, setCardCollections] = createSignal<
     CardCollectionDTO[]
   >([]);
+
+  props.initialUser && setUser(props.initialUser);
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const [onDelete, setOnDelete] = createSignal<() => void>(() => {});
@@ -162,6 +172,8 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
         <div class="mb-4 mt-4 flex  flex-col overflow-hidden border-t border-neutral-500 pt-4 text-xl">
           <CollectionUserPageView
             user={user()}
+            initialCollections={props.initialUserCollections}
+            initialCollectionPageCount={props.initialUserCollectionPageCount}
             loggedUser={loggedUser()}
             setOnDelete={setOnCollectionDelete}
             setShowConfirmModal={setShowConfirmCollectionmDeleteModal}

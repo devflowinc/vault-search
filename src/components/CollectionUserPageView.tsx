@@ -13,6 +13,8 @@ export interface CollectionUserPageViewProps {
   loggedUser: UserDTO | undefined;
   setOnDelete: Setter<() => void>;
   setShowConfirmModal: Setter<boolean>;
+  initialCollections?: CardCollectionDTO[];
+  initialCollectionPageCount?: number;
 }
 
 export const CollectionUserPageView = (props: CollectionUserPageViewProps) => {
@@ -21,6 +23,10 @@ export const CollectionUserPageView = (props: CollectionUserPageViewProps) => {
   const [collectionPage, setCollectionPage] = createSignal(1);
   const [collectionPageCount, setCollectionPageCount] = createSignal(1);
   const [deleting, setDeleting] = createSignal(false);
+
+  props.initialCollections && setCollections(props.initialCollections);
+  props.initialCollectionPageCount &&
+    setCollectionPageCount(props.initialCollectionPageCount);
 
   createEffect(() => {
     const userId = props.user?.id;
