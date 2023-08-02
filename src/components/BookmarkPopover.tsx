@@ -159,7 +159,12 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                             <div class="h-px w-full bg-neutral-200 dark:bg-neutral-700" />
                           </Show>
                           <div class="flex w-full items-center justify-between space-x-2">
-                            <p class="max-w-[80%]">{collection.name}</p>
+                            <a
+                              href={`/collection/${collection.id}`}
+                              class="max-w-[80%] underline"
+                            >
+                              {collection.name}
+                            </a>
 
                             <input
                               type="checkbox"
@@ -208,7 +213,6 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                         disabled={localCollectionPage() == 1}
                         onClick={() => {
                           setState(true);
-                          // props.setCollectionPage((prev) => prev - 1);
                           setLocalCollectionPage((prev) => prev - 1);
                         }}
                       >
