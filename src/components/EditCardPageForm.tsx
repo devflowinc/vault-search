@@ -4,11 +4,16 @@ import {
   isCardMetadataWithVotes,
 } from "../../utils/apiTypes";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
-import { BiRegularLogIn, BiRegularXCircle } from "solid-icons/bi";
+import {
+  BiRegularLogIn,
+  BiRegularQuestionMark,
+  BiRegularXCircle,
+} from "solid-icons/bi";
 import type { SingleCardPageProps } from "./SingleCardPage";
 import type { TinyMCE } from "../../public/tinymce/tinymce";
 import sanitize from "sanitize-html";
 import { sanitzerOptions } from "./ScoreCard";
+import { Tooltip } from "./Atoms/Tooltip";
 
 export const EditCardPageForm = (props: SingleCardPageProps) => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
@@ -158,6 +163,8 @@ export const EditCardPageForm = (props: SingleCardPageProps) => {
     }
     textareaItem.innerHTML = sanitize(cardHtml(), sanitzerOptions);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+    const tinyMCE: TinyMCE = (window as any).tinymce as TinyMCE;
     const options = {
       selector: "#search-query-textarea",
       height: "100%",
@@ -190,18 +197,55 @@ export const EditCardPageForm = (props: SingleCardPageProps) => {
         ? "dark"
         : "default",
       toolbar:
-        "undo redo | blocks | " +
+        "undo redo | fontsize | " +
         "bold italic backcolor | alignleft aligncenter " +
         "alignright alignjustify | bullist numlist outdent indent | " +
         "removeformat | help",
+      font_size_formats: "4pt 6pt 8pt 10pt 12pt 14pt 16pt 18pt 20pt 22pt",
       content_style:
-        "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }",
+        "body { font-family:Helvetica,Arial,sans-serif; font-size:16pt }",
       menubar: false,
       entity_encoding: "raw",
       entities: "160,nbsp,38,amp,60,lt,62,gt",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setup: function (editor: any) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        editor.addShortcut("meta+shift+1", "Font size 8.", function () {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+          editor.execCommand("FontSize", false, `8pt`);
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        editor.addShortcut("meta+shift+2", "Font size 12.", function () {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+          editor.execCommand("FontSize", false, `12pt`);
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        editor.addShortcut("meta+shift+3", "Font size 16.", function () {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+          editor.execCommand("FontSize", false, `16pt`);
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        editor.addShortcut("meta+shift+4", "Font size 20.", function () {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+          editor.execCommand("FontSize", false, `20pt`);
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        editor.addShortcut("meta+shift+5", "Font size 24.", function () {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+          editor.execCommand("FontSize", false, `24pt`);
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        editor.addShortcut("meta+shift+h", "Font size 24.", function () {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+          editor.execCommand("HiliteColor", false, `#F1C40F`);
+        });
+      },
     };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-    const tinyMCE: TinyMCE = (window as any).tinymce as TinyMCE;
 
     try {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
@@ -246,8 +290,17 @@ export const EditCardPageForm = (props: SingleCardPageProps) => {
                 />
               </div>
               <div class="flex flex-col space-y-2">
-                <div>Card Content*</div>
-
+                <div class="flex items-center space-x-2">
+                  <div>Card Content*</div>
+                  <div class="h-4.5 w-4.5 rounded-full border border-black dark:border-white">
+                    <Tooltip
+                      body={
+                        <BiRegularQuestionMark class="h-4 w-4 rounded-full fill-current" />
+                      }
+                      tooltipText="Ctrl+Shift+1 thru 5 to change font size. ctrl+Shift+h to highlight."
+                    />
+                  </div>
+                </div>
                 <textarea id="search-query-textarea" />
               </div>
               <label>
