@@ -164,8 +164,8 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
 
   return (
     <>
-      <div class="mt-12 flex w-full flex-col items-center space-y-4">
-        <div class="flex w-full max-w-6xl flex-col space-y-4 px-4 sm:px-8 md:px-20">
+      <div class="mt-2 flex w-full flex-col items-center justify-center">
+        <div class="flex w-full max-w-6xl flex-col justify-center px-4 sm:px-8 md:px-20">
           {getCard()}
           <Show when={error().length > 0 && !fetching()}>
             <div class="flex w-full flex-col items-center rounded-md p-2">
