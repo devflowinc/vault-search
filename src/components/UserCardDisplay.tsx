@@ -99,7 +99,9 @@ export const UserCardDisplay = (props: { id: string; page: number }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          collection_ids: user()?.cards.map((c) => c.id),
+          collection_ids: user()
+            ?.cards.map((c) => c.id)
+            .join(","),
         }),
       },
     ).then((response) => {
