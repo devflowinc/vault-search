@@ -125,17 +125,23 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
           setFetching(false);
         });
       }
-      if (response.status == 403 || response.status == 404) {
+      if (response.status == 403) {
+        setError("You are not authorized to view this card.");
+        setFetching(false);
+      }
+      if (response.status == 404) {
+        setError("This card could not be found.");
         setFetching(false);
       }
       if (response.status == 401) {
+        setError("Sign in to view this card.");
         setShowNeedLoginModal(true);
       }
     });
   });
 
   const getCard = createMemo(() => {
-    if (error().length > 0 || fetching()) {
+    if (error().length > 0) {
       return null;
     }
     const curCardMetadata = cardMetadata();
