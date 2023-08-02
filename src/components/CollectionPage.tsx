@@ -79,7 +79,6 @@ export const CollectionPage = (props: CollectionPageProps) => {
   >([]);
   const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO[]>([]);
   const [error, setError] = createSignal("");
-  const [fetching, setFetching] = createSignal(true);
   const [fetchingCollections, setFetchingCollections] = createSignal(false);
   const [deleting, setDeleting] = createSignal(false);
   const [editing, setEditing] = createSignal(false);
@@ -106,9 +105,12 @@ export const CollectionPage = (props: CollectionPageProps) => {
 
   // Fetch the user info for the auth'ed user
   createEffect(() => {
+    const abortController = new AbortController();
+
     void fetch(`${apiHost}/auth`, {
       method: "GET",
       credentials: "include",
+      signal: abortController.signal,
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
@@ -116,10 +118,14 @@ export const CollectionPage = (props: CollectionPageProps) => {
         });
       }
     });
+
+    return () => {
+      abortController.abort();
+    };
   });
 
   createEffect(() => {
-    setFetching(true);
+    const abortController = new AbortController();
     let collection_id: string | null = null;
     if (props.query === "") {
       void fetch(
@@ -127,6 +133,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
         {
           method: "GET",
           credentials: "include",
+          signal: abortController.signal,
         },
       ).then((response) => {
         if (response.ok) {
@@ -137,11 +144,9 @@ export const CollectionPage = (props: CollectionPageProps) => {
             setTotalPages(collectionBookmarks.total_pages);
             setMetadatasWithVotes(collectionBookmarks.bookmarks);
             setError("");
-            setFetching(false);
           });
         }
         if (response.status == 403) {
-          setFetching(false);
           setError("You are not authorized to view this collection");
         }
         if (response.status == 401) {
@@ -156,6 +161,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
           headers: {
             "Content-Type": "application/json",
           },
+          signal: abortController.signal,
           credentials: "include",
           body: JSON.stringify({
             content: props.query,
@@ -173,17 +179,19 @@ export const CollectionPage = (props: CollectionPageProps) => {
             setTotalPages(collectionBookmarks.total_pages);
             setSearchMetadatasWithVotes(collectionBookmarks.bookmarks);
             setError("");
-            setFetching(false);
           });
         }
         if (response.status == 403) {
-          setFetching(false);
           setError("You are not authorized to view this collection");
         }
         if (response.status == 401) {
           setShowNeedLoginModal(true);
         }
       });
+
+      return () => {
+        abortController.abort();
+      };
     }
 
     fetchCardCollections();
@@ -197,6 +205,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
           headers: {
             "Content-Type": "application/json",
           },
+          signal: abortController.signal,
           body: JSON.stringify({
             collection_id: collection_id,
           }),
@@ -283,9 +292,6 @@ export const CollectionPage = (props: CollectionPageProps) => {
       if (response.ok) {
         setEditing(false);
       }
-      if (response.status == 403) {
-        setFetching(false);
-      }
       if (response.status == 401) {
         setShowNeedLoginModal(true);
       }
@@ -295,7 +301,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
   return (
     <>
       <div class="flex w-full flex-col items-center space-y-2">
-        <Show when={error().length == 0 && !fetching()}>
+        <Show when={error().length == 0}>
           <div class="flex w-full max-w-6xl items-center justify-end space-x-2 px-4 sm:px-8 md:px-20">
             <Show
               when={!props.defaultCollectionCards.metadata.collection.is_public}
@@ -403,7 +409,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
           </Show>
         </Show>
         <div class="flex w-full max-w-6xl flex-col space-y-4 border-t border-neutral-500 px-4 sm:px-8 md:px-20">
-          <Show when={error().length == 0 && !fetching()}>
+          <Show when={error().length == 0}>
             <Show when={props.query != ""}>
               <button
                 class="relative mx-auto ml-8 mt-8 h-fit max-h-[240px] rounded-md bg-neutral-100 p-2 dark:bg-neutral-700"
@@ -482,7 +488,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
               />
             </div>
           </Show>
-          <Show when={error().length > 0 && !fetching()}>
+          <Show when={error().length > 0}>
             <div class="flex w-full flex-col items-center rounded-md p-2">
               <div class="text-xl font-semibold text-red-500">{error()}</div>
             </div>
@@ -491,7 +497,6 @@ export const CollectionPage = (props: CollectionPageProps) => {
             when={
               metadatasWithVotes().length == 0 &&
               searchMetadatasWithVotes().length == 0 &&
-              !fetching() &&
               props.defaultCollectionCards.metadata.collection.is_public
             }
           >
