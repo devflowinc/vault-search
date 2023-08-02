@@ -58,21 +58,32 @@ export const SingleNotification = (props: NotificationProps) => {
             <Show when={isVerif}>
               <span class="text-left">
                 {isVerif &&
-                  (props.notification as VerificationDTO).similarity_score >
-                    props.similarityScoreThreshold && (
-                    <a
-                      href={`/card/${
-                        (props.notification as VerificationDTO).card_uuid
-                      }`}
-                      onClick={() => {
-                        markNotificationAsRead();
-                      }}
-                    >
-                      Your{" "}
-                      <text class="underline dark:text-acid-500">card</text> was
-                      approved! 🎉
-                    </a>
-                  )}
+                (props.notification as VerificationDTO).similarity_score >
+                  props.similarityScoreThreshold ? (
+                  <a
+                    href={`/card/${
+                      (props.notification as VerificationDTO).card_uuid
+                    }`}
+                    onClick={() => {
+                      markNotificationAsRead();
+                    }}
+                  >
+                    Your <text class="underline dark:text-acid-500">card</text>{" "}
+                    was verified! 🎉
+                  </a>
+                ) : (
+                  <a
+                    href={`/card/${
+                      (props.notification as VerificationDTO).card_uuid
+                    }`}
+                    onClick={() => {
+                      markNotificationAsRead();
+                    }}
+                  >
+                    Your <text class="underline dark:text-acid-500">card</text>{" "}
+                    could not be verified
+                  </a>
+                )}
               </span>
             </Show>
             <Show when={isFileUpload}>
