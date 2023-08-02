@@ -149,7 +149,13 @@ export const CollectionPage = (props: CollectionPageProps) => {
         if (response.status == 403) {
           setError("You are not authorized to view this collection");
         }
+        if (response.status == 404) {
+          setError("Collection not found, it never existed or was deleted");
+        }
         if (response.status == 401) {
+          setError(
+            "You must be logged in and authorized to view this collection",
+          );
           setShowNeedLoginModal(true);
         }
       });
