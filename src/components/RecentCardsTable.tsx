@@ -14,12 +14,14 @@ export const RecentCardsTable = (props: RecentCardsTableProps) => {
     // eslint-disable-next-line solid/reactivity
     props.recentCards ?? [],
   );
+  const [isLoading, setIsLoading] = createSignal(false);
 
   const [page, setPage] = createSignal(1);
 
   createEffect(() => {
     const curPage = page();
     const abortController = new AbortController();
+    setIsLoading(true);
 
     void fetch(`${apiHost}/recent_cards/${curPage}`, {
       signal: abortController.signal,
@@ -28,6 +30,7 @@ export const RecentCardsTable = (props: RecentCardsTableProps) => {
       },
       credentials: "include",
     }).then((response) => {
+      setIsLoading(false);
       if (!response.ok) {
         setErrorText("Error fetching recent cards");
         return;
@@ -39,6 +42,7 @@ export const RecentCardsTable = (props: RecentCardsTableProps) => {
     });
 
     return () => {
+      setIsLoading(false);
       abortController.abort();
     };
   });
@@ -62,7 +66,13 @@ export const RecentCardsTable = (props: RecentCardsTableProps) => {
           </div>
         </div>
         <div class="mt-2">
-          <table class="min-w-full divide-y divide-neutral-400 dark:divide-neutral-800">
+          <table
+            classList={{
+              "min-w-full divide-y divide-neutral-400 dark:divide-neutral-800":
+                true,
+              "animate-pulse": isLoading(),
+            }}
+          >
             <thead>
               <tr>
                 <th
@@ -128,8 +138,12 @@ export const RecentCardsTable = (props: RecentCardsTableProps) => {
         <div class="mt-4 flex items-center justify-between">
           <Show when={page() > 1}>
             <button
-              class="flex items-center space-x-1 rounded-md bg-neutral-200 p-2 px-4 py-2 text-sm dark:bg-neutral-600"
-              disabled={page() === 1}
+              classList={{
+                "flex items-center space-x-1 rounded-md bg-neutral-200 p-2 px-4 py-2 text-sm dark:bg-neutral-600":
+                  true,
+                "animate-pulse": isLoading(),
+              }}
+              disabled={page() === 1 || isLoading()}
               onClick={() => setPage(page() - 1)}
             >
               <FaSolidChevronLeft class="h-4 w-4 fill-current" />
@@ -138,8 +152,12 @@ export const RecentCardsTable = (props: RecentCardsTableProps) => {
           </Show>
           <div class="flex-1" />
           <button
-            class="flex items-center space-x-1 rounded-md bg-neutral-200 p-2 px-4 py-2 text-sm dark:bg-neutral-600"
-            disabled={recentCards().length < 5}
+            classList={{
+              "flex items-center space-x-1 rounded-md bg-neutral-200 p-2 px-4 py-2 text-sm dark:bg-neutral-600":
+                true,
+              "animate-pulse": isLoading(),
+            }}
+            disabled={recentCards().length < 5 || isLoading()}
             onClick={() => setPage(page() + 1)}
           >
             <span>Next</span>
