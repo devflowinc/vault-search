@@ -8,6 +8,7 @@ import { FullScreenModal } from "./Atoms/FullScreenModal";
 import type { TinyMCE } from "../../public/tinymce/tinymce";
 import { CreateCardDTO, isActixApiDefaultError } from "../../utils/apiTypes";
 import { Tooltip } from "./Atoms/Tooltip";
+import { TbRobot } from "solid-icons/tb";
 
 const SearchForm = () => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
@@ -19,6 +20,9 @@ const SearchForm = () => {
   const [isSubmitting, setIsSubmitting] = createSignal(false);
   const [showNeedLoginModal, setShowNeedLoginModal] = createSignal(false);
   const [_private, setPrivate] = createSignal(false);
+  const [isLoadingAutoCut, setIsLoadingAutoCut] = createSignal(false);
+  const [autoCutErrorText, setAutoCutErrorText] = createSignal("");
+  const [autoCutSuccessText, setAutoCutSuccessText] = createSignal(<span />);
 
   const submitEvidence = (e: Event) => {
     e.preventDefault();
@@ -83,6 +87,7 @@ const SearchForm = () => {
       (window as any).tinymce.activeEditor.focus();
     }
   };
+
   createEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
     const tinyMCE: TinyMCE = (window as any).tinymce as TinyMCE;
@@ -124,7 +129,7 @@ const SearchForm = () => {
         "removeformat | help",
       font_size_formats: "4pt 6pt 8pt 10pt 12pt 14pt 16pt 18pt 20pt 22pt",
       content_style:
-        "body { font-family:Helvetica,Arial,sans-serif; font-size:16pt }",
+        "body { font-family:Helvetica,Arial,sans-serif; font-size:12pt; min-height: 200px; }",
       menubar: false,
       entity_encoding: "raw",
       entities: "160,nbsp,38,amp,60,lt,62,gt",
@@ -176,6 +181,20 @@ const SearchForm = () => {
     }
   });
 
+  createEffect(() => {
+    const elementToAnimatePulse = document.querySelector("div.tox.tox-tinymce");
+
+    if (isLoadingAutoCut()) {
+      if (elementToAnimatePulse) {
+        elementToAnimatePulse.classList.add("animate-pulse");
+      }
+    } else {
+      if (elementToAnimatePulse) {
+        elementToAnimatePulse.classList.remove("animate-pulse");
+      }
+    }
+  });
+
   return (
     <>
       <form
@@ -210,8 +229,119 @@ const SearchForm = () => {
                 tooltipText="Ctrl+Shift+1 thru 5 to change font size. ctrl+Shift+h to highlight."
               />
             </div>
-          </div>
+            <button
+              classList={{
+                "flex w-fit items-center space-x-1 rounded bg-neutral-100 p-2 px-3 py-1 hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800":
+                  true,
+                "animate-pulse": isLoadingAutoCut(),
+              }}
+              disabled={isLoadingAutoCut()}
+              onClick={(e) => {
+                e.preventDefault();
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                const cardTextContentValue =
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                  (window as any).tinyMCE.activeEditor.getBody()
+                    .textContent as unknown as string;
 
+                if (cardTextContentValue.length < 200) {
+                  setAutoCutErrorText(
+                    "Card content must be at least 200 characters to auto-cut.",
+                  );
+                  setAutoCutSuccessText("");
+                  return;
+                }
+
+                if (cardTextContentValue.length > 8000) {
+                  setAutoCutErrorText(
+                    "Card content must be less than 8000 characters to auto-cut.",
+                  );
+                  setAutoCutSuccessText("");
+                  return;
+                }
+
+                setIsLoadingAutoCut(true);
+                void fetch(`${apiHost}/card/cut`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  credentials: "include",
+                  body: JSON.stringify({
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                    uncut_card: cardTextContentValue,
+                  }),
+                })
+                  .then((response) => {
+                    setIsLoadingAutoCut(false);
+                    if (response.status === 401) {
+                      setShowNeedLoginModal(true);
+                      return;
+                    }
+
+                    if (!response.ok) {
+                      return;
+                    }
+
+                    void response.json().then((data) => {
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+                      (window as any).tinyMCE.activeEditor.setContent(
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, solid/reactivity, @typescript-eslint/restrict-plus-operands
+                        data.completion
+                          .replace("\n", "<br />")
+                          .replace(`\\n`, " ")
+                          .replace(`< `, "<")
+                          .replace(`> `, ">")
+                          .replace(`blockquote`, "span")
+                          .replace(`<s>`, "<span>")
+                          .replace(`</s>`, "</span>"),
+                      );
+                      setAutoCutErrorText("");
+                      setAutoCutSuccessText(
+                        <span class="text-center">
+                          Auto-cut successful! 🎉 We're trying to improve. Let
+                          us know how it went on{" "}
+                          <a
+                            class="underline"
+                            href="https://discord.gg/CuJVfgZf54"
+                          >
+                            Discord
+                          </a>
+                          ,{" "}
+                          <a
+                            class="underline"
+                            href="https://t.me/+vUOq6omKOn5lY2Zh"
+                          >
+                            Telegram
+                          </a>
+                          , or{" "}
+                          <a
+                            class="underline"
+                            href="https://matrix.to/#/#arguflow-general:matrix.zerodao.gg"
+                          >
+                            Matrix
+                          </a>
+                        </span>,
+                      );
+                    });
+                  })
+                  .catch(() => {
+                    setIsLoadingAutoCut(false);
+                    setAutoCutErrorText("Something went wrong, try again");
+                    setAutoCutSuccessText("");
+                  });
+              }}
+            >
+              <TbRobot class="h-5 w-5" />
+              <span>Auto-Cut</span>
+            </button>
+          </div>
+          <div class="flex w-full justify-center text-red-500">
+            {autoCutErrorText()}
+          </div>
+          <div class="flex w-full justify-center text-green-500">
+            {autoCutSuccessText()}
+          </div>
           <textarea id="search-query-textarea" />
         </div>
         <label>
@@ -226,7 +356,7 @@ const SearchForm = () => {
           <button
             class="w-fit rounded bg-neutral-100 p-2 hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
             type="submit"
-            disabled={isSubmitting()}
+            disabled={isSubmitting() || isLoadingAutoCut()}
           >
             <Show when={!isSubmitting()}>Submit New Evidence</Show>
             <Show when={isSubmitting()}>
@@ -242,8 +372,8 @@ const SearchForm = () => {
         >
           <div class="min-w-[250px] sm:min-w-[300px]">
             <BiRegularXCircle class="mx-auto h-8 w-8 fill-current  !text-red-500" />
-            <div class="mb-4 text-xl font-bold">
-              Cannot add evidence without an account
+            <div class="mb-4 text-center text-xl font-bold">
+              Cannot add evidence or auto-cut without an account
             </div>
             <div class="mx-auto flex w-fit flex-col space-y-3">
               <a

@@ -203,7 +203,7 @@ export const EditCardPageForm = (props: SingleCardPageProps) => {
         "removeformat | help",
       font_size_formats: "4pt 6pt 8pt 10pt 12pt 14pt 16pt 18pt 20pt 22pt",
       content_style:
-        "body { font-family:Helvetica,Arial,sans-serif; font-size:16pt }",
+        "body { font-family:Helvetica,Arial,sans-serif; font-size:12pt; min-height: 200px; }",
       menubar: false,
       entity_encoding: "raw",
       entities: "160,nbsp,38,amp,60,lt,62,gt",
