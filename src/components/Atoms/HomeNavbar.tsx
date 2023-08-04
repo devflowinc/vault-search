@@ -16,11 +16,11 @@ export const HomeNavbar = () => {
                 Upload Files
               </a>
               <a
-                href="https://blog.arguflow.com"
+                href="https://docs.arguflow.ai"
                 target="_blank"
                 class="hidden min-[420px]:text-lg min-[720px]:block"
               >
-                Blog
+                Docs
               </a>
               <div>
                 <RegisterOrUserProfile />
@@ -89,11 +89,11 @@ export const HomeNavbar = () => {
             Upload Files
           </a>
           <a
-            href="https://blog.arguflow.com"
+            href="https://docs.arguflow.ai"
             target="_blank"
             class="block rounded-md bg-neutral-100 px-3 py-2 text-base font-medium hover:bg-neutral-100 dark:bg-shark-500 dark:hover:bg-neutral-700"
           >
-            Blog
+            Docs
           </a>
         </div>
       </div>
