@@ -187,8 +187,9 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
         >
           <div class="min-w-[250px] sm:min-w-[300px]">
             <BiRegularXCircle class="mx-auto h-8 w-8 fill-current !text-red-500" />
-            <div class="mb-4 text-xl font-bold">
-              Cannot view this card without an account
+            <div class="mb-4 text-center text-xl font-bold">
+              You must be signed in to vote on this card or view it if it's
+              private
             </div>
             <div class="mx-auto flex w-fit flex-col space-y-3">
               <a
