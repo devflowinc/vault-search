@@ -141,7 +141,9 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
               }
             >
               <Tooltip
-                body={<AiOutlineExclamation class="h-5 w-5 fill-amber-300" />}
+                body={
+                  <AiOutlineExclamation class="h-5 w-5 fill-amber-700 dark:fill-amber-300" />
+                }
                 tooltipText="This card could not be verified"
               />
             </Show>
