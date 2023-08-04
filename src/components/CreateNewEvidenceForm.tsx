@@ -252,9 +252,9 @@ const SearchForm = () => {
                   return;
                 }
 
-                if (cardTextContentValue.length > 8000) {
+                if (cardTextContentValue.length > 4300) {
                   setAutoCutErrorText(
-                    "Card content must be less than 8000 characters to auto-cut.",
+                    "Card content must be less than 4300 characters to auto-cut.",
                   );
                   setAutoCutSuccessText("");
                   return;
