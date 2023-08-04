@@ -333,7 +333,7 @@ const SearchForm = () => {
               }}
             >
               <TbRobot class="h-5 w-5" />
-              <span>Auto-Cut</span>
+              <span>auto-cut</span>
             </button>
           </div>
           <div class="flex w-full justify-center text-red-500">
