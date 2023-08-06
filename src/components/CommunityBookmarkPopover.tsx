@@ -21,7 +21,7 @@ const CommunityBookmarkPopover = (props: CommunityBookmarkPopoverProps) => {
       {({ isOpen, setState }) => (
         <div>
           <div class="-ml-[3px] flex items-center">
-            <PopoverButton title="Bookmark">
+            <PopoverButton title="Community Collections">
               <VsOrganization class="z-0 h-5 w-5 fill-current" />
             </PopoverButton>
           </div>
