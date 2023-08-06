@@ -259,7 +259,6 @@ export const CollectionPage = (props: CollectionPageProps) => {
   };
 
   const fetchBookmarks = () => {
-    if (!user()) return;
     void fetch(`${apiHost}/card_collection/bookmark`, {
       method: "POST",
       credentials: "include",

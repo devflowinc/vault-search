@@ -97,8 +97,8 @@ export const UserCardDisplay = (props: UserCardDisplayProps) => {
       }
     });
   });
+
   const fetchBookmarks = () => {
-    if (!user()) return;
     void fetch(`${apiHost}/card_collection/bookmark`, {
       method: "POST",
       credentials: "include",

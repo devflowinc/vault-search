@@ -72,7 +72,6 @@ const ResultsPage = (props: ResultsPageProps) => {
   };
 
   const fetchBookmarks = () => {
-    if (!user()) return;
     void fetch(`${apiHost}/card_collection/bookmark`, {
       method: "POST",
       credentials: "include",
@@ -141,8 +140,6 @@ const ResultsPage = (props: ResultsPageProps) => {
   });
 
   createEffect(() => {
-    if (!user()) return;
-
     fetchBookmarks();
   });
 
