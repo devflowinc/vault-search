@@ -301,13 +301,16 @@ const SearchForm = () => {
                       (window as any).tinyMCE.activeEditor.setContent(
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, solid/reactivity, @typescript-eslint/restrict-plus-operands
                         data.completion
-                          .replace("\n", "<br />")
+                          .replace("\n", " ")
+                          .replace(`<br>`, " ")
                           .replace(`\\n`, " ")
-                          .replace(`< `, "<")
-                          .replace(`> `, ">")
-                          .replace(`blockquote`, "span")
-                          .replace(`<s>`, "<span>")
-                          .replace(`</s>`, "</span>"),
+                          .replaceAll(`<a`, `<span`)
+                          .replaceAll(`</a>`, `</span>`)
+                          .replaceAll(`blockquote`, "span")
+                          .replaceAll(`<s>`, "<span>")
+                          .replaceAll(`</s>`, "</span>")
+                          .replaceAll(`<u>`, `<u style="font-size: 14pt;">`)
+                          .replaceAll(`<b>`, `<b style="font-size: 14pt;">`),
                       );
                       setAutoCutErrorText("");
                       setAutoCutSuccessCount((prev) => prev + 1);
