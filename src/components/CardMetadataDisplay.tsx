@@ -13,6 +13,7 @@ import { FiEdit, FiGlobe, FiLock, FiTrash } from "solid-icons/fi";
 import { sanitzerOptions } from "./ScoreCard";
 import { Tooltip } from "./Atoms/Tooltip";
 import { AiOutlineExclamation } from "solid-icons/ai";
+import CommunityBookmarkPopover from "./CommunityBookmarkPopover";
 
 export interface CardMetadataDisplayProps {
   collectionPage: number;
@@ -168,6 +169,12 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
             <a title="Open" href={`/card/${props.card.id}`}>
               <VsFileSymlinkFile class="h-5 w-5 fill-current" />
             </a>
+            <CommunityBookmarkPopover
+              bookmarks={props.bookmarks.filter(
+                (bookmark) => bookmark.card_uuid == props.card.id,
+              )}
+            />
+
             <BookmarkPopover
               signedInUserId={props.signedInUserId}
               totalCollectionPages={props.totalCollectionPages}
