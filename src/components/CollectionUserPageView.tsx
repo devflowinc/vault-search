@@ -88,7 +88,9 @@ export const CollectionUserPageView = (props: CollectionUserPageViewProps) => {
   return (
     <Show when={props.user !== undefined}>
       <div>
-        <span>Collections:</span>
+        <div class="mx-auto w-full text-center text-2xl font-bold">
+          {props.user?.username ?? props.user?.email}'s Collections
+        </div>
         <div class="mt-2 flow-root">
           <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -97,25 +99,25 @@ export const CollectionUserPageView = (props: CollectionUserPageViewProps) => {
                   <tr>
                     <th
                       scope="col"
-                      class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-white sm:pl-0"
+                      class="py-3.5 pl-4 pr-3 text-left text-base font-semibold dark:text-white sm:pl-[18px]"
                     >
                       Name
                     </th>
                     <th
                       scope="col"
-                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white"
+                      class="px-3 py-3.5 text-left text-base font-semibold dark:text-white"
                     >
                       Description
                     </th>
                     <th
                       scope="col"
-                      class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900 dark:text-white"
+                      class="px-3 py-3.5 text-center text-base font-semibold dark:text-white"
                     >
                       Private
                     </th>
                     <th
                       scope="col"
-                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white"
+                      class="px-3 py-3.5 text-left text-base font-semibold dark:text-white"
                     >
                       Created at
                     </th>
@@ -140,7 +142,7 @@ export const CollectionUserPageView = (props: CollectionUserPageViewProps) => {
                       <tr>
                         <td class="cursor-pointer whitespace-nowrap py-4 pl-4 pr-3 text-sm font-semibold text-gray-900 dark:text-white">
                           <a
-                            class="w-full"
+                            class="w-full underline"
                             href={`/collection/${collection.id}`}
                           >
                             {collection.name}
