@@ -52,7 +52,7 @@ const ResultsPage = (props: ResultsPageProps) => {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const [onDelete, setOnDelete] = createSignal(() => {});
   const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO[]>([]);
-  // Fetch the card collections for the auth'ed user
+
   const fetchCardCollections = () => {
     if (!user()) return;
 
@@ -66,6 +66,29 @@ const ResultsPage = (props: ResultsPageProps) => {
             setCardCollections(data.collections);
             setTotalCollectionPages(data.total_pages);
           }
+        });
+      }
+    });
+  };
+
+  const fetchBookmarks = () => {
+    if (!user()) return;
+    void fetch(`${apiHost}/card_collection/bookmark`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        card_ids: resultCards().flatMap((c) => {
+          return c.metadata.map((m) => m.id);
+        }),
+      }),
+    }).then((response) => {
+      if (response.ok) {
+        void response.json().then((data) => {
+          const cardBookmarks = data as CardBookmarksDTO[];
+          setBookmarks(cardBookmarks);
         });
       }
     });
@@ -118,32 +141,10 @@ const ResultsPage = (props: ResultsPageProps) => {
   });
 
   createEffect(() => {
+    if (!user()) return;
+
     fetchBookmarks();
   });
-
-  const fetchBookmarks = () => {
-    if (!user()) return;
-    void fetch(`${apiHost}/card_collection/bookmark`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        collection_ids: resultCards()
-          .map((c) => {
-            return c.metadata.map((m) => m.id);
-          })
-          .join(","),
-      }),
-    }).then((response) => {
-      if (response.ok) {
-        void response.json().then((data) => {
-          setBookmarks(data as CardBookmarksDTO[]);
-        });
-      }
-    });
-  };
 
   return (
     <>
@@ -206,7 +207,7 @@ const ResultsPage = (props: ResultsPageProps) => {
           <div class="min-w-[250px] sm:min-w-[300px]">
             <BiRegularXCircle class="mx-auto h-8 w-8 fill-current !text-red-500" />
             <div class="mb-4 text-center text-xl font-bold">
-              Cannot vote or use collections without an account
+              Cannot vote or use bookmarks without an account
             </div>
             <div class="mx-auto flex w-fit flex-col space-y-3">
               <a

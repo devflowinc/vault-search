@@ -99,22 +99,18 @@ export const UserCardDisplay = (props: UserCardDisplayProps) => {
   });
   const fetchBookmarks = () => {
     if (!user()) return;
-    void fetch(
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `${apiHost}/card_collection/bookmark`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          collection_ids: user()
-            ?.cards.map((c) => c.id)
-            .join(","),
-        }),
+    void fetch(`${apiHost}/card_collection/bookmark`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
       },
-    ).then((response) => {
+      body: JSON.stringify({
+        card_ids: user()?.cards.map((c) => c.id)
+          ? user()?.cards.map((c) => c.id)
+          : [],
+      }),
+    }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
           setBookmarks(data as CardBookmarksDTO[]);

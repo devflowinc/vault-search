@@ -177,9 +177,9 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
               cardMetadata={props.card}
               fetchCardCollections={props.fetchCardCollections}
               setLoginModal={props.setShowModal}
-              bookmarks={
-                props.bookmarks.filter((e) => e.card_uuid == props.card.id)[0]
-              }
+              bookmarks={props.bookmarks.filter(
+                (bookmark) => bookmark.card_uuid == props.card.id,
+              )}
               fetchBookmarks={props.fetchBookmarks}
             />
           </div>
@@ -208,18 +208,6 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
                 <span class="font-semibold text-neutral-800 dark:text-neutral-200">
                   Brief:{" "}
                 </span>
-                <Show when={props.card.oc_file_path}>
-                  <a
-                    class="line-clamp-1 break-all text-magenta-500 underline dark:text-turquoise-400"
-                    target="_blank"
-                    href={`https://oc.arguflow.com/${
-                      props.card.oc_file_path ?? ""
-                    }`}
-                  >
-                    {props.card.oc_file_path?.split("/").pop() ??
-                      props.card.oc_file_path}
-                  </a>
-                </Show>
                 <Show when={props.card.file_name}>
                   <a
                     class="line-clamp-1 cursor-pointer break-all text-magenta-500 underline dark:text-turquoise-400"
@@ -250,6 +238,7 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
           <p
             classList={{
               "line-clamp-4 gradient-mask-b-0": !expanded(),
+              "text-ellipsis max-w-[100%] break-words space-y-5": true,
             }}
           >
             {props.card.content.toString()}
@@ -259,6 +248,7 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
           <div
             classList={{
               "line-clamp-4 gradient-mask-b-0": !expanded(),
+              "text-ellipsis max-w-[100%] break-words space-y-5": true,
             }}
             // eslint-disable-next-line solid/no-innerhtml
             innerHTML={sanitizeHtml(

@@ -196,7 +196,7 @@ export const CollectionUserPageView = (props: CollectionUserPageViewProps) => {
             </div>
           </div>
         </div>
-        <div class="flex items-center justify-between">
+        <div class="mt-2 flex items-center justify-between">
           <div />
           <div class="flex items-center">
             <div class="text-sm text-neutral-400">

@@ -81,9 +81,16 @@ export interface CardCollectionDTO {
   is_public: boolean;
 }
 
+export interface SlimCollection {
+  id: string;
+  name: string;
+  author_id: string;
+  of_current_user: boolean;
+}
+
 export interface CardBookmarksDTO {
   card_uuid: string;
-  collection_ids: [string];
+  slim_collections: [SlimCollection];
 }
 
 export interface CardsWithTotalPagesDTO {

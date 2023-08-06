@@ -19,7 +19,7 @@ export const Navbar = () => {
                 href="/create"
                 class="hidden text-center min-[420px]:text-lg min-[920px]:block"
               >
-                Create Evidence
+                Create Card
               </a>
               <a
                 href="/upload"
@@ -98,7 +98,7 @@ export const Navbar = () => {
             href="/create"
             class="block rounded-md bg-neutral-100 px-3 py-2 text-base font-medium hover:bg-neutral-100 dark:bg-shark-500 dark:hover:bg-neutral-700"
           >
-            Create Evidence
+            Create Card
           </a>
           <a
             href="/upload"

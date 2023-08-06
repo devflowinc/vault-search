@@ -96,7 +96,7 @@ export const CollectionPage = (props: CollectionPageProps) => {
   ] = createSignal(false);
 
   const [collectionPage, setCollectionPage] = createSignal(1);
-  const [totalCollectionPages, setTotalCollectionPages] = createSignal(0);
+  const [totalCollectionPages, setTotalCollectionPages] = createSignal(1);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const [onDelete, setOnDelete] = createSignal(() => {});
 
@@ -116,6 +116,10 @@ export const CollectionPage = (props: CollectionPageProps) => {
         void response.json().then((data) => {
           isUserDTO(data) ? setUser(data) : setUser(undefined);
         });
+      }
+
+      if (response.status == 401) {
+        setUser(undefined);
       }
     });
 
@@ -263,11 +267,9 @@ export const CollectionPage = (props: CollectionPageProps) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        collection_ids: metadatasWithVotes()
-          .map((m) => {
-            return m.metadata.map((c) => c.id);
-          })
-          .join(","),
+        card_ids: metadatasWithVotes().flatMap((m) => {
+          return m.metadata.map((c) => c.id);
+        }),
       }),
     }).then((response) => {
       if (response.ok) {
