@@ -181,7 +181,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
     <Popover defaultOpen={false} class="relative">
       {({ isOpen, setState }) => (
         <div>
-          <div class="-ml-[3px] flex items-center">
+          <div class="flex items-center">
             <PopoverButton
               title="Bookmark"
               onClick={() => {
@@ -204,7 +204,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
           >
             <PopoverPanel
               unmount={false}
-              class="absolute z-50 w-screen max-w-xs -translate-x-[300px]"
+              class="absolute z-50 w-screen max-w-xs -translate-x-[300px] translate-y-1"
               onMouseEnter={() => setUsingPanel(true)}
               onMouseLeave={() => setUsingPanel(false)}
               onClick={() => setState(true)}
@@ -276,7 +276,10 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                     <div />
                     <div class="flex items-center">
                       <div class="text-sm text-neutral-400">
-                        {localCollectionPage()} / {props.totalCollectionPages}
+                        {localCollectionPage()} /{" "}
+                        {props.totalCollectionPages == 0
+                          ? 1
+                          : props.totalCollectionPages}
                       </div>
                       <button
                         class="disabled:text-neutral-400 dark:disabled:text-neutral-500"
@@ -291,7 +294,10 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                       <button
                         class="disabled:text-neutral-400 dark:disabled:text-neutral-500"
                         disabled={
-                          localCollectionPage() == props.totalCollectionPages
+                          localCollectionPage() ==
+                          (props.totalCollectionPages == 0
+                            ? 1
+                            : props.totalCollectionPages)
                         }
                         onClick={() => {
                           setState(true);
