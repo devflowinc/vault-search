@@ -27,7 +27,7 @@ export interface BookmarkPopoverProps {
   totalCollectionPages: number;
   setCollectionPage: Setter<number>;
   setLoginModal: Setter<boolean>;
-  bookmarks: CardBookmarksDTO;
+  bookmarks: CardBookmarksDTO[];
 }
 
 const BookmarkPopover = (props: BookmarkPopoverProps) => {
@@ -40,7 +40,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
   const [notLoggedIn, setNotLoggedIn] = createSignal(false);
   const [collectionFormTitle, setCollectionFormTitle] = createSignal("");
   const [usingPanel, setUsingPanel] = createSignal(false);
-  const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO>();
+  const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO[]>([]);
 
   const [localCollectionPage, setLocalCollectionPage] = createSignal(1);
 
@@ -50,7 +50,25 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
 
   createEffect(() => {
     setLocalCollectionPage(props.collectionPage);
-    setLocalCardCollections(props.cardCollections);
+    setBookmarks(props.bookmarks);
+
+    const collectionsToAdd: CardCollectionDTO[] = [];
+    props.bookmarks.forEach((b) => {
+      b.slim_collections.forEach((c) => {
+        c.of_current_user &&
+          collectionsToAdd.push({
+            id: c.id,
+            name: c.name,
+            description: "",
+            is_public: true,
+            author_id: c.author_id,
+            created_at: "",
+            updated_at: "",
+          });
+      });
+    });
+
+    setLocalCardCollections([...collectionsToAdd, ...props.cardCollections]);
   });
 
   createEffect(() => {
@@ -69,10 +87,14 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
           }
         });
       }
+
+      if (response.status == 401) {
+        setNotLoggedIn(true);
+      }
     });
   });
 
-  const refetchBookmarks = () => {
+  const refetchBookmarks = (curPage: number) => {
     void fetch(`${apiHost}/card_collection/bookmark`, {
       method: "POST",
       credentials: "include",
@@ -80,21 +102,55 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        collection_ids: props.cardMetadata.id,
+        card_ids: [props.cardMetadata.id],
       }),
     }).then((response) => {
       if (response.ok) {
         void response.json().then((data) => {
-          setBookmarks((data as CardBookmarksDTO[])[0]);
-          setNotLoggedIn(false);
-        });
-      }
+          const cardBookmarks = data as CardBookmarksDTO[];
 
-      if (response.status === 401) {
-        setNotLoggedIn(true);
+          setBookmarks(data as CardBookmarksDTO[]);
+
+          if (curPage !== 1) {
+            return;
+          }
+
+          const collectionsToAdd: CardCollectionDTO[] = [];
+
+          cardBookmarks.forEach((cardBookmark) => {
+            cardBookmark.slim_collections.forEach((collection) => {
+              if (collection.of_current_user) {
+                const cardCollection: CardCollectionDTO = {
+                  id: collection.id,
+                  name: collection.name,
+                  description: "",
+                  is_public: true,
+                  author_id: collection.author_id,
+                  created_at: "",
+                  updated_at: "",
+                };
+
+                collectionsToAdd.push(cardCollection);
+              }
+            });
+          });
+
+          setLocalCardCollections((prev) => {
+            const deDupedPrev = prev.filter((collection) => {
+              return (
+                collectionsToAdd.find(
+                  (collectionToAdd) => collectionToAdd.id == collection.id,
+                ) == undefined
+              );
+            });
+
+            return [...collectionsToAdd, ...deDupedPrev];
+          });
+        });
       }
     });
   };
+
   createEffect(() => {
     setBookmarks(props.bookmarks);
     if (props.signedInUserId === undefined) {
@@ -109,7 +165,9 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
   createEffect(() => {
     if (!refetchingBookmarks()) return;
 
-    refetchBookmarks();
+    const curCollectionPage = localCollectionPage();
+
+    refetchBookmarks(curCollectionPage);
     setRefetchingBookmarks(false);
   });
 
@@ -127,17 +185,23 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
             <PopoverButton
               title="Bookmark"
               onClick={() => {
-                if (notLoggedIn()) {
+                if (notLoggedIn() || props.signedInUserId === undefined) {
                   props.setLoginModal(true);
                   return;
                 }
-                refetchBookmarks();
+                refetchBookmarks(localCollectionPage());
               }}
             >
               <VsBookmark class="z-0 h-5 w-5 fill-current" />
             </PopoverButton>
           </div>
-          <Show when={(isOpen() || usingPanel()) && !notLoggedIn()}>
+          <Show
+            when={
+              (isOpen() || usingPanel()) &&
+              !notLoggedIn() &&
+              !(props.signedInUserId === undefined)
+            }
+          >
             <PopoverPanel
               unmount={false}
               class="absolute z-50 w-screen max-w-xs -translate-x-[300px]"
@@ -150,7 +214,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                   Manage Collections For This Card
                 </div>
                 <MenuItem as="button" aria-label="Empty" />
-                <div class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md max-w-screen mx-1 max-h-[20vh] transform justify-end space-y-2 overflow-y-auto rounded px-4 scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-600">
+                <div class="scrollbar-track-rounded-md scrollbar-thumb-rounded-md max-w-screen mx-1 max-h-[20vh] transform justify-end space-y-2 overflow-y-auto rounded px-4 scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-600 dark:scrollbar-track-neutral-700 dark:scrollbar-thumb-neutral-400">
                   <For each={localCardCollections()}>
                     {(collection, idx) => {
                       return (
@@ -168,9 +232,15 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
 
                             <input
                               type="checkbox"
-                              checked={bookmarks()?.collection_ids.includes(
-                                collection.id,
-                              )}
+                              checked={
+                                bookmarks().find((bookmark) =>
+                                  bookmark.slim_collections
+                                    .map((slimCollection) => slimCollection.id)
+                                    .includes(collection.id),
+                                )
+                                  ? true
+                                  : false
+                              }
                               onChange={(e) => {
                                 void fetch(
                                   `${apiHost}/card_collection/${collection.id}`,
