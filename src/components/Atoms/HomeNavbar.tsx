@@ -7,7 +7,7 @@ export const HomeNavbar = () => {
     <nav class="mb-8 bg-white dark:bg-shark-800 dark:text-white">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
-          <div class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between px-4">
+          <div class="mx-auto flex h-[60px] w-full max-w-6xl items-center justify-between">
             <div class="flex w-full items-center justify-end space-x-1 sm:space-x-4">
               <a
                 href="/upload"
