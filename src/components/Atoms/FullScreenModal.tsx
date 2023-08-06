@@ -10,7 +10,7 @@ import type { Accessor, JSX, Setter } from "solid-js";
 export interface FullScreenModalProps {
   children: JSX.Element;
   isOpen: Accessor<boolean>;
-  setIsOpen: Setter<boolean>;
+  setIsOpen: Setter<boolean> | ((open: boolean) => void);
 }
 
 export const FullScreenModal = (props: FullScreenModalProps) => {
