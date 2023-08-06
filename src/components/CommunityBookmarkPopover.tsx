@@ -20,7 +20,7 @@ const CommunityBookmarkPopover = (props: CommunityBookmarkPopoverProps) => {
     <Popover defaultOpen={false} class="relative">
       {({ isOpen, setState }) => (
         <div>
-          <div class="-ml-[3px] flex items-center">
+          <div class="flex items-center">
             <PopoverButton title="Community Collections">
               <VsOrganization class="z-0 h-5 w-5 fill-current" />
             </PopoverButton>
@@ -28,7 +28,7 @@ const CommunityBookmarkPopover = (props: CommunityBookmarkPopoverProps) => {
           <Show when={isOpen() || usingPanel()}>
             <PopoverPanel
               unmount={false}
-              class="absolute z-50 w-screen max-w-xs -translate-x-[300px]"
+              class="absolute z-50 w-screen max-w-xs -translate-x-[280px] translate-y-1"
               onMouseEnter={() => setUsingPanel(true)}
               onMouseLeave={() => setUsingPanel(false)}
               onClick={() => setState(true)}
