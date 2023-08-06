@@ -3,7 +3,7 @@ import {
   BiRegularQuestionMark,
   BiRegularXCircle,
 } from "solid-icons/bi";
-import { JSX, Show, createEffect, createSignal } from "solid-js";
+import { JSX, JSXElement, Show, createEffect, createSignal } from "solid-js";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
 import type { TinyMCE } from "../../public/tinymce/tinymce";
 import { CreateCardDTO, isActixApiDefaultError } from "../../utils/apiTypes";
@@ -22,7 +22,9 @@ const SearchForm = () => {
   const [_private, setPrivate] = createSignal(false);
   const [isLoadingAutoCut, setIsLoadingAutoCut] = createSignal(false);
   const [autoCutErrorText, setAutoCutErrorText] = createSignal("");
-  const [autoCutSuccessText, setAutoCutSuccessText] = createSignal(<span />);
+  const [autoCutSuccessText, setAutoCutSuccessText] =
+    createSignal<JSXElement>("");
+  const [autoCutSuccessCount, setAutoCutSuccessCount] = createSignal(0);
 
   const submitEvidence = (e: Event) => {
     e.preventDefault();
@@ -280,6 +282,17 @@ const SearchForm = () => {
                     }
 
                     if (!response.ok) {
+                      try {
+                        void response.json().then((data) => {
+                          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                          setAutoCutErrorText(data.message);
+                          setAutoCutSuccessText("");
+                        });
+                      } catch (e) {
+                        console.error(e);
+                        setAutoCutErrorText("Unknown error, try again later");
+                        setAutoCutSuccessText("");
+                      }
                       return;
                     }
 
@@ -297,6 +310,7 @@ const SearchForm = () => {
                           .replace(`</s>`, "</span>"),
                       );
                       setAutoCutErrorText("");
+                      setAutoCutSuccessCount((prev) => prev + 1);
                       setAutoCutSuccessText(
                         <span class="text-center">
                           Auto-cut successful! 🎉 We're trying to improve. Let
@@ -333,7 +347,15 @@ const SearchForm = () => {
               }}
             >
               <TbRobot class="h-5 w-5" />
-              <span>auto-cut</span>
+              <Show when={isLoadingAutoCut()}>
+                <span>Loading...</span>
+              </Show>
+              <Show when={!isLoadingAutoCut() && !autoCutSuccessText()}>
+                <span>auto-cut</span>
+              </Show>
+              <Show when={!isLoadingAutoCut() && autoCutSuccessText()}>
+                <span>retry auto-cut</span>
+              </Show>
             </button>
           </div>
           <div class="flex w-full justify-center text-red-500">
@@ -382,6 +404,42 @@ const SearchForm = () => {
               >
                 Register
                 <BiRegularLogIn class="h-6 w-6  fill-current" />
+              </a>
+            </div>
+          </div>
+        </FullScreenModal>
+      </Show>
+      <Show when={autoCutSuccessCount() > 2}>
+        <FullScreenModal
+          isOpen={() => autoCutSuccessCount() > 2}
+          setIsOpen={(open: boolean) => {
+            setAutoCutSuccessCount(open ? 3 : 0);
+          }}
+        >
+          <div class="min-w-[250px] space-y-3 sm:min-w-[300px]">
+            <div class="mx-auto w-full text-center text-4xl">🎉</div>
+            <div class="mb-4 text-center text-lg font-bold">
+              Thank you for being a persistent early adopter! We're still
+              working on this feature and would love to hear your feedback on{" "}
+              <a
+                class="text-magenta underline"
+                href="https://discord.gg/CuJVfgZf54"
+              >
+                Discord
+              </a>
+              ,{" "}
+              <a
+                class="text-magenta underline"
+                href="https://t.me/+vUOq6omKOn5lY2Zh"
+              >
+                Telegram
+              </a>
+              , or{" "}
+              <a
+                class="text-magenta underline"
+                href="https://matrix.to/#/#arguflow-general:matrix.zerodao.gg"
+              >
+                Matrix
               </a>
             </div>
           </div>
