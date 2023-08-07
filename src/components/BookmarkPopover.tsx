@@ -219,12 +219,6 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
     setRefetchingBookmarks(false);
   });
 
-  createEffect(() => {
-    if (!notLoggedIn()) return;
-
-    props.setLoginModal(true);
-  });
-
   return (
     <Popover defaultOpen={true} class="relative">
       {({ isOpen, setState }) => (
