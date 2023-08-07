@@ -220,7 +220,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
   });
 
   return (
-    <Popover defaultOpen={true} class="relative">
+    <Popover defaultOpen={false} class="relative">
       {({ isOpen, setState }) => (
         <div>
           <div class="flex items-center">
