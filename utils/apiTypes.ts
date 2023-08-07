@@ -149,7 +149,8 @@ export const isActixCardUpdateError = (
 export const detectReferralToken = (queryParamT: string | undefined | null) => {
   if (queryParamT) {
     let previousTokens: string[] = [];
-    const previousReferralToken = window.localStorage.getItem("referralToken");
+    const previousReferralToken =
+      window.localStorage.getItem("referralToken") ?? "[]";
     if (previousReferralToken) {
       const previousReferralTokenArray: string[] = JSON.parse(
         previousReferralToken,
@@ -168,7 +169,8 @@ export const detectReferralToken = (queryParamT: string | undefined | null) => {
 };
 
 export const getReferralTokenArray = (): string[] => {
-  const previousReferralToken = window.localStorage.getItem("referralToken");
+  const previousReferralToken =
+    window.localStorage.getItem("referralToken") ?? "[]";
   if (previousReferralToken) {
     const previousReferralTokenArray: string[] = JSON.parse(
       previousReferralToken,
