@@ -30,7 +30,7 @@ export const HomeNavbar = () => {
           <div class="-mr-2 flex md:hidden">
             <button
               type="button"
-              class="ml-2 inline-flex items-center justify-center rounded-md bg-neutral-200 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 dark:bg-shark-500"
+              class="ml-2 inline-flex items-center justify-center rounded-md bg-neutral-200 p-2 focus:outline-none focus:ring-1 focus:ring-neutral-800 focus:ring-offset-1 dark:bg-neutral-700 dark:focus:ring-white"
               aria-controls="mobile-menu"
               aria-expanded={isOpen()}
               onClick={(e) => {
@@ -40,9 +40,7 @@ export const HomeNavbar = () => {
             >
               <span class="sr-only">Open main menu</span>
               <svg
-                class={`${
-                  isOpen() ? "hidden" : "block"
-                } h-6 w-6 dark:bg-shark-500`}
+                class={`${isOpen() ? "hidden" : "block"} h-6 w-6`}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -56,9 +54,7 @@ export const HomeNavbar = () => {
                 />
               </svg>
               <svg
-                class={`${
-                  isOpen() ? "block" : "hidden"
-                } h-6 w-6 dark:bg-shark-500`}
+                class={`${isOpen() ? "block" : "hidden"} h-6 w-6`}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -78,20 +74,20 @@ export const HomeNavbar = () => {
       <div
         class={`${
           isOpen() ? "block" : "hidden"
-        } bg-neutral-100 dark:bg-shark-500 dark:text-white md:hidden`}
+        } bg-neutral-200 dark:bg-neutral-700 dark:text-white md:hidden`}
         id="mobile-menu"
       >
         <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
           <a
             href="/upload"
-            class="block rounded-md bg-neutral-100 px-3 py-2 text-base font-medium hover:bg-neutral-100 dark:bg-shark-500 dark:hover:bg-neutral-700"
+            class="block rounded-md bg-neutral-200 px-3 py-2 text-base font-medium hover:bg-neutral-300 dark:bg-neutral-700 dark:hover:bg-neutral-800"
           >
             Upload Files
           </a>
           <a
             href="https://docs.arguflow.ai"
             target="_blank"
-            class="block rounded-md bg-neutral-100 px-3 py-2 text-base font-medium hover:bg-neutral-100 dark:bg-shark-500 dark:hover:bg-neutral-700"
+            class="block rounded-md bg-neutral-200 px-3 py-2 text-base font-medium hover:bg-neutral-300 dark:bg-neutral-700 dark:hover:bg-neutral-800"
           >
             Docs
           </a>
