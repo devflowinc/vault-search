@@ -8,7 +8,7 @@ export const FirstVisitPopUp = () => {
   return (
     <Show when={!notFirstVisit}>
       <FullScreenModal isOpen={isOpen} setIsOpen={setIsOpen}>
-        <div class="flex-col items-center justify-between">
+        <div class="flex-col items-center justify-between space-y-2">
           <svg
             color="currentColor"
             stroke-width="0"
@@ -31,25 +31,27 @@ export const FirstVisitPopUp = () => {
             />
           </svg>
           <img class="w-12" src="/logo_transparent.png" alt="Logo" />
-          <p class="text-xl font-bold">Welcome to Arguflow Vault!</p>
-          <p class="text-md font-semibol mb-2">
+          <p class="text-2xl font-bold">👋 Welcome to Arguflow Vault!</p>
+          <p class="text-md font-semibold">
             We recognize that its your first time here and encourage you to
             check out our{" "}
             <a
-              class="text-turquoise-500 dark:text-acid-500"
+              class="border-none text-turquoise-500 underline ring-0 dark:text-acid-500"
               href="https://docs.arguflow.com"
             >
-              documentation
+              feature list
             </a>{" "}
-            or watch our tutorial video to get started.
+            or watch our tutorial video to get started
           </p>
-          <iframe
-            class="h-96 w-full"
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-            title="YouTube video player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-          />
+          <div class="pt-3">
+            <iframe
+              class="h-96 w-full"
+              src="https://www.youtube.com/embed/9I3dPXMAaxY"
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            />
+          </div>
         </div>
       </FullScreenModal>
     </Show>
