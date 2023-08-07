@@ -41,6 +41,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
   const [collectionFormTitle, setCollectionFormTitle] = createSignal("");
   const [usingPanel, setUsingPanel] = createSignal(false);
   const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO[]>([]);
+  const [loaded, setLoaded] = createSignal(false);
 
   const [localCollectionPage, setLocalCollectionPage] = createSignal(1);
 
@@ -72,10 +73,20 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
   });
 
   createEffect(() => {
-    if (localCollectionPage() == props.collectionPage) {
+    if (localCollectionPage() == props.collectionPage && !loaded()) {
+      setLoaded(true);
       return;
     }
+    const curPage = localCollectionPage();
+    const cardBookmarks = bookmarks();
 
+    refetchCollections(curPage, cardBookmarks);
+  });
+
+  const refetchCollections = (
+    curPage: number,
+    cardBookmarks: CardBookmarksDTO[],
+  ) => {
     void fetch(`${apiHost}/card_collection/${localCollectionPage()}`, {
       method: "GET",
       credentials: "include",
@@ -83,7 +94,42 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
       if (response.ok) {
         void response.json().then((data) => {
           if (isCardCollectionPageDTO(data)) {
-            setLocalCardCollections(data.collections);
+            if (curPage !== 1) {
+              setLocalCardCollections(data.collections);
+              return;
+            }
+
+            const collectionsToAdd: CardCollectionDTO[] = [];
+
+            cardBookmarks.forEach((cardBookmark) => {
+              cardBookmark.slim_collections.forEach((collection) => {
+                if (collection.of_current_user) {
+                  const cardCollection: CardCollectionDTO = {
+                    id: collection.id,
+                    name: collection.name,
+                    description: "",
+                    is_public: true,
+                    author_id: collection.author_id,
+                    created_at: "",
+                    updated_at: "",
+                  };
+
+                  collectionsToAdd.push(cardCollection);
+                }
+              });
+            });
+
+            setLocalCardCollections(() => {
+              const deDupedPrev = data.collections.filter((collection) => {
+                return (
+                  collectionsToAdd.find(
+                    (collectionToAdd) => collectionToAdd.id == collection.id,
+                  ) == undefined
+                );
+              });
+
+              return [...collectionsToAdd, ...deDupedPrev];
+            });
           }
         });
       }
@@ -92,7 +138,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
         setNotLoggedIn(true);
       }
     });
-  });
+  };
 
   const refetchBookmarks = (curPage: number) => {
     void fetch(`${apiHost}/card_collection/bookmark`, {
@@ -152,13 +198,15 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
   };
 
   createEffect(() => {
-    setBookmarks(props.bookmarks);
     if (props.signedInUserId === undefined) {
       return;
     }
     if (!refetchingCardCollections()) return;
 
-    props.fetchCardCollections();
+    const curPage = localCollectionPage();
+    const cardBookmarks = bookmarks();
+
+    refetchCollections(curPage, cardBookmarks);
     setRefetchingCardCollections(false);
   });
 
@@ -178,7 +226,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
   });
 
   return (
-    <Popover defaultOpen={false} class="relative">
+    <Popover defaultOpen={true} class="relative">
       {({ isOpen, setState }) => (
         <div>
           <div class="flex items-center">
@@ -209,7 +257,7 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
               onMouseLeave={() => setUsingPanel(false)}
               onClick={() => setState(true)}
             >
-              <Menu class=" flex w-full flex-col justify-end space-y-2 overflow-hidden rounded bg-white py-4 drop-shadow-md dark:bg-shark-700">
+              <Menu class=" flex w-full flex-col justify-end space-y-2 overflow-hidden rounded bg-white py-4 shadow-2xl dark:bg-shark-700">
                 <div class="mb-3 w-full px-4 text-center text-lg font-bold">
                   Manage Collections For This Card
                 </div>
@@ -309,48 +357,50 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
                     </div>
                   </div>
                 </div>
-                {showCollectionForm() && (
+                <Show when={showCollectionForm()}>
                   <div class="mx-4 rounded bg-gray-100 py-2 dark:bg-neutral-800">
                     <div class="px-2 text-lg font-bold">
                       Create New Collection
                     </div>
-                    <InputRowsForm
-                      createButtonText="Create collection"
-                      onCreate={() => {
-                        const title = collectionFormTitle();
-                        if (title.trim() == "") return;
-                        void fetch(`${apiHost}/card_collection`, {
-                          method: "POST",
-                          headers: {
-                            "Content-Type": "application/json",
-                          },
-                          credentials: "include",
-                          body: JSON.stringify({
-                            name: title,
-                            description: "",
-                            is_public: true,
-                          }),
-                        }).then(() => {
-                          setRefetchingCardCollections(true);
+                    <div>
+                      <InputRowsForm
+                        createButtonText="Create collection"
+                        onCreate={() => {
+                          const title = collectionFormTitle();
+                          if (title.trim() == "") return;
+                          void fetch(`${apiHost}/card_collection`, {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                            credentials: "include",
+                            body: JSON.stringify({
+                              name: title,
+                              description: "",
+                              is_public: true,
+                            }),
+                          }).then(() => {
+                            setRefetchingCardCollections(true);
+                            setShowCollectionForm(false);
+                            setCollectionFormTitle("");
+                            setState(true);
+                          });
+                        }}
+                        onCancel={() => {
                           setShowCollectionForm(false);
-                          setCollectionFormTitle("");
                           setState(true);
-                        });
-                      }}
-                      onCancel={() => {
-                        setShowCollectionForm(false);
-                        setState(true);
-                      }}
-                      inputGroups={[
-                        {
-                          label: "Title",
-                          inputValue: collectionFormTitle,
-                          setInputValue: setCollectionFormTitle,
-                        },
-                      ]}
-                    />
+                        }}
+                        inputGroups={[
+                          {
+                            label: "Title",
+                            inputValue: collectionFormTitle,
+                            setInputValue: setCollectionFormTitle,
+                          },
+                        ]}
+                      />
+                    </div>
                   </div>
-                )}
+                </Show>
                 {!showCollectionForm() && (
                   <div class="px-4 pt-4">
                     <MenuItem
