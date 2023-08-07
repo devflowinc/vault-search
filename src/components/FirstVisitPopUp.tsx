@@ -45,7 +45,7 @@ export const FirstVisitPopUp = () => {
           </p>
           <div class="pt-3">
             <iframe
-              class="h-96 w-full rounded"
+              class="h-48 w-full rounded sm:h-96"
               src="https://www.youtube.com/embed/9I3dPXMAaxY"
               title="YouTube video player"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
