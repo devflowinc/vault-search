@@ -30,7 +30,7 @@ export const HomeNavbar = () => {
           <div class="-mr-2 flex md:hidden">
             <button
               type="button"
-              class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 dark:bg-shark-500"
+              class="ml-2 inline-flex items-center justify-center rounded-md bg-neutral-200 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 dark:bg-shark-500"
               aria-controls="mobile-menu"
               aria-expanded={isOpen()}
               onClick={(e) => {
