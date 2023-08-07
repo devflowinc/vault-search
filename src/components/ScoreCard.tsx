@@ -399,7 +399,11 @@ const ScoreCard = (props: ScoreCardProps) => {
             // eslint-disable-next-line solid/no-innerhtml
             innerHTML={sanitizeHtml(
               props.card.card_html !== undefined
-                ? props.card.card_html.replace("background", "bg")
+                ? props.card.card_html
+                    .replace("\n", " ")
+                    .replace(`<br>`, " ")
+                    .replace(`\\n`, " ")
+                    .replaceAll("background", "bg")
                 : "",
               sanitzerOptions,
             )}
