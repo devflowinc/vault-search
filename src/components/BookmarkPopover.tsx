@@ -77,6 +77,11 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
       setLoaded(true);
       return;
     }
+    if (props.signedInUserId === undefined) {
+      return;
+    }
+    if (!refetchingCardCollections()) return;
+
     const curPage = localCollectionPage();
     const cardBookmarks = bookmarks();
 
