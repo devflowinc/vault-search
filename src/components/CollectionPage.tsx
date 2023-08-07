@@ -523,7 +523,8 @@ export const CollectionPage = (props: CollectionPageProps) => {
           <div class="min-w-[250px] sm:min-w-[300px]">
             <BiRegularXCircle class="mx-auto h-8 w-8 fill-current  !text-red-500" />
             <div class="mb-4 text-center text-xl font-bold">
-              This collection is private and cannot be viewed without an account
+              Login or register to bookmark cards, vote, or view private
+              collections
             </div>
             <div class="mx-auto flex w-fit flex-col space-y-3">
               <a
