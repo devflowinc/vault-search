@@ -10,6 +10,7 @@ import {
 
 const { cardId } = Astro.params;
 
+let title = "Arguflow Vault";
 const apiHost = import.meta.env.API_HOST as string;
 let specificCards: SingleCardDTO;
 
@@ -24,12 +25,18 @@ try {
   }
 
   specificCards = { metadata: specificCardJson, status: specificCard.status };
+
+  title = `${specificCards.metadata.content
+    .split(" ")
+    .slice(0, 5)
+    .join(" ")} | Arguflow Vault`;
 } catch (e) {
   specificCards = { metadata: null, status: 404 };
+  title = "Arguflow Vault";
 }
 ---
 
-<SearchLayout title={`${specificCards.metadata.content} | Arguflow Vault`}>
+<SearchLayout title={title}>
   <SingleCardPage
     cardId={cardId}
     defaultResultCard={specificCards as {
