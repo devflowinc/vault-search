@@ -34,8 +34,6 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
   const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO[]>([]);
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
     createSignal(false);
-
-  const [collectionPage, setCollectionPage] = createSignal(1);
   const [totalCollectionPages, setTotalCollectionPages] = createSignal(0);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const [onDelete, setOnDelete] = createSignal(() => {});
@@ -51,7 +49,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
   const fetchCardCollections = () => {
     if (!user()) return;
 
-    void fetch(`${apiHost}/card_collection/${collectionPage()}`, {
+    void fetch(`${apiHost}/card_collection/1}`, {
       method: "GET",
       credentials: "include",
     }).then((response) => {
@@ -149,15 +147,11 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
     return (
       <ScoreCard
         totalCollectionPages={totalCollectionPages()}
-        collectionPage={collectionPage()}
-        setCollectionPage={setCollectionPage}
         signedInUserId={user()?.id}
         card={curCardMetadata}
         score={0}
         setShowModal={setShowNeedLoginModal}
         cardCollections={cardCollections()}
-        fetchCardCollections={fetchCardCollections}
-        fetchBookmarks={fetchBookmarks}
         bookmarks={bookmarks()}
         setOnDelete={setOnDelete}
         setShowConfirmModal={setShowConfirmDeleteModal}

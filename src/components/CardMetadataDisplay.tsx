@@ -28,9 +28,7 @@ export const getLocalTime = (strDate: string | Date) => {
 };
 
 export interface CardMetadataDisplayProps {
-  collectionPage: number;
   totalCollectionPages: number;
-  setCollectionPage: Setter<number>;
   signedInUserId?: string;
   viewingUserId?: string;
   card: CardMetadataWithVotes;
@@ -39,7 +37,6 @@ export interface CardMetadataDisplayProps {
   setShowModal: Setter<boolean>;
   setShowConfirmModal: Setter<boolean>;
   fetchCardCollections: () => void;
-  fetchBookmarks: () => void;
   setOnDelete: Setter<() => void>;
 }
 
@@ -191,15 +188,11 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
               signedInUserId={props.signedInUserId}
               totalCollectionPages={props.totalCollectionPages}
               cardCollections={props.cardCollections}
-              collectionPage={props.collectionPage}
-              setCollectionPage={props.setCollectionPage}
               cardMetadata={props.card}
-              fetchCardCollections={props.fetchCardCollections}
               setLoginModal={props.setShowModal}
               bookmarks={props.bookmarks.filter(
                 (bookmark) => bookmark.card_uuid == props.card.id,
               )}
-              fetchBookmarks={props.fetchBookmarks}
             />
           </div>
           <div class="flex w-full flex-col">
