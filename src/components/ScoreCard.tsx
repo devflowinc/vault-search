@@ -127,6 +127,7 @@ const ScoreCard = (props: ScoreCardProps) => {
           setDeleting(false);
           if (response.ok) {
             setDeleted(true);
+            window.location.href = "/";
             return;
           }
           alert("Failed to delete card");

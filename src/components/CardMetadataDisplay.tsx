@@ -269,7 +269,6 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
                     .replace("\n", " ")
                     .replace(`<br>`, " ")
                     .replace(`\\n`, " ")
-                    .replaceAll("background", "bg")
                 : "",
               sanitzerOptions,
             )}
