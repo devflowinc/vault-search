@@ -7,6 +7,7 @@ import {
 } from "../../utils/apiTypes";
 import { For, Setter, Show, createEffect, createSignal } from "solid-js";
 import { BiRegularChevronLeft, BiRegularChevronRight } from "solid-icons/bi";
+import { getLocalTime } from "./CardMetadataDisplay";
 
 export interface CollectionUserPageViewProps {
   user: UserDTOWithVotesAndCards | undefined;
@@ -155,12 +156,12 @@ export const CollectionUserPageView = (props: CollectionUserPageViewProps) => {
                           {!collection.is_public ? "✓" : ""}
                         </td>
                         <td class="whitespace-nowrap px-3 py-4 text-left text-sm text-gray-900 dark:text-gray-300">
-                          {new Date(
+                          {getLocalTime(
                             collection.created_at,
                           ).toLocaleDateString() +
                             " " +
                             //remove seconds from time
-                            new Date(collection.created_at)
+                            getLocalTime(collection.created_at)
                               .toLocaleTimeString()
                               .replace(/:\d+\s/, " ")}
                         </td>

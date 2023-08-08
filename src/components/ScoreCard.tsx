@@ -19,6 +19,7 @@ import { FiEdit, FiGlobe, FiLock, FiTrash } from "solid-icons/fi";
 import { Tooltip } from "./Atoms/Tooltip";
 import { AiOutlineExclamation } from "solid-icons/ai";
 import CommunityBookmarkPopover from "./CommunityBookmarkPopover";
+import { getLocalTime } from "./CardMetadataDisplay";
 
 export const sanitzerOptions = {
   allowedTags: [...sanitizeHtml.defaults.allowedTags, "font"],
@@ -374,7 +375,7 @@ const ScoreCard = (props: ScoreCardProps) => {
                 </Show>
                 <span class="font-semibold">Created: </span>
                 <span>
-                  {new Date(props.card.created_at).toLocaleDateString()}
+                  {getLocalTime(props.card.created_at).toLocaleDateString()}
                 </span>
               </div>
             </div>

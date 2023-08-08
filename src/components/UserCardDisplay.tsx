@@ -7,7 +7,7 @@ import {
   CardBookmarksDTO,
   isCardCollectionPageDTO,
 } from "../../utils/apiTypes";
-import CardMetadataDisplay from "./CardMetadataDisplay";
+import CardMetadataDisplay, { getLocalTime } from "./CardMetadataDisplay";
 import { PaginationController } from "./Atoms/PaginationController";
 import { CollectionUserPageView } from "./CollectionUserPageView";
 import { FullScreenModal } from "./Atoms/FullScreenModal";
@@ -122,12 +122,12 @@ export const UserCardDisplay = (props: UserCardDisplayProps) => {
   return (
     <>
       <Show when={user() != null}>
-        <div class="mx-auto grid w-fit grid-cols-[1fr,2fr] justify-items-end gap-x-2 gap-y-2 text-end sm:gap-x-4">
+        <div class="mx-auto grid w-fit grid-cols-[3fr,4fr] items-center justify-items-end gap-x-2 gap-y-2 text-end align-middle sm:grid-cols-[4fr,5fr] sm:gap-x-4">
           {user()?.website && (
             <>
               <div class="font-semibold">Website:</div>
               <a
-                href={user()?.website ?? "#"}
+                href={user()?.website ?? ""}
                 target="_blank"
                 class="line-clamp-1 flex w-full justify-start text-magenta-500 underline dark:text-turquoise-400"
               >
@@ -162,7 +162,7 @@ export const UserCardDisplay = (props: UserCardDisplayProps) => {
           </div>
           <div class="font-semibold">Date Joined:</div>
           <div class="flex w-full justify-start">
-            {new Date(user()?.created_at ?? "").toLocaleDateString()}
+            {getLocalTime(user()?.created_at ?? "").toLocaleDateString()}
           </div>
         </div>
         <div class="mb-4 mt-4 flex  flex-col overflow-hidden border-t border-neutral-500 pt-4 text-xl">
