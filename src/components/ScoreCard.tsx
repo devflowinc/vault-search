@@ -397,7 +397,6 @@ const ScoreCard = (props: ScoreCardProps) => {
                     .replace("\n", " ")
                     .replace(`<br>`, " ")
                     .replace(`\\n`, " ")
-                    .replaceAll("background", "bg")
                 : "",
               sanitzerOptions,
             )}
