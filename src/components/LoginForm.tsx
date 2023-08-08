@@ -96,6 +96,16 @@ const LoginForm = () => {
             </a>
           </span>
         </div>
+        <div class="flex w-full justify-center">
+          <span class="">
+            <a
+              href="/auth/password/reset"
+              class="text-blue-500 underline hover:text-blue-600"
+            >
+              Reset password
+            </a>
+          </span>
+        </div>
       </div>
     </>
   );

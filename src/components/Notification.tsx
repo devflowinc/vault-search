@@ -7,6 +7,7 @@ import {
   isVerificationNotificationDTO,
 } from "../../utils/apiTypes";
 import { VsCheck } from "solid-icons/vs";
+import { getLocalTime } from "./CardMetadataDisplay";
 
 export const getTimeIn12HourFormat = (date: Date): string => {
   return date.toLocaleString("en-US", {
@@ -120,7 +121,7 @@ export const SingleNotification = (props: NotificationProps) => {
           </button>
         </Show>
         <div class="absolute right-2 py-0.5 text-xs">
-          {getTimeIn12HourFormat(new Date(props.notification.created_at))}
+          {getTimeIn12HourFormat(getLocalTime(props.notification.created_at))}
         </div>
       </div>
     </div>

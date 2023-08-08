@@ -15,6 +15,18 @@ import { Tooltip } from "./Atoms/Tooltip";
 import { AiOutlineExclamation } from "solid-icons/ai";
 import CommunityBookmarkPopover from "./CommunityBookmarkPopover";
 
+export const getLocalTime = (strDate: string | Date) => {
+  const utcDate = new Date(strDate);
+
+  const timeZoneOffsetMinutes = new Date().getTimezoneOffset();
+
+  const localTime = new Date(
+    utcDate.getTime() - timeZoneOffsetMinutes * 60 * 1000,
+  );
+
+  return localTime;
+};
+
 export interface CardMetadataDisplayProps {
   collectionPage: number;
   totalCollectionPages: number;
@@ -229,7 +241,7 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
             <div class="grid w-fit auto-cols-min grid-cols-[1fr,3fr] gap-x-2 text-neutral-800 dark:text-neutral-200">
               <span class="font-semibold">Created: </span>
               <span>
-                {new Date(props.card.created_at).toLocaleDateString()}
+                {getLocalTime(props.card.created_at).toLocaleDateString()}
               </span>
             </div>
             <div class="flex w-fit gap-x-2 text-neutral-800 dark:text-neutral-200">
