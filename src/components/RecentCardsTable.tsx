@@ -116,7 +116,7 @@ export const RecentCardsTable = (props: RecentCardsTableProps) => {
                       </div>
                     </td>
                     <td>
-                      <div class="line-clamp-1 hidden min-w-[150px] break-all p-1 text-sm text-neutral-800 dark:text-neutral-100 sm:table-cell sm:min-w-[250px]">
+                      <div class="line-clamp-1 hidden min-w-[150px] break-all p-1 text-sm text-neutral-800 dark:text-neutral-100 sm:table-cell sm:min-w-[200px]">
                         <a
                           href={`/card/${recent_card.id}`}
                           class="line-clamp-1 underline"
