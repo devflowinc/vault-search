@@ -21,11 +21,7 @@ export interface BookmarkPopoverProps {
   signedInUserId: string | undefined;
   cardMetadata: CardMetadata;
   cardCollections: CardCollectionDTO[];
-  fetchCardCollections: () => void;
-  fetchBookmarks: () => void;
-  collectionPage: number;
   totalCollectionPages: number;
-  setCollectionPage: Setter<number>;
   setLoginModal: Setter<boolean>;
   bookmarks: CardBookmarksDTO[];
 }
@@ -41,18 +37,12 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
   const [collectionFormTitle, setCollectionFormTitle] = createSignal("");
   const [usingPanel, setUsingPanel] = createSignal(false);
   const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO[]>([]);
-  const [loaded, setLoaded] = createSignal(false);
-
   const [localCollectionPage, setLocalCollectionPage] = createSignal(1);
-
   const [localCardCollections, setLocalCardCollections] = createSignal<
     CardCollectionDTO[]
   >([]);
 
   createEffect(() => {
-    setLocalCollectionPage(props.collectionPage);
-    setBookmarks(props.bookmarks);
-
     const collectionsToAdd: CardCollectionDTO[] = [];
     props.bookmarks.forEach((b) => {
       b.slim_collections.forEach((c) => {
@@ -69,23 +59,47 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
       });
     });
 
+    setBookmarks(props.bookmarks);
     setLocalCardCollections([...collectionsToAdd, ...props.cardCollections]);
   });
 
-  createEffect(() => {
-    if (localCollectionPage() == props.collectionPage && !loaded()) {
-      setLoaded(true);
-      return;
+  createEffect((prevPage) => {
+    const curPage = localCollectionPage();
+    if (curPage == prevPage) {
+      return curPage;
     }
+
+    const cardBookmarks = bookmarks();
+    refetchCollections(curPage, cardBookmarks);
+
+    return curPage;
+  }, 1);
+
+  createEffect(() => {
     if (props.signedInUserId === undefined) {
       return;
     }
-    if (!refetchingCardCollections()) return;
+    if (!refetchingCardCollections()) {
+      return;
+    }
 
     const curPage = localCollectionPage();
     const cardBookmarks = bookmarks();
-
     refetchCollections(curPage, cardBookmarks);
+    setRefetchingCardCollections(false);
+  });
+
+  createEffect(() => {
+    if (props.signedInUserId === undefined) {
+      return;
+    }
+    if (!refetchingBookmarks()) {
+      return;
+    }
+
+    const curCollectionPage = localCollectionPage();
+    refetchBookmarks(curCollectionPage);
+    setRefetchingBookmarks(false);
   });
 
   const refetchCollections = (
@@ -201,28 +215,6 @@ const BookmarkPopover = (props: BookmarkPopoverProps) => {
       }
     });
   };
-
-  createEffect(() => {
-    if (props.signedInUserId === undefined) {
-      return;
-    }
-    if (!refetchingCardCollections()) return;
-
-    const curPage = localCollectionPage();
-    const cardBookmarks = bookmarks();
-
-    refetchCollections(curPage, cardBookmarks);
-    setRefetchingCardCollections(false);
-  });
-
-  createEffect(() => {
-    if (!refetchingBookmarks()) return;
-
-    const curCollectionPage = localCollectionPage();
-
-    refetchBookmarks(curCollectionPage);
-    setRefetchingBookmarks(false);
-  });
 
   return (
     <Popover defaultOpen={false} class="relative">

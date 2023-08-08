@@ -32,15 +32,11 @@ export const sanitzerOptions = {
 export interface ScoreCardProps {
   signedInUserId?: string;
   cardCollections: CardCollectionDTO[];
-  collectionPage: number;
   totalCollectionPages: number;
-  setCollectionPage: Setter<number>;
   collection?: boolean;
   card: CardMetadataWithVotes;
   score: number;
   setShowModal: Setter<boolean>;
-  fetchCardCollections: () => void;
-  fetchBookmarks: () => void;
   setOnDelete: Setter<() => void>;
   setShowConfirmModal: Setter<boolean>;
   initialExpanded?: boolean;
@@ -260,15 +256,11 @@ const ScoreCard = (props: ScoreCardProps) => {
               signedInUserId={props.signedInUserId}
               totalCollectionPages={props.totalCollectionPages}
               cardCollections={props.cardCollections}
-              collectionPage={props.collectionPage}
-              setCollectionPage={props.setCollectionPage}
               cardMetadata={props.card}
-              fetchCardCollections={props.fetchCardCollections}
               setLoginModal={props.setShowModal}
               bookmarks={props.bookmarks.filter(
                 (bookmark) => bookmark.card_uuid === props.card.id,
               )}
-              fetchBookmarks={props.fetchBookmarks}
             />
           </div>
           <div class="flex w-full items-start">

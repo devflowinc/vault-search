@@ -44,8 +44,6 @@ export const UserCardDisplay = (props: UserCardDisplayProps) => {
     setShowConfirmCollectionmDeleteModal,
   ] = createSignal(false);
   const [bookmarks, setBookmarks] = createSignal<CardBookmarksDTO[]>([]);
-
-  const [collectionPage, setCollectionPage] = createSignal(1);
   const [totalCollectionPages, setTotalCollectionPages] = createSignal(0);
 
   createEffect(() => {
@@ -61,30 +59,6 @@ export const UserCardDisplay = (props: UserCardDisplayProps) => {
     });
   });
 
-  // Fetch the card collections for the auth'ed user
-  const fetchCardCollections = () => {
-    if (!user()) return;
-
-    void fetch(`${apiHost}/card_collection/${collectionPage()}`, {
-      method: "GET",
-      credentials: "include",
-    }).then((response) => {
-      if (response.ok) {
-        void response.json().then((data) => {
-          if (isCardCollectionPageDTO(data)) {
-            setCardCollections(data.collections);
-            setTotalCollectionPages(data.total_pages);
-          }
-        });
-      }
-    });
-  };
-
-  createEffect(() => {
-    fetchCardCollections();
-    fetchBookmarks();
-  });
-
   createEffect(() => {
     void fetch(`${apiHost}/user/${props.id}/${props.page}`, {
       method: "GET",
@@ -96,6 +70,11 @@ export const UserCardDisplay = (props: UserCardDisplayProps) => {
         });
       }
     });
+  });
+
+  createEffect(() => {
+    fetchCardCollections();
+    fetchBookmarks();
   });
 
   const fetchBookmarks = () => {
@@ -114,6 +93,24 @@ export const UserCardDisplay = (props: UserCardDisplayProps) => {
       if (response.ok) {
         void response.json().then((data) => {
           setBookmarks(data as CardBookmarksDTO[]);
+        });
+      }
+    });
+  };
+
+  const fetchCardCollections = () => {
+    if (!user()) return;
+
+    void fetch(`${apiHost}/card_collection/1`, {
+      method: "GET",
+      credentials: "include",
+    }).then((response) => {
+      if (response.ok) {
+        void response.json().then((data) => {
+          if (isCardCollectionPageDTO(data)) {
+            setCardCollections(data.collections);
+            setTotalCollectionPages(data.total_pages);
+          }
         });
       }
     });
@@ -185,8 +182,6 @@ export const UserCardDisplay = (props: UserCardDisplayProps) => {
                 <div class="w-full">
                   <CardMetadataDisplay
                     totalCollectionPages={totalCollectionPages()}
-                    collectionPage={collectionPage()}
-                    setCollectionPage={setCollectionPage}
                     setShowConfirmModal={setShowConfirmModal}
                     signedInUserId={loggedUser()?.id}
                     viewingUserId={props.id}
@@ -195,7 +190,6 @@ export const UserCardDisplay = (props: UserCardDisplayProps) => {
                     cardCollections={cardCollections()}
                     fetchCardCollections={fetchCardCollections}
                     setOnDelete={setOnDelete}
-                    fetchBookmarks={fetchBookmarks}
                     bookmarks={bookmarks()}
                   />
                 </div>
