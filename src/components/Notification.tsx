@@ -1,4 +1,4 @@
-import { Accessor, Show } from "solid-js";
+import { Accessor, Show, createSignal } from "solid-js";
 import {
   FileUploadCompleteNotificationDTO,
   NotificationDTO,
@@ -34,8 +34,11 @@ export const SingleNotification = (props: NotificationProps) => {
   // eslint-disable-next-line solid/reactivity
   const isFileUpload = isFileUploadCompleteNotificationDTO(props.notification);
 
+  const [read, setRead] = createSignal(props.notification.user_read);
+
   const markNotificationAsRead = () => {
     props.markAsRead(props.notification);
+    setRead(true);
     props.setState(true);
   };
 
@@ -43,8 +46,8 @@ export const SingleNotification = (props: NotificationProps) => {
     <div
       classList={{
         "focus:bg-neutral-100 rounded-md p-0.5 sm:p-1": true,
-        "bg-blue-50 dark:bg-gray-600": !props.notification.user_read,
-        "bg-neutral-100 dark:bg-neutral-600": props.notification.user_read,
+        "bg-blue-50 dark:bg-gray-600": !read(),
+        "bg-neutral-100 dark:bg-neutral-600": read(),
       }}
     >
       <div class="flex space-x-2 rounded-md px-1 hover:cursor-pointer focus:outline-none dark:hover:bg-none sm:px-2">
