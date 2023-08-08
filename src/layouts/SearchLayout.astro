@@ -1,5 +1,16 @@
 ---
 import { Navbar } from "../components/Atoms/Navbar";
+
+let title: string | null | undefined = Astro.props.title;
+if (title == null) {
+  title = "Arguflow Vault";
+}
+
+let description: string | null | undefined = Astro.props.description;
+if (description == null || description === "") {
+  description =
+    "Community ranked semantically searchable embedding store. Demonstrate your research abilities by creating embedding cards and collecting votes. ";
+}
 ---
 
 <style is:global>
@@ -61,20 +72,14 @@ import { Navbar } from "../components/Atoms/Navbar";
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <meta name="viewport" content="width=device-width" />
-    <title>Arguflow Vault</title>
-    <meta
-      name="description"
-      content="Community ranked semantically searchable embedding store. Demonstrate your research abilities by creating embedding cards and collecting votes. "
-    />
+    <title>{title}</title>
+    <meta name="description" content={description} />
 
     <!-- Facebook Meta Tags -->
     <meta property="og:url" content="https://vault.arguflow.com/" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Arguflow Vault" />
-    <meta
-      property="og:description"
-      content="Community ranked semantically searchable embedding store. Demonstrate your research abilities by creating embedding cards and collecting votes. "
-    />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
     <meta
       property="og:image"
       content="https://docs.arguflow.ai/arguflow-og.png"
