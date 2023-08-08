@@ -17,6 +17,7 @@ const params = new URLSearchParams(requestParams);
 const page = Number(params.get("page")) || 1;
 
 let user: UserDTOWithVotesAndCards | null = null;
+let title = "User Not Foound";
 let userCollections: CardCollectionDTO[] | null = null;
 let userCollectionPageCount = 1;
 
@@ -49,6 +50,8 @@ try {
   const maybeUser = await queryResult.json();
   if (isUserDTOWithVotesAndCards(maybeUser)) {
     user = maybeUser;
+    title = user.username ?? user.email;
+    title += " | Arguflow Vault";
   } else {
     throw new Error("Invalid response");
   }
@@ -67,7 +70,7 @@ try {
 }
 ---
 
-<SearchLayout>
+<SearchLayout title={title}>
   <div class="mx-auto w-full max-w-6xl px-4">
     <h1
       class="py-8 line-clamp-1 break-all text-center text-lg font-bold min-[320px]:text-xl sm:text-4xl"

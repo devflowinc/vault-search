@@ -39,6 +39,8 @@ let collectionCards: CardCollectionBookmarksWithStatusDTO = {
   status: 0,
 };
 
+let title = "Arguflow Vault";
+let description = "";
 try {
   if (query === "") {
     const collectionCardResponse = await fetch(
@@ -60,6 +62,10 @@ try {
       metadata: collectionCardJson,
       status: collectionCardResponse.status,
     };
+    title = `${collectionCards.metadata.collection.name} |` + title;
+    if (collectionCards.metadata.collection.description !== "") {
+      description = collectionCards.metadata.collection.description;
+    }
   } else {
     const collectionCardResponse = await fetch(
       `${apiHost}/card_collection/${searchType}/${page}`,
@@ -90,13 +96,14 @@ try {
       metadata: collectionCardJson,
       status: collectionCardResponse.status,
     };
+    title = `🔍${query} |` + title;
   }
 } catch (e) {
   console.error(e);
 }
 ---
 
-<SearchLayout>
+<SearchLayout title={title} description={description}>
   <CollectionPage
     collectionID={collectionID}
     page={page}
