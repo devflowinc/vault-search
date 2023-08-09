@@ -118,7 +118,7 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
 
   return (
     <Show when={!deleted()}>
-      <div class="flex w-full flex-col items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800">
+      <div class="flex w-full flex-col items-center rounded-md !bg-neutral-100 p-2 dark:bg-neutral-800">
         <div class="flex w-full flex-col space-y-2">
           <div class="flex h-fit items-center space-x-1">
             <Show when={props.card.private}>
@@ -260,12 +260,14 @@ const CardMetadataDisplay = (props: CardMetadataDisplayProps) => {
           <div
             classList={{
               "line-clamp-4 gradient-mask-b-0": !expanded(),
-              "text-ellipsis max-w-[100%] break-words space-y-5": true,
+              "text-ellipsis max-w-[100%] break-words space-y-5 leading-normal":
+                true,
             }}
             // eslint-disable-next-line solid/no-innerhtml
             innerHTML={sanitizeHtml(
               props.card.card_html !== undefined
                 ? props.card.card_html
+                    .replaceAll("line-height", "lh")
                     .replace("\n", " ")
                     .replace(`<br>`, " ")
                     .replace(`\\n`, " ")

@@ -49,7 +49,7 @@ export const SingleCardPage = (props: SingleCardPageProps) => {
   const fetchCardCollections = () => {
     if (!user()) return;
 
-    void fetch(`${apiHost}/card_collection/1}`, {
+    void fetch(`${apiHost}/card_collection/1`, {
       method: "GET",
       credentials: "include",
     }).then((response) => {
