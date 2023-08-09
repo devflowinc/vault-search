@@ -33,7 +33,7 @@ const CommunityBookmarkPopover = (props: CommunityBookmarkPopoverProps) => {
               onMouseLeave={() => setUsingPanel(false)}
               onClick={() => setState(true)}
             >
-              <Menu class=" flex w-full flex-col justify-end space-y-2 overflow-hidden rounded bg-white py-4 drop-shadow-md dark:bg-shark-700">
+              <Menu class=" flex w-full flex-col justify-end space-y-2 overflow-hidden rounded bg-white py-4 shadow-xl dark:bg-shark-700">
                 <div class="mb-3 w-full px-4 text-center text-lg font-bold">
                   Community Collections With This Card
                 </div>
