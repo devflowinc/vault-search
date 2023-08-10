@@ -15,7 +15,7 @@ import {
 import BookmarkPopover from "./BookmarkPopover";
 import { VsCheck, VsFileSymlinkFile } from "solid-icons/vs";
 import sanitizeHtml from "sanitize-html";
-import { FiEdit, FiGlobe, FiLock, FiTrash } from "solid-icons/fi";
+import { FiEdit, FiGlobe, FiLock, FiTrash, FiCopy } from "solid-icons/fi";
 import { Tooltip } from "./Atoms/Tooltip";
 import { AiOutlineExclamation } from "solid-icons/ai";
 import CommunityBookmarkPopover from "./CommunityBookmarkPopover";
@@ -186,6 +186,23 @@ const ScoreCard = (props: ScoreCardProps) => {
     });
   };
 
+  const copyCard = () => {
+    navigator.clipboard
+      .write([
+        new ClipboardItem({
+          "text/html": new Blob([props.card.card_html], {
+            type: "text/html",
+          }),
+        }),
+      ])
+      .then(() => {
+        alert("Copied to clipboard");
+      })
+      .catch((err: string) => {
+        alert("Failed to copy to clipboard: " + err);
+      });
+  };
+
   return (
     <Show when={!deleted()}>
       <div class="mx-auto flex w-full max-w-[calc(100%-32px)] flex-col items-center rounded-md bg-neutral-100 p-2 dark:!bg-neutral-800 min-[360px]:max-w-[calc(100%-64px)]">
@@ -228,6 +245,7 @@ const ScoreCard = (props: ScoreCardProps) => {
               />
             </Show>
             <div class="flex-1" />
+            <FiCopy onClick={() => copyCard()} />
             <Show when={props.signedInUserId == props.card.author?.id}>
               <button
                 classList={{
