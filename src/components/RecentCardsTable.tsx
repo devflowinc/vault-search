@@ -139,7 +139,7 @@ export const RecentCardsTable = (props: RecentCardsTableProps) => {
           <Show when={page() > 1}>
             <button
               classList={{
-                "flex items-center space-x-1 rounded-md bg-neutral-200 p-2 px-4 py-2 text-sm dark:bg-neutral-600":
+                "flex items-center space-x-1 rounded-md bg-neutral-100 p-2 px-4 py-2 text-sm dark:bg-neutral-600":
                   true,
                 "animate-pulse": isLoading(),
               }}
@@ -153,7 +153,7 @@ export const RecentCardsTable = (props: RecentCardsTableProps) => {
           <div class="flex-1" />
           <button
             classList={{
-              "flex items-center space-x-1 rounded-md bg-neutral-200 p-2 px-4 py-2 text-sm dark:bg-neutral-600":
+              "flex items-center space-x-1 rounded-md bg-neutral-100 p-2 px-4 py-2 text-sm dark:bg-neutral-600":
                 true,
               "animate-pulse": isLoading(),
             }}
