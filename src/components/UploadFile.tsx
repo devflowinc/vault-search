@@ -142,7 +142,7 @@ export const UploadFile = () => {
             id="dropzone-file"
             type="file"
             class="hidden"
-            accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/html,application/pdf"
             onChange={handleDirectUpload}
           />
         </label>

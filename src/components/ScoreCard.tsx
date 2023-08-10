@@ -15,7 +15,14 @@ import {
 import BookmarkPopover from "./BookmarkPopover";
 import { VsCheck, VsFileSymlinkFile } from "solid-icons/vs";
 import sanitizeHtml from "sanitize-html";
-import { FiEdit, FiGlobe, FiLock, FiTrash, FiCopy } from "solid-icons/fi";
+import {
+  FiEdit,
+  FiGlobe,
+  FiLock,
+  FiTrash,
+  FiCopy,
+  FiCheck,
+} from "solid-icons/fi";
 import { Tooltip } from "./Atoms/Tooltip";
 import { AiOutlineExclamation } from "solid-icons/ai";
 import CommunityBookmarkPopover from "./CommunityBookmarkPopover";
@@ -57,6 +64,7 @@ const ScoreCard = (props: ScoreCardProps) => {
   const [showPropsModal, setShowPropsModal] = createSignal(false);
   const [deleting, setDeleting] = createSignal(false);
   const [deleted, setDeleted] = createSignal(false);
+  const [copied, setCopied] = createSignal(false);
 
   createEffect(() => {
     if (!showPropsModal()) return;
@@ -196,7 +204,10 @@ const ScoreCard = (props: ScoreCardProps) => {
         }),
       ])
       .then(() => {
-        alert("Copied to clipboard");
+        setCopied(true);
+        setTimeout(() => {
+          setCopied(false);
+        }, 2000);
       })
       .catch((err: string) => {
         alert("Failed to copy to clipboard: " + err);
@@ -245,7 +256,12 @@ const ScoreCard = (props: ScoreCardProps) => {
               />
             </Show>
             <div class="flex-1" />
-            <FiCopy onClick={() => copyCard()} />
+            <Show when={!copied()}>
+              <FiCopy onClick={() => copyCard()} />
+            </Show>
+            <Show when={copied()}>
+              <FiCheck class="text-green-500" />
+            </Show>
             <Show when={props.signedInUserId == props.card.author?.id}>
               <button
                 classList={{
@@ -257,6 +273,7 @@ const ScoreCard = (props: ScoreCardProps) => {
               >
                 <FiTrash class="h-5 w-5" />
               </button>
+              .
             </Show>
             <Show when={props.signedInUserId == props.card.author?.id}>
               <a title="Edit" href={`/card/edit/${props.card.id}`}>
