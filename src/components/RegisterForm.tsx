@@ -6,7 +6,7 @@ const RegisterForm = () => {
 
   const [getErrorMessage, setErrorMessage] = createSignal("");
   const [getEmail, setEmail] = createSignal("");
-  const [getEmailSent, setEmailSent] = createSignal(false);
+  const [getEmailSent, setEmailSent] = createSignal("");
   const [getIsLoading, setIsLoading] = createSignal(false);
 
   return (
@@ -71,11 +71,15 @@ const RegisterForm = () => {
                       });
                       return;
                     }
-                    setEmailSent(true);
+
+                    void response.json().then((data) => {
+                      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                      setEmailSent(data.registration_url);
+                    });
                   });
                 }}
               >
-                Send Email to Finish Registration
+                Register
               </button>
             </div>
           </form>
@@ -91,7 +95,12 @@ const RegisterForm = () => {
         <Show when={getEmailSent()}>
           <div class="flex w-full max-w-sm flex-col space-y-2 p-2 text-neutral-900 dark:text-neutral-50">
             <div class="text-center text-2xl font-bold">
-              <span class="py-2">Check your email to finish registration</span>
+              <a
+                href={`${getEmailSent()}`}
+                class="py-2 text-blue-500 underline hover:text-blue-600"
+              >
+                Click here to set your password
+              </a>
             </div>
             <div class="flex w-full justify-center">
               <span class="">
