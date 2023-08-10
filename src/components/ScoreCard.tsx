@@ -201,6 +201,9 @@ const ScoreCard = (props: ScoreCardProps) => {
           "text/html": new Blob([props.card.card_html], {
             type: "text/html",
           }),
+          "text/plain": new Blob([props.card.content], {
+            type: "text/plain",
+          }),
         }),
       ])
       .then(() => {
