@@ -1,16 +1,19 @@
 ---
 import { Navbar } from "../components/Atoms/Navbar";
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 let title: string | null | undefined = Astro.props.title;
 if (title == null) {
   title = "Arguflow Vault";
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 let description: string | null | undefined = Astro.props.description;
 if (description == null || description === "") {
   description =
     "Community ranked semantically searchable embedding store. Demonstrate your research abilities by creating embedding cards and collecting votes. ";
 }
+const plausibleHost = import.meta.env.PLAUSIBLE_HOST as string;
 ---
 
 <style is:global>
@@ -100,7 +103,7 @@ if (description == null || description === "") {
     />
     <script
       defer
-      data-domain="vault.arguflow.ai"
+      data-domain={`${plausibleHost}`}
       src="https://perhaps.arguflow.com/js/script.js"></script>
   </head>
   <body
