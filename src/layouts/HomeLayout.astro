@@ -1,5 +1,6 @@
 ---
 import { HomeNavbar } from "../components/Atoms/HomeNavbar";
+const plausibleHost = import.meta.env.PLAUSIBLE_HOST as string;
 ---
 
 <style is:global>
@@ -95,7 +96,7 @@ import { HomeNavbar } from "../components/Atoms/HomeNavbar";
     />
     <script
       defer
-      data-domain="vault.arguflow.ai"
+      data-domain={`${plausibleHost}`}
       src="https://perhaps.arguflow.com/js/script.js"></script>
   </head>
   <body
