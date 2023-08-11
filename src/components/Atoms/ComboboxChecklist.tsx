@@ -48,14 +48,12 @@ export const Combobox = (props: ComboboxProps) => {
           return option.name.toLowerCase().includes(inputValue().toLowerCase());
         },
       );
-      if (sectionSelectedItems.length == 0) {
-        sectionSelectedItems = [
-          {
-            name: "+ Add custom filter",
-            isSelected: false,
-          },
-        ];
-      }
+
+      sectionSelectedItems.push({
+        name: "+ Add custom filter",
+        isSelected: false,
+      });
+
       return {
         ...section,
         sectionSelectedItems,
