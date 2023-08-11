@@ -15,16 +15,9 @@ import {
 import BookmarkPopover from "./BookmarkPopover";
 import { VsCheck, VsFileSymlinkFile } from "solid-icons/vs";
 import sanitizeHtml from "sanitize-html";
-import {
-  FiEdit,
-  FiGlobe,
-  FiLock,
-  FiTrash,
-  FiCopy,
-  FiCheck,
-} from "solid-icons/fi";
+import { FiEdit, FiGlobe, FiLock, FiTrash, FiCheck } from "solid-icons/fi";
 import { Tooltip } from "./Atoms/Tooltip";
-import { AiOutlineExclamation } from "solid-icons/ai";
+import { AiOutlineCopy, AiOutlineExclamation } from "solid-icons/ai";
 import CommunityBookmarkPopover from "./CommunityBookmarkPopover";
 import { getLocalTime } from "./CardMetadataDisplay";
 
@@ -198,7 +191,7 @@ const ScoreCard = (props: ScoreCardProps) => {
     navigator.clipboard
       .write([
         new ClipboardItem({
-          "text/html": new Blob([props.card.card_html], {
+          "text/html": new Blob([props.card.card_html ?? ""], {
             type: "text/html",
           }),
           "text/plain": new Blob([props.card.content], {
@@ -260,7 +253,9 @@ const ScoreCard = (props: ScoreCardProps) => {
             </Show>
             <div class="flex-1" />
             <Show when={!copied()}>
-              <FiCopy onClick={() => copyCard()} />
+              <button class="h-fit" onClick={() => copyCard()}>
+                <AiOutlineCopy class="h-5 w-5" />
+              </button>
             </Show>
             <Show when={copied()}>
               <FiCheck class="text-green-500" />
