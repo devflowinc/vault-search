@@ -24,7 +24,7 @@ export const FirstVisitPopUp = () => {
             check out our{" "}
             <a
               class="border-none text-turquoise-500 underline outline-none ring-0 dark:text-acid-500"
-              href="https://docs.arguflow.com"
+              href="https://docs.arguflow.ai"
             >
               feature list
             </a>{" "}
