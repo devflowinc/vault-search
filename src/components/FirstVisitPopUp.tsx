@@ -33,7 +33,7 @@ export const FirstVisitPopUp = () => {
           <div class="pt-3">
             <iframe
               class="h-48 w-full rounded sm:h-96"
-              src="https://www.youtube.com/embed/9I3dPXMAaxY"
+              src="https://www.youtube.com/embed/fcYem3u7Cvo"
               title="YouTube video player"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowfullscreen
