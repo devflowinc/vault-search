@@ -254,7 +254,7 @@ const ScoreCard = (props: ScoreCardProps) => {
             <div class="flex-1" />
             <Show when={!copied()}>
               <button class="h-fit" onClick={() => copyCard()}>
-                <AiOutlineCopy class="h-5 w-5" />
+                <AiOutlineCopy class="h-5 w-5 fill-current" />
               </button>
             </Show>
             <Show when={copied()}>
@@ -271,7 +271,7 @@ const ScoreCard = (props: ScoreCardProps) => {
               >
                 <FiTrash class="h-5 w-5" />
               </button>
-             </Show>
+            </Show>
             <Show when={props.signedInUserId == props.card.author?.id}>
               <a title="Edit" href={`/card/edit/${props.card.id}`}>
                 <FiEdit class="h-5 w-5" />
