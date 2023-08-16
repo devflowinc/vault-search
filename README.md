@@ -6,15 +6,15 @@
     <b>Easy to use abstraction over Qdrant and Postgres for creating a semantic/full-text socially enabled embedding store on your data</b>
 </p>
 
-**Arguflow Vault Client**: Paired with [vault-server](https://github.com/arguflow/vault-server), Arguflow Vault is an abstraction layer over Qdrant which provides semantic and full-text search over arbitrary HTML cards, WYSIWYG TinyMCE editor, collection based organization, MMR, voting, and more. Vault Client is written in Astro and SolidJS. Vault is still in early alpha, but you may find it useful if you are trying to build semantic or full text search over your data.
+**Arguflow Vault Search**: Paired with [vault-server](https://github.com/arguflow/vault-server), Arguflow Vault is an abstraction layer over Qdrant which provides semantic and full-text search over arbitrary HTML cards, WYSIWYG TinyMCE editor, collection based organization, MMR, voting, and more. Vault Search is written in Astro and SolidJS. Vault is still in early alpha, but you may find it useful if you are trying to build semantic or full text search over your data.
 
 <p align="center">
-<strong><a href="https://docs.arguflow.ai">Documentation</a> • <a href="https://vault.arguflow.ai">Competitive Debate Demo</a> • <a href="https://discord.gg/CuJVfgZf54">Discord</a>
+<strong><a href="https://docs.arguflow.ai">Documentation</a> • <a href="https://search.arguflow.ai">Competitive Debate Demo</a> • <a href="https://discord.gg/CuJVfgZf54">Discord</a>
 
 </strong>
 </p>
 
-# Vault Client 
+# Vault Search 
 
 ## Getting Started 
 
@@ -41,6 +41,6 @@ yarn dev
 ### Run with docker
 
 ```
-docker build -t vault-server .
-docker run -p 8090:8090 vault-server
+docker build -t vault-search .
+docker run -p 8090:8090 vault-search
 ```

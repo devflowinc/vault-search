@@ -457,7 +457,7 @@ const SearchForm = (props: {
               class="w-fit rounded  bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"
               type="submit"
             >
-              Search Evidence Vault
+              Search for Evidence
             </button>
             <a
               class="w-fit rounded bg-neutral-100 p-2 text-center hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-800"

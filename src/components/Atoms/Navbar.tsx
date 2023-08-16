@@ -11,7 +11,7 @@ export const Navbar = () => {
             <a class="flex w-full items-center" href="/">
               <img class="w-6 sm:w-12" src="/logo_transparent.png" alt="Logo" />
               <div class="hidden min-[360px]:block min-[380px]:text-xl sm:text-4xl">
-                Arguflow<span class="text-magenta">Vault</span>
+                Arguflow<span class="text-magenta">Search</span>
               </div>
             </a>
             <div class="flex w-full items-center justify-end space-x-1 sm:space-x-4">

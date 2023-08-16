@@ -18,7 +18,7 @@ export const FirstVisitPopUp = () => {
             }}
           />
           <img class="w-12" src="/logo_transparent.png" alt="Logo" />
-          <p class="text-2xl font-bold">👋 Welcome to Arguflow Vault!</p>
+          <p class="text-2xl font-bold">👋 Welcome to Arguflow Search!</p>
           <p class="text-md font-semibold">
             We recognize that its your first time here and encourage you to
             check out our{" "}

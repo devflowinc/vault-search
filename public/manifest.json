@@ -4,8 +4,8 @@
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "name": "Arguflow Vault",
-  "short_name": "Vault",
+  "name": "Arguflow Vault Search",
+  "short_name": "Arguflow Search",
   "description": "Search, create, and rate evidence for any topic.",
   "icons": [
     {

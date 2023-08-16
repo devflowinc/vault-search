@@ -6,7 +6,7 @@ import Footer from "../../../components/Footer.astro";
 const { id } = Astro.params;
 ---
 
-<SearchLayout title="Set Password | Arguflow Vault">
+<SearchLayout title="Set Password | Arguflow Search">
   <div class="flex-1"></div>
   <div class="flex justify-center">
     <SetResetPasswordForm id={id ?? ""} client:load />
