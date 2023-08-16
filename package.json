@@ -11,7 +11,7 @@
     "lint": "prettier --write  \"**/*.{js,jsx,ts,tsx,md,mdx,astro}\" && eslint --fix \"src/**/*.{js,ts,jsx,tsx,astro}\"",
     "lint:only": "eslint --fix \"src/**/*.{js,ts,jsx,tsx,astro}\""
   },
-  "description": "The Astro server that serves as the client for Arguflow Vault (https://vault.arguflow.com)",
+  "description": "The Astro server that serves as the client for Arguflow Search (https://search.arguflow.ai)",
   "dependencies": {
     "@astrojs/node": "^5.1.4",
     "@astrojs/solid-js": "^2.2.0",

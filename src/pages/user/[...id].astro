@@ -51,7 +51,7 @@ try {
   if (isUserDTOWithVotesAndCards(maybeUser)) {
     user = maybeUser;
     title = user.username ?? user.email;
-    title += " | Arguflow Vault";
+    title += " | Arguflow Search";
   } else {
     throw new Error("Invalid response");
   }
