@@ -105,6 +105,31 @@ const plausibleHost = import.meta.env.PLAUSIBLE_HOST as string;
     <div
       class="flex min-h-screen flex-col bg-white dark:bg-shark-800 dark:text-white"
     >
+      <div
+        class="card font-semibold py-3"
+        style={{
+          width: "100%",
+          color: "#00f",
+          "text-align": "center",
+          "background-color": "#ff0",
+          "background-image":
+            "linear-gradient(59deg, #a33eb5 0%, #00dde7 100%)",
+          flex: "1",
+          "justify-content": "center",
+          margin: "0",
+          "font-size": "20px",
+          position: "relative",
+        }}
+      >
+        <div class="p-2" style={{ color: "#fff" }}>
+          Check out<!-- -->
+          <a
+            class="underline font-bold"
+            href="https://chat.arguflow.ai"
+            style={{ color: "#d3ff19" }}>Chat</a
+          >: an AI opponent that cites the openCaselist wiki!
+        </div>
+      </div>
       <HomeNavbar client:load />
       <slot />
     </div>
