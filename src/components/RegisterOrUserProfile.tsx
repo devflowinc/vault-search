@@ -5,18 +5,20 @@ import {
   PopoverButton,
   PopoverPanel,
 } from "solid-headless";
-import { BiRegularLogIn, BiRegularLogOut, BiRegularUser } from "solid-icons/bi";
-import { AiOutlineProfile } from "solid-icons/ai";
+import { BiRegularLogOut, BiRegularUser } from "solid-icons/bi";
+import { AiFillGithub, AiOutlineProfile } from "solid-icons/ai";
 import { IoSettingsOutline } from "solid-icons/io";
 import { Show, createEffect, createSignal } from "solid-js";
 import { isUserDTO, type UserDTO } from "../../utils/apiTypes";
 import { NotificationPopover } from "./Atoms/NotificationPopover";
+import { TbMinusVertical } from "solid-icons/tb";
 
 const RegisterOrUserProfile = () => {
   const apiHost = import.meta.env.PUBLIC_API_HOST as string;
 
   const [isLoadingUser, setIsLoadingUser] = createSignal(true);
   const [currentUser, setCurrentUser] = createSignal<UserDTO | null>(null);
+  const [stars, setStars] = createSignal<number | null>(null);
 
   const logout = () => {
     void fetch(`${apiHost}/auth`, {
@@ -54,24 +56,42 @@ const RegisterOrUserProfile = () => {
     });
   });
 
+  createEffect(() => {
+    void fetch("https://api.github.com/repos/arguflow/arguflow").then(
+      (response) => {
+        if (response.ok) {
+          void response.json().then((data) => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            setStars(data.stargazers_count);
+          });
+          return;
+        }
+      },
+    );
+  });
+
   return (
     <div>
       <Show when={!isLoadingUser()}>
-        <div class="flex">
+        <div class="flex items-center space-x-2">
           <Show when={!currentUser()}>
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center space-x-3">
               <a href="/auth/login" class="min-[420px]:text-lg">
                 Login
               </a>
-              <a
-                class="flex space-x-2 rounded-md bg-turquoise-500 p-2 text-neutral-900"
-                href="/auth/register"
-              >
+              <a href="/auth/register" class="min-[420px]:text-lg">
                 Register
-                <BiRegularLogIn class="h-6 w-6" />
               </a>
             </div>
           </Show>
+          <a href="https://github.com/arguflow/arguflow">
+            <div class="flex items-center justify-center rounded border border-black px-2 py-1 hover:border-gray-300 hover:bg-gray-300 dark:border-white dark:hover:border-neutral-700 dark:hover:bg-neutral-700">
+              <AiFillGithub class="mr-2 h-[26px] w-[26px] fill-current" />
+              <p class="text-sm">STAR US</p>
+              <TbMinusVertical size={25} />
+              <p>{stars()}</p>
+            </div>
+          </a>
           <NotificationPopover user={currentUser()} />
           <Show when={!!currentUser()}>
             <Popover defaultOpen={false} class="relative flex items-center">

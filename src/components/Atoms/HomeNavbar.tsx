@@ -3,6 +3,7 @@ import RegisterOrUserProfile from "../RegisterOrUserProfile";
 
 export const HomeNavbar = () => {
   const [isOpen, setIsOpen] = createSignal(false);
+
   return (
     <nav class="mb-8 bg-white dark:bg-shark-800 dark:text-white">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
